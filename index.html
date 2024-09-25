@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Блок-Схемы</title>
+    <link href="zero.css" type="text/css" rel="stylesheet"/>
+    <link href="index.css" type="text/css" rel="stylesheet"/>
+
+    <script src="scripts/cursor.js"></script>
+    <script src="scripts/graph.js"></script>
+    <script src="scripts/block.js"></script>
+    <script src="scripts/result.js"></script>
+
+
+    <script src="scripts/generate.js"></script>
+    <script src="scripts/handlers.js"></script>
+    <script src="scripts/parser.js"></script>
+
+
+    <script src="scripts/index.js"></script>
+</head>
+<body style="">
+<div class="main_div">
+    <svg width="200" height="1000">
+        <!--    <rect x="0" y="0" width="200" height="100" stroke="red" stroke-width="3px" fill="white"/>-->
+        <!--    <path stroke="black" style="fill: none" d="M 0 10 l 10 100 l 100 0 l -10 -100" />-->
+        <!--    <text x="60" y="60" dominant-baseline="middle" text-anchor="middle">Hello</text>-->
+        <!--    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">TEXT</text>-->
+    </svg>
+    <div>
+        <label>
+            <textarea class="input_area" rows="20" ></textarea>
+        </label>
+        <label class="error_label"></label>
+        <button class="generate_button">
+            Generate
+        </button>
+    </div>
+
+</div>
+</body>
+</html>

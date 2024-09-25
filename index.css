@@ -1,0 +1,15 @@
+
+
+.main_div{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+.main_div>svg{
+    margin: auto;
+}
+textarea{
+    border: 3px solid black;
+}
+.generate_button{
+
+}
