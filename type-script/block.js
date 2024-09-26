@@ -114,11 +114,19 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y));
         }
         if (this.rootElement != null) {
-            for (let branchInfo of branchInfos) {
+            for (let i = 0; i < branchInfos.length; i++) {
+                let branchInfo = branchInfos[i];
+                if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1)
+                    continue;
                 let from = branchInfo.rootPosition;
                 let to = branchInfo.output;
                 let tox = to.x;
-                svgResult.push(svgLine(tox, from.y, from.x, from.y), svgLine(tox, from.y, tox, startY));
+                if (!branchInfo.isEmpty) {
+                    svgResult.push(svgLine(tox, from.y, from.x, from.y), svgLine(tox, from.y, tox, startY));
+                }
+                else {
+                    svgResult.push(svgLine(tox, from.y, from.x, from.y), svgLine(tox, from.y, tox, to.y));
+                }
             }
         }
         if (this.nextBlock != null) {
