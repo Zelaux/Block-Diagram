@@ -33,6 +33,10 @@ class GraphElement {
     static new(name: string | string[], aspect: number, handler: Handler) {
         return new GraphElement(name, aspect, handler)
     }
+
+    oneName() {
+        return typeof this.name == "string" ? this.name : this.name[0]
+    }
 }
 
 

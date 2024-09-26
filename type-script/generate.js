@@ -12,7 +12,7 @@ setTimeout(function () {
     /**@type HTMLButtonElement*/
     let generateButton = document.querySelector("button.generate_button");
     generateButton.onclick = function () {
-        let result = parse(textAreaElement.value);
+        let result = Parser.parse(textAreaElement.value);
         if (result.error != null) {
             labelElement.innerHTML = result.error;
         }

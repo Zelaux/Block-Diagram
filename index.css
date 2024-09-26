@@ -13,3 +13,37 @@ textarea{
 .generate_button{
 
 }
+.token-GraphName{
+    color: blue;
+}
+.token-Error{
+    color: red;
+    border-bottom: 1px dotted red;
+}
+
+.cursor{
+    width: 1px;
+    background: black;
+    color: black;
+    height: 1em;
+    display: inline-block;
+    position: relative;
+    vertical-align: bottom;
+    transition-timing-function: steps(1);
+
+}
+.text-area-selection {
+    position:absolute;
+    padding:2px;
+    z-index:-1;
+    display:block;
+    word-wrap:break-word;
+    white-space:pre-wrap;
+    color:black;
+    overflow:scroll;
+}
+
+.text-color-bordered {
+    color: greenyellow;
+    border-bottom:1px dotted red;
+}

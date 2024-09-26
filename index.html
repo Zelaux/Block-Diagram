@@ -13,7 +13,10 @@
 
 
     <script defer src="type-script/generate.js"></script>
+    <script src="type-script/text-area-extension.js"></script>
+    <script defer src="type-script/code-editor.js"></script>
     <script src="type-script/handlers.js"></script>
+    <script src="type-script/lexer.js"></script>
     <script src="type-script/parser.js"></script>
 
 
@@ -28,9 +31,18 @@
         <!--    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">TEXT</text>-->
     </svg>
     <div>
-        <label>
-            <textarea class="input_area" rows="10" ></textarea>
-        </label>
+        <div class="textarea-container">
+            <div class="cursors"></div>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <textarea rows="10" class="input_area"></textarea>
+<!--            <div class="code-textarea">-->
+
+<!--            </div>-->
+
+        </div>
+<!--        <label>-->
+<!--            <textarea class="input_area" rows="10" ></textarea>-->
+<!--        </label>-->
         <label class="error_label"></label>
         <button class="generate_button">
             Generate

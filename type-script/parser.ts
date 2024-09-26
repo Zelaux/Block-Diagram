@@ -1,33 +1,16 @@
-function bracePair(open: string, close?: string) {
-    return [open, close === undefined ? open : close]
-}
-
-// noinspection JSCheckFunctionSignatures
-const BRACES = [
-    bracePair("`"),
-    bracePair("(", ")"),
-    bracePair("\""),
-]
-const OPEN_BRACES = BRACES.map(it => it[0])
-const CLOSE_BRACES = BRACES.map(it => it[1])
-const SEARCH_COMMAND = 0;
-const SEARCH_BRACES = 1;
-const TERMINATE_SYMBOLS = RegExp("\\W")
-const SPACE_SYMBOLS = RegExp("\\s")
-
-const NL_SYMBOLS = RegExp("(\n|\r|\n\r)")
-
 class ParsedNode {
     element: GraphElement
     parent: ParsedNode | null
     children: ParsedNode[][]
     content: string[]
+    title: string[]
 
     private constructor(element: GraphElement) {
         this.element = element;
         this.parent = null;
         this.children = [];
         this.content = [];
+        this.title = [];
     }
 
     addToBlock(block: Block) {
@@ -51,120 +34,114 @@ class ParsedNode {
     }
 }
 
+namespace Parser {
 
-function parse(text: string): Result<{ block: Block, strings: NullableGraphText[] }> {
-    let root = ParsedNode.new(null)
-    root.newChildren()
-    let current = root
-    let prevIdx = 0
 
-    /**@type {0|1}*/
-    let state = SEARCH_COMMAND;
-
-    function findContentBrace(char: string, i: number): Result<number> {
-        let braceIndex = OPEN_BRACES.indexOf(char);
-        if (braceIndex === -1) {
-            return Result.error("Expected chars '" + OPEN_BRACES.join("', '") + "' but found '" + char + "'", i)
-        }
-        let startIdx = i;
-        let hasSlash = false;
-        let buffer = ""
-        i++;
-        for (; ; i++) {
-            if (i === text.length) {
-                return Result.error(`No close symbol for '${char}'`, startIdx)
+    export function parse(text: string): Result<{ block: Block, strings: NullableGraphText[] }> {
+        let root = ParsedNode.new(null)
+        root.newChildren()
+        let current = root
+        let nodeStack=[current]
+        let tokens = Lexer.lex(text, true);
+        for (let token of tokens) {
+            if (token.kind == TokenKind.Error) {
+                return Result.error(token.payload)
             }
-            let _char = text[i];
-            if (_char === "\\" && !hasSlash) {
-                hasSlash = true;
-                continue
+        }
+        let level = 0
+        for (let i = 0; i < tokens.length; i++) {
+            let prevToken = i - 1 < 0 ? null : tokens[i - 1]
+            let token = tokens[i];
+            let nextToken = i + 1 >= tokens.length ? null : tokens[i + 1]
+
+            function log(...args: any[]) {
+                let newVar = [["--".repeat(level+1)], args];
+
+                // @ts-ignore
+                console.log.apply(console, newVar.flatMap(it => it))
             }
-            if (!hasSlash && CLOSE_BRACES[braceIndex] === _char) {
-                break
+
+            switch (token.kind) {
+                case TokenKind.GraphName:
+                    if (current.children.length == 0 && prevToken != null && (prevToken.kind == TokenKind.ContentBraceClose || prevToken.kind == TokenKind.GraphName) || prevToken != null && prevToken.kind == TokenKind.ChildrenBraceClose) {
+                        current = current.parent!.child(token.payload)
+                        log("add sibling `", current.element.oneName(),"`")
+                    } else {
+                        current = current.child(token.payload)
+                        log("add child `", current.element.oneName(),'`')
+                    }
+                    nodeStack[level]=current
+                    break;
+                case TokenKind.Content:
+                    current.content.push(token.payload)
+                    break;
+                case TokenKind.ContentBraceOpen:
+                case TokenKind.ContentBraceClose:
+                    break;
+                case TokenKind.Comment:
+                    break;
+                case TokenKind.ChildrenBraceOpen:
+                    log("{children enter")
+                    current.newChildren()
+                    level++;
+                    break;
+                case TokenKind.ChildrenBraceClose:
+                    if (current.parent == null) {
+                        throw new Error("Some stuff happened")
+                    }
+                    if (current.children.length == 0) {
+                        level--;
+                        current = current.parent
+                        log("}children close")
+                    } else if (current.children[current.children.length - 1].length == 0) {
+
+
+                        log("}empty children close (" + current.element.oneName() + ")")
+                    } else {
+                        current = current.parent
+                        level--;
+                        log("}children close")
+                    }
+                    break;
+                case TokenKind.Title:
+                    current.title.push(token.payload)
+                    break
+                case TokenKind.TitleBraceOpen:
+                case TokenKind.TitleBraceClose:
+                    break;
             }
-            buffer += _char
-            hasSlash = false;
         }
-        current.content.push(buffer)
-        return Result.ok(i);//i - pointed on close part
-    }
 
-    for (let i = 0; i <= text.length; i++) {
-        let char = i >= text.length ? '' : text[i];
-        switch (state) {
-            case SEARCH_COMMAND:
-                if (char === "}") {
-                    if (current.parent == null) return Result.error("Nothing to close", i)
-                    state = SEARCH_BRACES
-                    prevIdx = i + 1;
-                    continue
-                }
-                if ((SPACE_SYMBOLS.test(char) || NL_SYMBOLS.test(char)) && (prevIdx === i - 1)) {
-                    prevIdx = i;
-                    continue;
-                }
-                if (!TERMINATE_SYMBOLS.test(char) && i + 1 <= text.length) continue
-                let blockName = text.substring(prevIdx, i).trim();
-                if (blockName.length === 0) continue
-                let foundBlock = blockMap[blockName];
-                if (foundBlock == null) return Result.error("Unknown graph element `" + blockName + "`", [prevIdx, i])
-                state = SEARCH_BRACES
-                prevIdx = i
-                i--;//substring stuff? and regexp stuff reason
+        console.log(root)
 
-                current = current.child(foundBlock)
-                continue
-            case SEARCH_BRACES:
-                if (char === '') continue
-                if (NL_SYMBOLS.test(char)) {
-                    state = SEARCH_COMMAND
-                    prevIdx = i + 1
-                    current = current.parent!
-                    continue
-                }
-                if (SPACE_SYMBOLS.test(char)) continue
-                let result_ = findContentBrace(char, i)
-                if (result_.error == null) {
-                    i = result_.data!;
-                    continue
-                }
-                if (char !== "{") return Result.error("'{' expected ", i)
-                state = SEARCH_COMMAND
-                current.newChildren()
-                prevIdx = i + 1;
-                break;
 
+        function buildBlock(nodes: ParsedNode[]): Result<Block> {
+
+            let first = new ElementBlock();
+            let block: Block = first;
+
+            for (let node of nodes) {
+                let result = node.addToBlock(block);
+                if (result.error != null) return result;
+                block = result.data!;
+            }
+            return Result.ok(first);
         }
-    }
-    console.log(root)
+
+        let strings: NullableGraphText[] = []
 
 
-    function buildBlock(nodes: ParsedNode[]): Result<Block> {
-
-        let first = new ElementBlock();
-        let block: Block = first;
-
-        for (let node of nodes) {
-            let result = node.addToBlock(block);
-            if (result.error != null) return result;
-            block = result.data!;
+        function collectStrings(nodes: ParsedNode[]) {
+            for (let node of nodes) {
+                strings.push(node.content)
+                node.children.forEach(collectStrings)
+            }
         }
-        return Result.ok(first);
+
+        collectStrings(root.children[0])
+        let data = buildBlock(root.children[0]);
+        if (data.isError()) return Result.error(data.error!)
+        console.log(data)
+        return Result.ok({block: data.data!, strings})
     }
-
-    let strings: NullableGraphText[] = []
-
-
-    function collectStrings(nodes: ParsedNode[]) {
-        for (let node of nodes) {
-            strings.push(node.content)
-            node.children.forEach(collectStrings)
-        }
-    }
-
-    collectStrings(root.children[0])
-    let data = buildBlock(root.children[0]);
-    if (data.isError()) return Result.error(data.error!)
-    console.log(data)
-    return Result.ok({block: data.data!, strings})
 }
