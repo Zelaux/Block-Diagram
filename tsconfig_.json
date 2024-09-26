@@ -1,0 +1,8 @@
+{
+  "files": [
+    "scripts/*.tsc"
+  ],
+  "buildOptions": {
+
+  }
+}

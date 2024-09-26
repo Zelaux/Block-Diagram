@@ -1,11 +1,5 @@
-/**@param open {string}
- * @param close {string|null}
- *
- * @return string[]
- * */
-
-function bracePair(open, close) {
-    return [open, close == null ? open : close]
+function bracePair(open: string, close?: string) {
+    return [open, close === undefined ? open : close]
 }
 
 // noinspection JSCheckFunctionSignatures
@@ -24,36 +18,28 @@ const SPACE_SYMBOLS = RegExp("\\s")
 const NL_SYMBOLS = RegExp("(\n|\r|\n\r)")
 
 class ParsedNode {
+    element: GraphElement
+    parent: ParsedNode | null
+    children: ParsedNode[][]
+    content: string[]
 
-    /**@type GraphElement*/
-    element
-    /**@type {ParsedNode|null}*/
-    parent
-    /**@type ParsedNode[][]*/
-    children
-    /**@type string[]*/
-    content
+    private constructor(element: GraphElement) {
+        this.element = element;
+        this.parent = null;
+        this.children = [];
+        this.content = [];
+    }
 
-    /**@param block {Block}*/
-    /**@return Result<Block>*/
-    addToBlock(block) {
+    addToBlock(block: Block) {
         return this.element.handler(block, this)
     }
 
-    /**@param element {GraphElement}*/
-    static new(element) {
-        let node = new ParsedNode();
-        node.element = element;
-        node.parent = null;
-        node.children = []
-        node.content = []
-        return node
+
+    static new(element: GraphElement | null) {
+        return new ParsedNode(element as GraphElement)
     }
 
-    /**
-     * @param {GraphElement} name
-     */
-    child(name) {
+    child(name: GraphElement) {
         let node = ParsedNode.new(name);
         node.parent = this;
         this.children[this.children.length - 1].push(node)
@@ -65,10 +51,8 @@ class ParsedNode {
     }
 }
 
-/**@param text {string}
- * @return {Result<{block:Block,strings:string[][]}>}
- * */
-function parse(text) {
+
+function parse(text: string): Result<{ block: Block, strings: NullableGraphText[] }> {
     let root = ParsedNode.new(null)
     root.newChildren()
     let current = root
@@ -77,7 +61,7 @@ function parse(text) {
     /**@type {0|1}*/
     let state = SEARCH_COMMAND;
 
-    function findContentBrace(char, i) {
+    function findContentBrace(char: string, i: number): Result<number> {
         let braceIndex = OPEN_BRACES.indexOf(char);
         if (braceIndex === -1) {
             return Result.error("Expected chars '" + OPEN_BRACES.join("', '") + "' but found '" + char + "'", i)
@@ -106,7 +90,7 @@ function parse(text) {
     }
 
     for (let i = 0; i <= text.length; i++) {
-        let char = i >= text.length ? '' : text.at(i);
+        let char = i >= text.length ? '' : text[i];
         switch (state) {
             case SEARCH_COMMAND:
                 if (char === "}") {
@@ -135,13 +119,13 @@ function parse(text) {
                 if (NL_SYMBOLS.test(char)) {
                     state = SEARCH_COMMAND
                     prevIdx = i + 1
-                    current = current.parent
+                    current = current.parent!
                     continue
                 }
                 if (SPACE_SYMBOLS.test(char)) continue
                 let result_ = findContentBrace(char, i)
                 if (result_.error == null) {
-                    i = result_.data;
+                    i = result_.data!;
                     continue
                 }
                 if (char !== "{") return Result.error("'{' expected ", i)
@@ -154,24 +138,24 @@ function parse(text) {
     }
     console.log(root)
 
-    /**@param nodes {ParsedNode[]}*/
-    function buildBlock(nodes) {
 
-        let first = new Block();
-        let block = first;
+    function buildBlock(nodes: ParsedNode[]): Result<Block> {
+
+        let first = new ElementBlock();
+        let block: Block = first;
 
         for (let node of nodes) {
             let result = node.addToBlock(block);
             if (result.error != null) return result;
-            block = result.data;
+            block = result.data!;
         }
-        return first;
+        return Result.ok(first);
     }
 
-    let strings = []
+    let strings: NullableGraphText[] = []
 
-    /**@param nodes {ParsedNode[]}*/
-    function collectStrings(nodes) {
+
+    function collectStrings(nodes: ParsedNode[]) {
         for (let node of nodes) {
             strings.push(node.content)
             node.children.forEach(collectStrings)
@@ -180,6 +164,7 @@ function parse(text) {
 
     collectStrings(root.children[0])
     let data = buildBlock(root.children[0]);
+    if (data.isError()) return Result.error(data.error!)
     console.log(data)
-    return Result.ok({block: data, strings})
+    return Result.ok({block: data.data!, strings})
 }

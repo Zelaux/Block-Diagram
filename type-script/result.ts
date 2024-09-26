@@ -1,14 +1,18 @@
-/**@template ResultType */
-class Result {
-    /**@type {ResultType|null}*/
-    data
-    /**@type {null|string}*/
-    error
-    isError(){
-        return this.error!=null;
+class Result<ResultType> {
+    // @ts-ignore
+    data: ResultType | null
+    // @ts-ignore
+    error: null | string
+
+    private constructor(data: ResultType | null, error: string | null) {
+        this.data = data;
+        this.error = error;
     }
-    static error(error) {
-        let result = new Result();
+
+    static ok<ResultType>(data: ResultType) {
+        return new Result(data, null)
+    }
+    static error<ResultType>(error: string,...args:any) {
         if (arguments.length > 1) {
             let range = arguments[1];
             switch (typeof range) {
@@ -32,16 +36,11 @@ class Result {
                     break;
             }
         }
-        result.error = error;
         console.trace(error)
-        // console.error(error)
-        // throw new Error(error);
-        return result
+        return new Result<ResultType>(null, error)
     }
 
-    static ok(data) {
-        let result = new Result();
-        result.data = data
-        return result;
+    isError() {
+        return this.error!=null;
     }
 }
