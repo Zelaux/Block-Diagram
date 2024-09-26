@@ -4,26 +4,18 @@
 /**@typedef {(x: number,y:number,width:number,height:number)=>string[]} Compiler*/
 
 
-class RawGraphElement {
-    aspect
-    /**@type {RawCompiler}*/
-    make
-}
 
 class PreparedGraphElement {
-    name
     aspect
     /**@type {Compiler}*/
     compile
 
 
     /**
-     * @param name
      * @param aspect
      * @param {Compiler} compile
      */
-    constructor(name, aspect, compile) {
-        this.name = name;
+    constructor(aspect, compile) {
         this.aspect = aspect;
         this.compile = compile;
     }
@@ -36,6 +28,16 @@ class GraphElement {
     aspect
     /**@type Handler*/
     handler
+
+
+    static new(name, aspect, handler) {
+        console.assert(typeof handler=="function","Fuck tyou")
+        let self = new GraphElement();
+        self.name = name;
+        self.aspect = aspect;
+        self.handler = handler;
+        return self
+    }
 }
 
 
@@ -45,8 +47,4 @@ class GraphElement {
  * @param handler {Handler}
  * @return GraphElement
  */
-function graphElement(name, aspect, handler) {
-
-    let newVar = {name, aspect, handler};
-    return Object.setPrototypeOf(newVar, GraphElement.prototype)
-}
+const graphElement =GraphElement.new

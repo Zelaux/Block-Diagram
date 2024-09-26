@@ -14,25 +14,22 @@ setTimeout(function () {
             labelElement.innerHTML = result.error;
         } else {
             labelElement.innerHTML = ""
-            /**@type {{info: RawGraphElement,content: string[]|string}[]}*/
+
             let data = result.data;
-            svgElement.innerHTML = data.map(it => defaultCenterText(0, 0, 0, 0, it.content))
+            svgElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
                 .join("\n")
             let width = 1;
 
             for (let child of svgElement.children) {
                 width=Math.max(child.getBBox().width+10,width)
             }
+            let calculateWidth = data.block.calculateWidth();
+            let totalWidth=calculateWidth*width +calculateWidth*15+40
             let y = 10;
-            let x = 10;
+            let x = totalWidth/2-width/2;
+            svgElement.width.baseVal.value=totalWidth
             console.log(width)
-            svgElement.innerHTML = data.flatMap(it => {
-                let number = it.info.aspect * width;
-
-                let strings = it.info.make(x, y, width, number, it.content);
-                y += number + 10;
-                return strings;
-            }).join("\n");
+            svgElement.innerHTML = data.block.compile(x,new Cursor(y),width).join("\n");
         }
     }
 })

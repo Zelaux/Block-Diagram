@@ -1,5 +1,3 @@
-
-
 /**
  * @param {string|null|undefined} text
  * @param {string} fallback
@@ -50,11 +48,12 @@ function terminatorConstructor(isNullProvider) {
 let blockList = [
     graphElement("start", 1 / 3, simpleHandler(terminatorConstructor(startKeyWord))),
     graphElement(["end", "stop"], 1 / 3, simpleHandler(terminatorConstructor(endKeyWord))),
-    graphElement("process", 2 / 3, simpleHandler((x, y, width, height, text) => [
+    graphElement("program",1/3,openCloseHandler(terminatorConstructor(startKeyWord),terminatorConstructor(endKeyWord))),
+    graphElement(["process","block"], 2 / 3, simpleHandler((x, y, width, height, text) => [
         makeRect(x, y, width, height),
         defaultCenterText(x, y, width, height, text)
     ])),
-    graphElement("data", 2 / 3, simpleHandler((x, y, width, height, text) => {
+    graphElement(["data","io"], 2 / 3, simpleHandler((x, y, width, height, text) => {
         const padding = 10
         return [
             makePath(`M ${x - padding} ${y} l ${padding} ${height} l ${width + padding} 0 l ${-padding} ${-height} Z`),
@@ -69,7 +68,7 @@ let blockList = [
             defaultCenterText(x, y, width, height, text)
         ]
     })),
-    graphElement("if", 2 / 3,ifStatementHandler( (x, y, width, height, text) => [
+    graphElement("if", 2 / 3, ifStatementHandler((x, y, width, height, text) => [
         makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
         defaultCenterText(x, y, width, height, text)
     ])),
@@ -91,10 +90,16 @@ let blockList = [
     ))
 ]
 
-/**@type {{[name:string]: RawGraphElement}}*/
+/**@type {{[name:string]: GraphElement}}*/
 const blockMap = {}
 for (let blockListElement of blockList) {
-    blockMap[blockListElement.name] = blockListElement
+    if (typeof blockListElement.name == "string") {
+        blockMap[blockListElement.name] = blockListElement
+    } else {
+        for (let alias of blockListElement.name) {
+            blockMap[alias] = blockListElement
+        }
+    }
 }
 /*
 *

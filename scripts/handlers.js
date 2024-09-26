@@ -6,7 +6,7 @@ function ifStatementHandler(compiler) {
     return handler((currentBlock, thisNode) => {
         if (thisNode.children.length > 3) return Result.error("Too mush children for if (>3)")
         let block = currentBlock.next();
-        block.rootElement = new PreparedGraphElement(thisNode.element.name, thisNode.element.aspect, wrapRawCompiler(thisNode.content, compiler))
+        block.rootElement = new PreparedGraphElement(thisNode.element.aspect, wrapRawCompiler(thisNode.content, compiler))
         for (let branchList of thisNode.children) {
             let innerBlock = new Block(), currentInnerBlock = innerBlock;
             for (let innerNode of branchList) {
@@ -14,7 +14,7 @@ function ifStatementHandler(compiler) {
                 if (blockResult.isError()) return blockResult
                 currentInnerBlock = blockResult.data
             }
-            block.innerElements.push(innerBlock)
+            block.addBlock(innerBlock)
         }
 
         return Result.ok(block)
@@ -29,7 +29,9 @@ const handler = h => h;
  * */
 function simpleHandler(compiler) {
     return handler((currentBlock, thisNode) => {
-        currentBlock.innerElements.push(wrapRawCompiler(thisNode.content, compiler));
+        let graphElement = new PreparedGraphElement(thisNode.element.aspect, wrapRawCompiler(thisNode.content, compiler));
+        if(currentBlock.isHorizontal())currentBlock=currentBlock.next()
+        currentBlock.addElement(graphElement)
         return Result.ok(currentBlock)
     })
 }
@@ -41,17 +43,21 @@ function simpleHandler(compiler) {
 function openCloseHandler(open, close) {
     return handler((block, thisNode) => {
 
-        block.innerElements.push(new PreparedGraphElement(thisNode.element + "_start", thisNode.aspect, wrapRawCompiler(thisNode.content[0], open)));
+        block.innerElements.push(new PreparedGraphElement(thisNode.element.aspect, wrapRawCompiler(thisNode.content[0], open)));
 
 
         /**@type ParsedNode[]*/
         let children = thisNode.children[0];
         for (let parsedNode of children) {
-            let result = parsedNode.addToBlock(parsedNode);
+            let result = parsedNode.addToBlock(block);
             if (result.error != null) return result;
             block = result.data;
         }
-        block.innerElements.push(new PreparedGraphElement(thisNode.element + "_end", thisNode.aspect, wrapRawCompiler(thisNode.content[1], close)));
+        if (block.rootElement != null) {
+            block = block.next();
+        }
+            block.addElement(new PreparedGraphElement(thisNode.element.aspect, wrapRawCompiler(thisNode.content[1], close)));
+
         return Result.ok(block)
     })
 }
