@@ -1,6 +1,6 @@
 function prepare(thisNode: ParsedNode, name: GraphText, compiler: RawCompiler) {
     let name1 = thisNode.element.name;
-    return new PreparedGraphElement(typeof name1=="string"?name1:name1[0],thisNode.element.aspect, wrapRawCompiler(name, compiler));
+    return new PreparedGraphElement(typeof name1 == "string" ? name1 : name1[0], thisNode.element.aspect, wrapRawCompiler(name, compiler));
 }
 
 function ifStatementHandler(compiler: RawCompiler): Handler {
@@ -11,11 +11,22 @@ function ifStatementHandler(compiler: RawCompiler): Handler {
         );
         console.log(thisNode)
         for (let branchList of thisNode.children) {
-            let innerBlock = new ElementBlock(), currentInnerBlock: Block = innerBlock;
+            let innerBlock: AbstractBlock = new ElementBlock(), currentInnerBlock: Block = innerBlock;
             for (let innerNode of branchList) {
                 let blockResult = innerNode.addToBlock(currentInnerBlock);
                 if (blockResult.isError()) return blockResult
                 currentInnerBlock = blockResult.data!
+            }
+            if (currentInnerBlock != innerBlock) {
+                while (innerBlock.isEmpty()) {
+                    let next = innerBlock.nextBlock! as AbstractBlock;
+                    // @ts-ignore
+                    next.prevBlock = null
+                    innerBlock = next
+                }
+            }
+            if(currentInnerBlock.isBlockContainer()){
+                currentInnerBlock=currentInnerBlock.next(new ElementBlock())
             }
             block = block.addBlock(innerBlock)
         }
@@ -30,7 +41,7 @@ const handler = (h: Handler) => h;
 
 function simpleHandler(compiler: RawCompiler) {
     return handler((currentBlock, thisNode) => {
-        let graphElement =prepare(thisNode, thisNode.content, compiler);
+        let graphElement = prepare(thisNode, thisNode.content, compiler);
         currentBlock = currentBlock.addElement(graphElement)
         return Result.ok(currentBlock)
     })

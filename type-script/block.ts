@@ -52,8 +52,10 @@ abstract class AbstractBlock implements Block {
         let block = exited;
 
         this.prevBlock = block;
-        let block1 = (block as unknown) as AbstractBlock;
-        block1.nextBlock = this;
+        if (block !== null) {
+            let block1 = (block as unknown) as AbstractBlock;
+            block1.nextBlock = this;
+        }
         return block
     }
 
@@ -93,9 +95,11 @@ abstract class BlockOfBlocks extends AbstractBlock implements Block {
     isBlockContainer() {
         return true
     }
+
 }
 
 class HorizontalBlockOfBlocks extends BlockOfBlocks {
+    type = HorizontalBlockOfBlocks
 
     constructor(rootElement: PreparedGraphElement) {
         super(rootElement);
@@ -196,18 +200,18 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y))
         }
         if (this.rootElement != null) {
-            for (let i = 0; i < branchInfos.length; i++){
+            for (let i = 0; i < branchInfos.length; i++) {
                 let branchInfo = branchInfos[i];
-                if(branchInfo.isEmpty && branchInfos.length==3 && i==1)continue
+                if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1) continue
                 let from = branchInfo.rootPosition!;
                 let to = branchInfo.output;
                 let tox = to.x;
-                if(!branchInfo.isEmpty){
+                if (!branchInfo.isEmpty) {
                     svgResult.push(
                         svgLine(tox, from.y, from.x, from.y),
                         svgLine(tox, from.y, tox, startY)
                     )
-                }else{
+                } else {
                     svgResult.push(
                         svgLine(tox, from.y, from.x, from.y),
                         svgLine(tox, from.y, tox, to.y)
@@ -217,7 +221,11 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         }
         if (this.nextBlock != null) {
             svgResult.push(svgLine(branchInfos[0].output.x, maxY + gap * 2, branchInfos[branchInfos.length - 1].output.x, maxY + gap * 2))
-            svgResult.push(svgLine(x + width / 2, cursorY.value, x + width / 2, maxY + gap * 2))
+            if(this.nextBlock.isEmpty()){
+                svgResult.push(svgLine(x + width / 2, cursorY.value-gap, x + width / 2, maxY + gap * 2))
+            }else{
+                svgResult.push(svgLine(x + width / 2, cursorY.value, x + width / 2, maxY + gap * 2))
+            }
             svgResult.push.apply(svgResult, this.nextBlock.compile(x, cursorY, width))
         }
         return svgResult

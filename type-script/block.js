@@ -14,8 +14,10 @@ class AbstractBlock {
     prev(exited) {
         let block = exited;
         this.prevBlock = block;
-        let block1 = block;
-        block1.nextBlock = this;
+        if (block !== null) {
+            let block1 = block;
+            block1.nextBlock = this;
+        }
         return block;
     }
 }
@@ -44,6 +46,7 @@ class BlockOfBlocks extends AbstractBlock {
 class HorizontalBlockOfBlocks extends BlockOfBlocks {
     constructor(rootElement) {
         super(rootElement);
+        this.type = HorizontalBlockOfBlocks;
     }
     calculateHeight() {
         let max = { totalElements: 0, unscaledHeight: 0 };
@@ -131,7 +134,12 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         }
         if (this.nextBlock != null) {
             svgResult.push(svgLine(branchInfos[0].output.x, maxY + gap * 2, branchInfos[branchInfos.length - 1].output.x, maxY + gap * 2));
-            svgResult.push(svgLine(x + width / 2, cursorY.value, x + width / 2, maxY + gap * 2));
+            if (this.nextBlock.isEmpty()) {
+                svgResult.push(svgLine(x + width / 2, cursorY.value - gap, x + width / 2, maxY + gap * 2));
+            }
+            else {
+                svgResult.push(svgLine(x + width / 2, cursorY.value, x + width / 2, maxY + gap * 2));
+            }
             svgResult.push.apply(svgResult, this.nextBlock.compile(x, cursorY, width));
         }
         return svgResult;

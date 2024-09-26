@@ -25,7 +25,7 @@ class TokenRange {
     constructor(start: number, end: number) {
         this.start = start;
         this.end = end;
-        if(start>end){
+        if (start > end) {
             throw new Error("Why?")
         }
     }
@@ -55,24 +55,43 @@ namespace Lexer {
     }
 
     function bracePair(open: string, close?: string) {
-        return [open, close === undefined ? open : close]
+        close = close === undefined ? open : close;
+        return {open, close}
+    }
+
+    function contentPair(open: string, close?: string) {
+        return pair(bracePair(open, close), tokenKindPair(TokenKind.ContentBraceOpen, TokenKind.Content, TokenKind.ContentBraceClose))
+    }
+
+    function titlePair(open: string, close?: string) {
+        return pair(bracePair(open, close), tokenKindPair(TokenKind.TitleBraceOpen, TokenKind.Title, TokenKind.TitleBraceClose))
+    }
+
+    function tokenKindPair(open: TokenKind, inside: TokenKind, close: TokenKind) {
+        return {open, inside, close}
+    }
+
+    function pair<A, B>(braces: A, token: B) {
+        return {braces, token}
     }
 
 // noinspection JSCheckFunctionSignatures
     const BRACES = [
-        bracePair("`"),
-        bracePair("(", ")"),
-        bracePair("\""),
+        contentPair("`"),
+        contentPair("(", ")"),
+        contentPair("\""),
+        titlePair("[", "]")
     ]
-    const OPEN_BRACES = BRACES.map(it => it[0])
-    const CLOSE_BRACES = BRACES.map(it => it[1])
+    const OPEN_BRACES = BRACES.map(it => it.braces.open)
+    const CLOSE_BRACES = BRACES.map(it => it.braces.close)
     const SEARCH_COMMAND = 0;
     const SEARCH_BRACES = 1;
     const TERMINATE_SYMBOLS = RegExp("[^\\w\\x01\\x00]")
     const SPACE_SYMBOLS = RegExp("\\s")
 
     const NL_SYMBOLS = RegExp("(\n|\r|\n\r)")
-const STATIC_ERROR=Result.error("")
+    const STATIC_ERROR = Result.error("")
+
     export function lex(text: string, useError: boolean): Token[] {
         let tokens: Token[] = []
         let prevIdx = 0
@@ -86,7 +105,8 @@ const STATIC_ERROR=Result.error("")
                 // tokens.push(token(TokenKind.Error, range(i, i + 1), ("Expected chars '" + OPEN_BRACES.join("', '") + "' but found '" + char + "'", i)))
                 return -1
             }
-            let open = token(TokenKind.ContentBraceOpen, range(i));
+            let braceInfo = BRACES[braceIndex]
+            let open = token(braceInfo.token.open, range(i));
             let openIdx = tokens.length
             tokens.push(open)
             let startIdx = i;
@@ -95,12 +115,12 @@ const STATIC_ERROR=Result.error("")
             i++;
             for (; ; i++) {
                 if (i === text.length) {
-                    tokens.push(token(TokenKind.Content, range(startIdx + 1, i - 1), buffer))
-                    tokens.push(token(TokenKind.Error, range(i, i + 1), `No close symbol for '${char}'`))
+                    tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i - 1), buffer))
+                    tokens.push(token(TokenKind.Error, range(i), `No close symbol for '${char}'`))
                     return i
                 }
                 let _char = text[i];
-                if(_char=='\x00' || _char=='\x01')continue
+                if (_char == '\x00' || _char == '\x01') continue
                 if (_char === "\\" && !hasSlash) {
                     hasSlash = true;
                     continue
@@ -111,9 +131,9 @@ const STATIC_ERROR=Result.error("")
                 buffer += _char
                 hasSlash = false;
             }
-            tokens.push(token(TokenKind.Content, range(startIdx+1, i), buffer))
+            tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i), buffer))
             open.payload = tokens.length
-            tokens.push(token(TokenKind.ContentBraceClose, range(i), openIdx))
+            tokens.push(token(braceInfo.token.close, range(i), openIdx))
             return i;//i - pointed on close part
         }
 
@@ -139,12 +159,12 @@ const STATIC_ERROR=Result.error("")
                         continue;
                     }
                     if (!TERMINATE_SYMBOLS.test(char) && i + 1 <= text.length) continue
-                    let blockName = text.substring(prevIdx, i).replace('\x00','').replace('\x01','').trim();
+                    let blockName = text.substring(prevIdx, i).replace('\x00', '').replace('\x01', '').trim();
                     if (blockName.length === 0) continue
                     let foundBlock = blockMap[blockName];
                     if (foundBlock == null) {
                         tokens.push(token(TokenKind.Error, range(prevIdx, i), "Unknown graph element `" + blockName + "`"))
-                        prevIdx=i+1
+                        prevIdx = i + 1
                         continue
                     }
                     state = SEARCH_BRACES
@@ -163,7 +183,7 @@ const STATIC_ERROR=Result.error("")
                     }
                     if (SPACE_SYMBOLS.test(char)) continue
                     let result_ = findContentBrace(char, i)
-                    if (result_!=-1) {
+                    if (result_ != -1) {
                         i = result_;
                         continue
                     }
@@ -179,9 +199,9 @@ const STATIC_ERROR=Result.error("")
 
             }
         }
-        console.log(tokens.map(it=>{
-            let token1 = Object.assign({},it);
-            token1.kind=TokenKind[token1.kind] as any
+        console.log(tokens.map(it => {
+            let token1 = Object.assign({}, it);
+            token1.kind = TokenKind[token1.kind] as any
             return token1
         }))
         return tokens

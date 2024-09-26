@@ -47,16 +47,30 @@ var Lexer;
         return new Token(kind, range, payload);
     }
     function bracePair(open, close) {
-        return [open, close === undefined ? open : close];
+        close = close === undefined ? open : close;
+        return { open, close };
+    }
+    function contentPair(open, close) {
+        return pair(bracePair(open, close), tokenKindPair(TokenKind.ContentBraceOpen, TokenKind.Content, TokenKind.ContentBraceClose));
+    }
+    function titlePair(open, close) {
+        return pair(bracePair(open, close), tokenKindPair(TokenKind.TitleBraceOpen, TokenKind.Title, TokenKind.TitleBraceClose));
+    }
+    function tokenKindPair(open, inside, close) {
+        return { open, inside, close };
+    }
+    function pair(braces, token) {
+        return { braces, token };
     }
     // noinspection JSCheckFunctionSignatures
     const BRACES = [
-        bracePair("`"),
-        bracePair("(", ")"),
-        bracePair("\""),
+        contentPair("`"),
+        contentPair("(", ")"),
+        contentPair("\""),
+        titlePair("[", "]")
     ];
-    const OPEN_BRACES = BRACES.map(it => it[0]);
-    const CLOSE_BRACES = BRACES.map(it => it[1]);
+    const OPEN_BRACES = BRACES.map(it => it.braces.open);
+    const CLOSE_BRACES = BRACES.map(it => it.braces.close);
     const SEARCH_COMMAND = 0;
     const SEARCH_BRACES = 1;
     const TERMINATE_SYMBOLS = RegExp("[^\\w\\x01\\x00]");
@@ -74,7 +88,8 @@ var Lexer;
                 // tokens.push(token(TokenKind.Error, range(i, i + 1), ("Expected chars '" + OPEN_BRACES.join("', '") + "' but found '" + char + "'", i)))
                 return -1;
             }
-            let open = token(TokenKind.ContentBraceOpen, range(i));
+            let braceInfo = BRACES[braceIndex];
+            let open = token(braceInfo.token.open, range(i));
             let openIdx = tokens.length;
             tokens.push(open);
             let startIdx = i;
@@ -83,8 +98,8 @@ var Lexer;
             i++;
             for (;; i++) {
                 if (i === text.length) {
-                    tokens.push(token(TokenKind.Content, range(startIdx + 1, i - 1), buffer));
-                    tokens.push(token(TokenKind.Error, range(i, i + 1), `No close symbol for '${char}'`));
+                    tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i - 1), buffer));
+                    tokens.push(token(TokenKind.Error, range(i), `No close symbol for '${char}'`));
                     return i;
                 }
                 let _char = text[i];
@@ -100,9 +115,9 @@ var Lexer;
                 buffer += _char;
                 hasSlash = false;
             }
-            tokens.push(token(TokenKind.Content, range(startIdx + 1, i), buffer));
+            tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i), buffer));
             open.payload = tokens.length;
-            tokens.push(token(TokenKind.ContentBraceClose, range(i), openIdx));
+            tokens.push(token(braceInfo.token.close, range(i), openIdx));
             return i; //i - pointed on close part
         }
         let openedChildrenBraces = [];

@@ -17,6 +17,17 @@ function ifStatementHandler(compiler) {
                     return blockResult;
                 currentInnerBlock = blockResult.data;
             }
+            if (currentInnerBlock != innerBlock) {
+                while (innerBlock.isEmpty()) {
+                    let next = innerBlock.nextBlock;
+                    // @ts-ignore
+                    next.prevBlock = null;
+                    innerBlock = next;
+                }
+            }
+            if (currentInnerBlock.isBlockContainer()) {
+                currentInnerBlock = currentInnerBlock.next(new ElementBlock());
+            }
             block = block.addBlock(innerBlock);
         }
         return Result.ok(block);

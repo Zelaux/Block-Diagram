@@ -18,7 +18,12 @@ textarea{
 }
 .token-Error{
     color: red;
-    border-bottom: 1px dotted red;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: darkred ;
+}
+.token-Title{
+    color: green;
 }
 
 .cursor{
