@@ -38,7 +38,7 @@ setTimeout(function () {
             console.log(width,heightInfo)
             let cursor = new Cursor(y);
             svgElement.innerHTML = data.block.compile(x,cursor,width).join("\n");
-            svgElement.height.baseVal.value=cursor.v
+            svgElement.height.baseVal.value=cursor.value
         }
     }
 })
