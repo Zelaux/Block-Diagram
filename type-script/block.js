@@ -26,11 +26,12 @@ class BlockOfBlocks extends AbstractBlock {
         this.rootElement = rootElement;
     }
     addBlock(block) {
+        console.log(block);
         this.innerElements.push(block);
         return this;
     }
     addElement(element) {
-        let elementBlock = new ElementBlock();
+        let elementBlock = this.next(new ElementBlock());
         return elementBlock.addElement(element);
     }
     isBlockContainer() {
@@ -42,9 +43,20 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         super(rootElement);
     }
     calculateHeight() {
-        let max = 0;
+        let max = { totalElements: 0, unscaledHeight: 0 };
         for (let innerElement of this.innerElements) {
-            max = Math.max(innerElement.calculateHeight(), max);
+            let values = innerElement.calculateHeight();
+            max.totalElements = Math.max(values.totalElements, max.totalElements);
+            max.unscaledHeight = Math.max(values.unscaledHeight, max.unscaledHeight);
+        }
+        if (this.rootElement != null) {
+            max.totalElements++;
+            max.unscaledHeight += this.rootElement.aspect;
+        }
+        if (this.nextBlock != null) {
+            let next = this.nextBlock.calculateHeight();
+            max.totalElements += next.totalElements;
+            max.unscaledHeight += next.unscaledHeight;
         }
         return max;
     }
@@ -52,7 +64,7 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
     compile(x, y, width) {
         const gap = 15;
         let svgResult = [];
-        {
+        if (this.rootElement != null) {
             let height = this.rootElement.aspect * width;
             svgResult.push.apply(svgResult, this.rootElement.compile(x, y.v, width, height));
             y.move(height + gap);
@@ -126,7 +138,19 @@ class ElementBlock extends AbstractBlock {
         return svgResult;
     }
     calculateHeight() {
-        return this.innerElements.length;
+        let info = {
+            totalElements: this.innerElements.length,
+            unscaledHeight: 0
+        };
+        for (let innerElement of this.innerElements) {
+            info.unscaledHeight += innerElement.aspect;
+        }
+        if (this.nextBlock != null) {
+            let nextinfo = this.nextBlock.calculateHeight();
+            info.totalElements += nextinfo.totalElements;
+            info.unscaledHeight += nextinfo.unscaledHeight;
+        }
+        return info;
     }
     calculateWidth() {
         if (this.nextBlock == null) {

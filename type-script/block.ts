@@ -1,3 +1,5 @@
+type HeightInfo = { totalElements: number, unscaledHeight: number }
+
 interface Block {
     next<BlockType extends Block>(exited: BlockType): BlockType
 
@@ -11,7 +13,7 @@ interface Block {
 
     calculateWidth(): number
 
-    calculateHeight(): number
+    calculateHeight(): HeightInfo
 
     isBlockContainer(): boolean
 }
@@ -27,7 +29,7 @@ abstract class AbstractBlock implements Block {
 
     abstract calculateWidth(): number;
 
-    abstract calculateHeight(): number;
+    abstract calculateHeight(): HeightInfo;
 
 
     prevBlock: Block | null = null
@@ -57,7 +59,7 @@ abstract class AbstractBlock implements Block {
 
 abstract class BlockOfBlocks extends AbstractBlock implements Block {
 
-    rootElement: PreparedGraphElement
+    rootElement: PreparedGraphElement | null
 
     protected constructor(rootElement: PreparedGraphElement) {
         super();
@@ -69,12 +71,13 @@ abstract class BlockOfBlocks extends AbstractBlock implements Block {
 
 
     addBlock(block: Block): BlockOfBlocks {
+        console.log(block)
         this.innerElements.push(block)
         return this;
     }
 
     addElement(element: PreparedGraphElement): ElementBlock {
-        let elementBlock = new ElementBlock();
+        let elementBlock = this.next(new ElementBlock());
         return elementBlock.addElement(element);
     }
 
@@ -90,10 +93,23 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         super(rootElement);
     }
 
-    calculateHeight(): number {
-        let max = 0;
+    calculateHeight(): HeightInfo {
+
+        let max: HeightInfo = {totalElements: 0, unscaledHeight: 0};
         for (let innerElement of this.innerElements) {
-            max = Math.max(innerElement.calculateHeight(), max)
+            let values = innerElement.calculateHeight();
+            max.totalElements = Math.max(values.totalElements, max.totalElements)
+            max.unscaledHeight = Math.max(values.unscaledHeight, max.unscaledHeight)
+
+        }
+        if (this.rootElement != null) {
+            max.totalElements++;
+            max.unscaledHeight += this.rootElement.aspect;
+        }
+        if (this.nextBlock != null) {
+            let next = this.nextBlock.calculateHeight();
+            max.totalElements += next.totalElements
+            max.unscaledHeight += next.unscaledHeight
         }
         return max
     }
@@ -104,7 +120,7 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         const gap = 15;
         let svgResult: string[] = []
 
-        {
+        if (this.rootElement != null) {
             let height = this.rootElement.aspect * width
             svgResult.push.apply(svgResult, this.rootElement.compile(x, y.v, width, height))
             y.move(height + gap)
@@ -187,8 +203,20 @@ class ElementBlock extends AbstractBlock {
         return svgResult
     }
 
-    calculateHeight(): number {
-        return this.innerElements.length;
+    calculateHeight(): HeightInfo {
+        let info: HeightInfo = {
+            totalElements: this.innerElements.length,
+            unscaledHeight: 0
+        };
+        for (let innerElement of this.innerElements) {
+            info.unscaledHeight += innerElement.aspect
+        }
+        if (this.nextBlock != null) {
+            let nextinfo = this.nextBlock.calculateHeight();
+            info.totalElements += nextinfo.totalElements
+            info.unscaledHeight += nextinfo.unscaledHeight
+        }
+        return info;
     }
 
     calculateWidth(): number {

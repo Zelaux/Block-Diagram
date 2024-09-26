@@ -30,11 +30,15 @@ setTimeout(function () {
             }
             let calculateWidth = data.block.calculateWidth();
             let totalWidth=calculateWidth*width +calculateWidth*15+40
-            let y = 10;
+            let y = 0;
             let x = totalWidth/2-width/2;
+            let heightInfo = data.block.calculateHeight();
+            let totalHeight=heightInfo.unscaledHeight*width+(heightInfo.totalElements+4)*15
             svgElement.width.baseVal.value=totalWidth
-            console.log(width)
-            svgElement.innerHTML = data.block.compile(x,new Cursor(y),width).join("\n");
+            console.log(width,heightInfo)
+            let cursor = new Cursor(y);
+            svgElement.innerHTML = data.block.compile(x,cursor,width).join("\n");
+            svgElement.height.baseVal.value=cursor.v
         }
     }
 })

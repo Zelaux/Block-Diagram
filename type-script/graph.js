@@ -1,6 +1,7 @@
 "use strict";
 class PreparedGraphElement {
-    constructor(aspect, compile) {
+    constructor(name, aspect, compile) {
+        this.name = name;
         this.aspect = aspect;
         this.compile = compile;
     }
