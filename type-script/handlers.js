@@ -33,26 +33,34 @@ function ifStatementHandler(compiler) {
         return Result.ok(block);
     });
 }
-const handler = (h) => h;
+const handler = (h, extra) => h;
 function simpleHandler(compiler) {
-    return handler((currentBlock, thisNode) => {
+    let handler1 = handler((currentBlock, thisNode) => {
         let graphElement = prepare(thisNode, thisNode.content, compiler);
         currentBlock = currentBlock.addElement(graphElement);
         return Result.ok(currentBlock);
     });
+    handler1.compiler = compiler;
+    return handler1;
+}
+function nodesToBlock(block, children) {
+    let myBlock = block;
+    for (let parsedNode of children) {
+        let result = parsedNode.addToBlock(myBlock);
+        if (result.isError()) {
+            return result;
+        }
+        myBlock = result.data;
+    }
+    return Result.ok(myBlock);
 }
 function openCloseHandler(open, close) {
     return handler((block, thisNode) => {
         block = block.addElement(prepare(thisNode, thisNode.content[0], open));
-        /**@type ParsedNode[]*/
-        let children = thisNode.children[0];
-        for (let parsedNode of children) {
-            let result = parsedNode.addToBlock(block);
-            if (result.isError())
-                return result;
-            block = result.data;
-        }
-        block = block.addElement(prepare(thisNode, thisNode.content[1], close));
+        let result = nodesToBlock(block, thisNode.children[0]);
+        if (result.isError())
+            return result;
+        block = result.data.addElement(prepare(thisNode, thisNode.content[1], close));
         return Result.ok(block);
     });
 }

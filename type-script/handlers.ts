@@ -1,4 +1,4 @@
-function prepare(thisNode: ParsedNode, name: GraphText, compiler: RawCompiler) {
+function prepare(thisNode: ParsedNode, name: NullableGraphText, compiler: RawCompiler) {
     let name1 = thisNode.element.name;
     return new PreparedGraphElement(typeof name1 == "string" ? name1 : name1[0], thisNode.element.aspect, wrapRawCompiler(name, compiler));
 }
@@ -25,8 +25,8 @@ function ifStatementHandler(compiler: RawCompiler): Handler {
                     innerBlock = next
                 }
             }
-            if(currentInnerBlock.isBlockContainer()){
-                currentInnerBlock=currentInnerBlock.next(new ElementBlock())
+            if (currentInnerBlock.isBlockContainer()) {
+                currentInnerBlock = currentInnerBlock.next(new ElementBlock())
             }
             block = block.addBlock(innerBlock)
         }
@@ -36,32 +36,41 @@ function ifStatementHandler(compiler: RawCompiler): Handler {
 }
 
 
-const handler = (h: Handler) => h;
+const handler = (h: Handler, extra?: any) => h;
 
 
 function simpleHandler(compiler: RawCompiler) {
-    return handler((currentBlock, thisNode) => {
+    let handler1 = handler((currentBlock, thisNode) => {
         let graphElement = prepare(thisNode, thisNode.content, compiler);
         currentBlock = currentBlock.addElement(graphElement)
         return Result.ok(currentBlock)
-    })
+    });
+    (handler1 as any).compiler=compiler
+    return handler1
 }
 
+
+function nodesToBlock(block: Block, children: ParsedNode[]) {
+    let myBlock = block
+
+    for (let parsedNode of children) {
+        let result = parsedNode.addToBlock(myBlock);
+        if (result.isError()) {
+            return result
+        }
+        myBlock = result.data!;
+    }
+    return Result.ok(myBlock)
+}
 
 function openCloseHandler(open: RawCompiler, close: RawCompiler) {
     return handler((block, thisNode) => {
 
         block = block.addElement(prepare(thisNode, thisNode.content[0], open));
 
-
-        /**@type ParsedNode[]*/
-        let children = thisNode.children[0];
-        for (let parsedNode of children) {
-            let result = parsedNode.addToBlock(block);
-            if (result.isError()) return result;
-            block = result.data!;
-        }
-        block = block.addElement(prepare(thisNode, thisNode.content[1], close));
+        let result = nodesToBlock(block, thisNode.children[0]);
+        if (result.isError()) return result;
+        block = result.data!.addElement(prepare(thisNode, thisNode.content[1], close));
 
         return Result.ok(block)
     })
@@ -71,7 +80,7 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler) {
  * @param rawCompiler {RawCompiler}
  * @return Compiler
  * */
-function wrapRawCompiler(name: GraphText, rawCompiler: RawCompiler): Compiler {
+function wrapRawCompiler(name: NullableGraphText, rawCompiler: RawCompiler): Compiler {
     return function () {
         arguments[arguments.length] = name
         arguments.length += 1

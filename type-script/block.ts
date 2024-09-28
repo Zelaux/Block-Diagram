@@ -71,7 +71,7 @@ abstract class BlockOfBlocks extends AbstractBlock implements Block {
 
     rootElement: PreparedGraphElement | null
 
-    protected constructor(rootElement: PreparedGraphElement) {
+    protected constructor(rootElement: PreparedGraphElement | null) {
         super();
         this.rootElement = rootElement;
     }
@@ -101,7 +101,7 @@ abstract class BlockOfBlocks extends AbstractBlock implements Block {
 class HorizontalBlockOfBlocks extends BlockOfBlocks {
     type = HorizontalBlockOfBlocks
 
-    constructor(rootElement: PreparedGraphElement) {
+    constructor(rootElement: PreparedGraphElement | null) {
         super(rootElement);
     }
 
@@ -195,9 +195,11 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             currentX += blockWidth + margin;
         }
         cursorY.value = maxY + gap * 4;
-        for (let info of branchInfos) {
-            let output = info.output;
-            svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y))
+        if (this.nextBlock != null) {
+            for (let info of branchInfos) {
+                let output = info.output;
+                svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y))
+            }
         }
         if (this.rootElement != null) {
             for (let i = 0; i < branchInfos.length; i++) {
@@ -221,9 +223,9 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         }
         if (this.nextBlock != null) {
             svgResult.push(svgLine(branchInfos[0].output.x, maxY + gap * 2, branchInfos[branchInfos.length - 1].output.x, maxY + gap * 2))
-            if(this.nextBlock.isEmpty()){
-                svgResult.push(svgLine(x + width / 2, cursorY.value-gap, x + width / 2, maxY + gap * 2))
-            }else{
+            if (this.nextBlock.isEmpty()) {
+                svgResult.push(svgLine(x + width / 2, cursorY.value - gap, x + width / 2, maxY + gap * 2))
+            } else {
                 svgResult.push(svgLine(x + width / 2, cursorY.value, x + width / 2, maxY + gap * 2))
             }
             svgResult.push.apply(svgResult, this.nextBlock.compile(x, cursorY, width))
@@ -309,9 +311,10 @@ class ElementBlock extends AbstractBlock {
     }
 
     calculateWidth(): number {
+        let number = 1.50;
         if (this.nextBlock == null) {
-            return 1
+            return number
         }
-        return Math.max(1, this.nextBlock.calculateWidth())
+        return Math.max(number, this.nextBlock.calculateWidth())
     }
 }

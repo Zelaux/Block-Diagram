@@ -112,9 +112,11 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             currentX += blockWidth + margin;
         }
         cursorY.value = maxY + gap * 4;
-        for (let info of branchInfos) {
-            let output = info.output;
-            svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y));
+        if (this.nextBlock != null) {
+            for (let info of branchInfos) {
+                let output = info.output;
+                svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y));
+            }
         }
         if (this.rootElement != null) {
             for (let i = 0; i < branchInfos.length; i++) {
@@ -217,9 +219,10 @@ class ElementBlock extends AbstractBlock {
         return info;
     }
     calculateWidth() {
+        let number = 1.50;
         if (this.nextBlock == null) {
-            return 1;
+            return number;
         }
-        return Math.max(1, this.nextBlock.calculateWidth());
+        return Math.max(number, this.nextBlock.calculateWidth());
     }
 }
