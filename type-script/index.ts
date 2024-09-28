@@ -1,13 +1,35 @@
-
-
-function textOr(text:NullableGraphText, fallback:GraphText) {
+function textOr(text: NullableGraphText, fallback: GraphText) {
 
     return (text === undefined) || (text == null) || text.length === 0 ? fallback : text;
 }
 
 
 function defaultCenterText(x: number, y: number, width: number, height: number, text: NullableGraphText) {
-    return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${(textOr(text, ""))}</text>`;
+    let notNullText = textOr(text, "");
+    let arrayText: string[];
+    if (typeof notNullText == "string") {
+        arrayText = notNullText.split("\n")
+    } else {
+        arrayText = notNullText
+    }
+    // @ts-ignore
+    arrayText = arrayText.flatMap((it:string) =>it.split("\n"))
+    for (let i = 0; i < arrayText.length; i++) {
+        let it = arrayText[i];
+        if (i == 0) {
+        arrayText[i]=`<tspan x="0" dy="${1.2*(0.5-arrayText.length/2)}em">${it}</tspan>`
+        }else{
+            arrayText[i]=`<tspan x="0" dy="1.2em">${it}</tspan>`
+        }
+
+    }
+    let compiledText = arrayText.join("\n")
+    let cx = x + width / 2;
+    let cy = y + height / 2;
+    return `<g transform="translate(${cx} ${cy})">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>
+</g>`;
+    // return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>`;
 }
 
 
@@ -23,8 +45,7 @@ const startKeyWord = () => "Начало";
 const endKeyWord = () => "Конец";
 
 
-
-function terminatorConstructor(isNullProvider:()=>string) {
+function terminatorConstructor(isNullProvider: () => string) {
     return (x: number, y: number, width: number, height: number, text: NullableGraphText) => {
         let hh = height / 2;//half_height
         let wl = width - height;//width_left
@@ -81,10 +102,10 @@ let blockList = [
 ]
 
 
-const blockMap:{[name:string]:GraphElement} = {}
+const blockMap: { [name: string]: GraphElement } = {}
 for (let blockListElement of blockList) {
     let name = blockListElement.name;
-    if (typeof name=="string") {
+    if (typeof name == "string") {
         blockMap[name] = blockListElement
     } else {
         for (let alias of name) {
