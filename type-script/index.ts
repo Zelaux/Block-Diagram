@@ -59,8 +59,16 @@ function terminatorConstructor(isNullProvider: () => string) {
 let blockList = [
     graphElement("start", 1 / 3, simpleHandler(terminatorConstructor(startKeyWord))),
     graphElement(["end", "stop"], 1 / 3, simpleHandler(terminatorConstructor(endKeyWord))),
-    graphElement("program",1/3,openCloseHandler(terminatorConstructor(startKeyWord),terminatorConstructor(endKeyWord))),
-    graphElement(["process","block"], 2 / 3, simpleHandler((x, y, width, height, text) => [
+    graphElement("connector", 1 / 3, simpleHandler((x, y, width, height, text) => {
+        x += width / 3
+        width = width / 3
+        return [
+            `<circle r="${width / 2}" cx="${x + width / 2}" cy="${y + width / 2}" fill="none" stroke="black" stroke-width="1"></circle>`,
+            defaultCenterText(x, y, width, height, text)
+        ]
+    })),
+    graphElement("program", 1 / 3, openCloseHandler(terminatorConstructor(startKeyWord), terminatorConstructor(endKeyWord))),
+    graphElement(["process", "block"], 2 / 3, simpleHandler((x, y, width, height, text) => [
         makeRect(x, y, width, height),
         defaultCenterText(x, y, width, height, text)
     ])),
