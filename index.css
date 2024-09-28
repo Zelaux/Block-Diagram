@@ -10,8 +10,26 @@
 textarea{
     border: 3px solid black;
 }
-.generate_button{
+.error_label{
+    width: 100%;
+}
+.buttons{
+    display: flex;
+}
+.generate_button,.download_button{
+    padding: 8px;
+    background: #eeeeee;
+    border: 2px darkgray solid;
+}
+.generate_button:hover,.download_button:hover{
 
+    background: gray;
+    border: 2px darkgray solid;
+}
+.generate_button:active,.download_button:active{
+    background: darkgray;
+    color: white;
+    border: 2px #eeeeee solid;
 }
 .token-GraphName{
     color: blue;

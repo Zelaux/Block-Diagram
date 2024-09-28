@@ -11,6 +11,7 @@ setTimeout(function () {
     let labelElement = document.querySelector("label.error_label");
     /**@type HTMLButtonElement*/
     let generateButton = document.querySelector("button.generate_button");
+    let downloadButton = document.querySelector("button.download_button");
     generateButton.onclick = function () {
         let result = Parser.parse(textAreaElement.value);
         if (result.error != null) {
@@ -37,5 +38,19 @@ setTimeout(function () {
             svgElement.innerHTML = data.block.compile(x, cursor, width).join("\n");
             svgElement.height.baseVal.value = cursor.value;
         }
+    };
+    downloadButton.onclick = function () {
+        // @ts-ignore
+        generateButton.onclick();
+        function download(filename, text) {
+            let element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        download("block-graph.svg", svgElement.outerHTML);
     };
 });
