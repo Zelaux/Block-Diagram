@@ -98,7 +98,9 @@ var Lexer;
             i++;
             for (;; i++) {
                 if (i === text.length) {
-                    tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i - 1), buffer));
+                    if (startIdx + 1 < i - 1) {
+                        tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i - 1), buffer));
+                    }
                     tokens.push(token(TokenKind.Error, range(i), `No close symbol for '${char}'`));
                     return i;
                 }
