@@ -43,7 +43,12 @@ textarea{
 .token-Title{
     color: green;
 }
-
+.input_area{
+    height: 100%;
+    width: 100%;
+    display: block;
+    resize: vertical;
+}
 .cursor{
     width: 1px;
     background: black;
