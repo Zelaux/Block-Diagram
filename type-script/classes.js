@@ -33,3 +33,6 @@ class Vector {
         return this;
     }
 }
+Vector.ZERO = Vector.new(0, 0);
+Vector.X = Vector.new(1, 0);
+Vector.Y = Vector.new(0, 1);

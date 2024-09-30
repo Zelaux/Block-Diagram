@@ -70,6 +70,7 @@ abstract class BlockOfBlocks extends AbstractBlock implements Block {
     }
 
     rootElement: PreparedGraphElement | null
+    branchTitles: NullableGraphText[] | null = null
 
     protected constructor(rootElement: PreparedGraphElement | null) {
         super();
@@ -96,6 +97,22 @@ abstract class BlockOfBlocks extends AbstractBlock implements Block {
         return true
     }
 
+}
+
+class TitlePosition {
+    baseline: SVGDominantBaseline
+    anchor: SVGTextAnchor
+    offset: Vector
+
+    constructor(baseline: SVGDominantBaseline, anchor: SVGTextAnchor, offset: Vector) {
+        this.baseline = baseline;
+        this.anchor = anchor;
+        this.offset = offset;
+    }
+
+    static new(baseline: SVGDominantBaseline, anchor: SVGTextAnchor, offset: Vector = Vector.ZERO) {
+        return new TitlePosition(baseline, anchor, offset)
+    }
 }
 
 class HorizontalBlockOfBlocks extends BlockOfBlocks {
@@ -127,6 +144,17 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
     }
     ;
 
+    static TITLE_POSITION: TitlePosition[][] = (function () {
+        let center = TitlePosition.new("hanging", "start",Vector.new(5,0));
+        let left = TitlePosition.new("auto", "end", Vector.new(0, -5));
+        let right = TitlePosition.new("auto", "start", Vector.new(0, -5));
+        return [
+            [],
+            [center],
+            [left, right],
+            [left, center, right],
+        ]
+    })()
     static POSITIONS: Vector[][] = [
         [],
         [Vector.new(0.5, 1)],
@@ -179,8 +207,9 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             cursorY.move(height + gap)
 
         }
+        cursorY.move(gap)
         let startY = cursorY.value
-
+        //Drawing inner elements
         for (let i = 0; i < amount; i++) {
             let branchInfo = branchInfos[i];
             let innerElement = this.innerElements[i];
@@ -195,14 +224,17 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             currentX += blockWidth + margin;
         }
         cursorY.value = maxY + gap * 4;
-        if (this.nextBlock != null) {
+        if (this.nextBlock != null) {//Drawing output lines
             for (let info of branchInfos) {
                 let output = info.output;
                 svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y))
             }
         }
-        if (this.rootElement != null) {
+        if (this.rootElement != null) {//Drawing lines from root to inner
+
+
             for (let i = 0; i < branchInfos.length; i++) {
+                let titlePosition = HorizontalBlockOfBlocks.TITLE_POSITION[branchInfos.length][i];
                 let branchInfo = branchInfos[i];
                 if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1) continue
                 let from = branchInfo.rootPosition!;
@@ -218,6 +250,14 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
                         svgLine(tox, from.y, from.x, from.y),
                         svgLine(tox, from.y, tox, to.y)
                     )
+                }
+                let branchTitles = this.branchTitles;
+                if (branchTitles != null) {
+                    svgResult.push(defaultCenterText(
+                        from.x + titlePosition.offset.x, from.y + titlePosition.offset.y
+                        , 0, 0,
+                        branchTitles[i],
+                        titlePosition.baseline, titlePosition.anchor))
                 }
             }
         }

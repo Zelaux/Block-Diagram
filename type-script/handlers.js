@@ -4,11 +4,28 @@ function prepare(thisNode, name, compiler) {
     return new PreparedGraphElement(typeof name1 == "string" ? name1 : name1[0], thisNode.element.aspect, wrapRawCompiler(name, compiler));
 }
 function ifStatementHandler(compiler) {
+    const defaultNames = [
+        "Да", "Нет"
+    ];
     return handler((block, thisNode) => {
-        if (thisNode.children.length > 3)
-            return Result.error("Too mush children for if (>3)");
-        block = block.next(new HorizontalBlockOfBlocks(prepare(thisNode, thisNode.content, compiler)));
-        console.log(thisNode);
+        let childrenAmount = thisNode.children.length;
+        if (childrenAmount > 3)
+            return Result.error("Too much children for if (>3)");
+        if (childrenAmount < 2)
+            return Result.error("Too few children for if (<2)");
+        let blockOfBlocks = new HorizontalBlockOfBlocks(prepare(thisNode, thisNode.content, compiler));
+        blockOfBlocks.branchTitles = [];
+        if (childrenAmount == 2) {
+            for (let i = 0; i < childrenAmount; i++) {
+                blockOfBlocks.branchTitles[i] = thisNode.titles[i] || defaultNames[i];
+            }
+        }
+        else {
+            for (let i = 0; i < childrenAmount; i++) {
+                blockOfBlocks.branchTitles[i] = thisNode.titles[i] || "";
+            }
+        }
+        block = block.next(blockOfBlocks);
         for (let branchList of thisNode.children) {
             let innerBlock = new ElementBlock(), currentInnerBlock = innerBlock;
             for (let innerNode of branchList) {

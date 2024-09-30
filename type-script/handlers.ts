@@ -4,12 +4,28 @@ function prepare(thisNode: ParsedNode, name: NullableGraphText, compiler: RawCom
 }
 
 function ifStatementHandler(compiler: RawCompiler): Handler {
+    const defaultNames = [
+        "Да", "Нет"
+    ]
     return handler((block: Block, thisNode: ParsedNode) => {
-        if (thisNode.children.length > 3) return Result.error("Too mush children for if (>3)")
+        let childrenAmount = thisNode.children.length;
+        if (childrenAmount > 3) return Result.error("Too much children for if (>3)")
+        if (childrenAmount < 2) return Result.error("Too few children for if (<2)")
+        let blockOfBlocks = new HorizontalBlockOfBlocks(prepare(thisNode, thisNode.content, compiler));
+        blockOfBlocks.branchTitles = []
+        if (childrenAmount == 2) {
+            for (let i = 0; i < childrenAmount; i++) {
+                blockOfBlocks.branchTitles[i] = thisNode.titles[i] || defaultNames[i]
+            }
+        } else {
+            for (let i = 0; i < childrenAmount; i++) {
+                blockOfBlocks.branchTitles[i] = thisNode.titles[i] || ""
+            }
+        }
         block = block.next(
-            new HorizontalBlockOfBlocks(prepare(thisNode, thisNode.content, compiler))
+            blockOfBlocks
         );
-        console.log(thisNode)
+
         for (let branchList of thisNode.children) {
             let innerBlock: AbstractBlock = new ElementBlock(), currentInnerBlock: Block = innerBlock;
             for (let innerNode of branchList) {
@@ -45,7 +61,7 @@ function simpleHandler(compiler: RawCompiler) {
         currentBlock = currentBlock.addElement(graphElement)
         return Result.ok(currentBlock)
     });
-    (handler1 as any).compiler=compiler
+    (handler1 as any).compiler = compiler
     return handler1
 }
 

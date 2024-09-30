@@ -3,14 +3,14 @@ class ParsedNode {
     parent: ParsedNode | null
     children: ParsedNode[][]
     content: string[]
-    title: string[]
+    titles: string[]
 
     private constructor(element: GraphElement) {
         this.element = element;
         this.parent = null;
         this.children = [];
         this.content = [];
-        this.title = [];
+        this.titles = [];
     }
 
     addToBlock(block: Block) {
@@ -104,7 +104,7 @@ namespace Parser {
                     }
                     break;
                 case TokenKind.Title:
-                    current.title.push(token.payload)
+                    current.titles.push(token.payload)
                     break
                 case TokenKind.TitleBraceOpen:
                 case TokenKind.TitleBraceClose:

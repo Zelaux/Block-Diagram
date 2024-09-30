@@ -27,6 +27,7 @@ class BlockOfBlocks extends AbstractBlock {
     }
     constructor(rootElement) {
         super();
+        this.branchTitles = null;
         this.innerElements = [];
         this.rootElement = rootElement;
     }
@@ -41,6 +42,16 @@ class BlockOfBlocks extends AbstractBlock {
     }
     isBlockContainer() {
         return true;
+    }
+}
+class TitlePosition {
+    constructor(baseline, anchor, offset) {
+        this.baseline = baseline;
+        this.anchor = anchor;
+        this.offset = offset;
+    }
+    static new(baseline, anchor, offset = Vector.ZERO) {
+        return new TitlePosition(baseline, anchor, offset);
     }
 }
 class HorizontalBlockOfBlocks extends BlockOfBlocks {
@@ -97,7 +108,9 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             svgResult.push.apply(svgResult, this.rootElement.compile(x, cursorY.value, width, height));
             cursorY.move(height + gap);
         }
+        cursorY.move(gap);
         let startY = cursorY.value;
+        //Drawing inner elements
         for (let i = 0; i < amount; i++) {
             let branchInfo = branchInfos[i];
             let innerElement = this.innerElements[i];
@@ -112,14 +125,15 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             currentX += blockWidth + margin;
         }
         cursorY.value = maxY + gap * 4;
-        if (this.nextBlock != null) {
+        if (this.nextBlock != null) { //Drawing output lines
             for (let info of branchInfos) {
                 let output = info.output;
                 svgResult.push(svgLine(output.x, maxY + gap * 2, output.x, output.y));
             }
         }
-        if (this.rootElement != null) {
+        if (this.rootElement != null) { //Drawing lines from root to inner
             for (let i = 0; i < branchInfos.length; i++) {
+                let titlePosition = HorizontalBlockOfBlocks.TITLE_POSITION[branchInfos.length][i];
                 let branchInfo = branchInfos[i];
                 if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1)
                     continue;
@@ -131,6 +145,10 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
                 }
                 else {
                     svgResult.push(svgLine(tox, from.y, from.x, from.y), svgLine(tox, from.y, tox, to.y));
+                }
+                let branchTitles = this.branchTitles;
+                if (branchTitles != null) {
+                    svgResult.push(defaultCenterText(from.x + titlePosition.offset.x, from.y + titlePosition.offset.y, 0, 0, branchTitles[i], titlePosition.baseline, titlePosition.anchor));
                 }
             }
         }
@@ -157,6 +175,17 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         return Math.max(1, result, this.nextBlock.calculateWidth());
     }
 }
+HorizontalBlockOfBlocks.TITLE_POSITION = (function () {
+    let center = TitlePosition.new("hanging", "start", Vector.new(5, 0));
+    let left = TitlePosition.new("auto", "end", Vector.new(0, -5));
+    let right = TitlePosition.new("auto", "start", Vector.new(0, -5));
+    return [
+        [],
+        [center],
+        [left, right],
+        [left, center, right],
+    ];
+})();
 HorizontalBlockOfBlocks.POSITIONS = [
     [],
     [Vector.new(0.5, 1)],

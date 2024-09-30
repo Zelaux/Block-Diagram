@@ -5,7 +5,7 @@ class ParsedNode {
         this.parent = null;
         this.children = [];
         this.content = [];
-        this.title = [];
+        this.titles = [];
     }
     addToBlock(block) {
         return this.element.handler(block, this);
@@ -90,7 +90,7 @@ var Parser;
                     }
                     break;
                 case TokenKind.Title:
-                    current.title.push(token.payload);
+                    current.titles.push(token.payload);
                     break;
                 case TokenKind.TitleBraceOpen:
                 case TokenKind.TitleBraceClose:
