@@ -57,33 +57,101 @@ function TextareaExtension(target, processor, font) {
         target.addEventListener("change", self.analyse, false);
         target.addEventListener("mouseup", self.analyse, false);
         target.addEventListener("mousedown", self.analyse, false);
-        target.addEventListener("keyup", ev => {
+        const TAB_SYMBOL = " ";
+        const TAB_INCREASER = 4;
+        const tabSymbol = TAB_SYMBOL.repeat(TAB_INCREASER);
+        target.onkeydown = ev => {
             function calculateTabSize(text, nlStart) {
                 let tabSize = 0;
-                for (; text[nlStart + tabSize] == ' '; tabSize++) {
+                for (; text[nlStart + tabSize] == TAB_SYMBOL; tabSize++) {
                 }
                 return tabSize;
             }
+            let text = target.value;
+            let beforeSelection = text.substring(0, target.selectionStart);
+            let afterSelection = text.substring(target.selectionEnd);
+            let selectionValue = text.substring(target.selectionStart, target.selectionEnd);
+            let selectionValueTrim = selectionValue.trim();
+            let openedBrace = Lexer.OPEN_BRACES.indexOf(ev.key);
+            if (openedBrace != -1) {
+                ev.preventDefault();
+                if (selectionValueTrim.length == 0) {
+                    target.value = beforeSelection + ev.key + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
+                    target.setSelectionRange(beforeSelection.length + 1, beforeSelection.length + 1, "forward");
+                }
+                else {
+                    target.value = beforeSelection + ev.key + selectionValue + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
+                    target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
+                }
+            }
             switch (ev.key) {
-                case "Enter":
-                    let text = target.value;
-                    let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 2) + 1, 0);
-                    console.log(nlStart, text[nlStart]);
+                case "Tab": {
+                    // console.log(JSON.stringify(selectionValue), selectionValue.length)
+                    if (selectionValue.length == 0) {
+                        target.value = beforeSelection + TAB_SYMBOL.repeat(TAB_INCREASER) + afterSelection;
+                        let idx = beforeSelection.length + TAB_INCREASER;
+                        target.setSelectionRange(idx, idx, "forward");
+                    }
+                    else {
+                        let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1), 0);
+                        let newLinesSymbolsStart = [nlStart];
+                        while (newLinesSymbolsStart[newLinesSymbolsStart.length - 1] < target.selectionEnd) {
+                            newLinesSymbolsStart.push(text.indexOf("\n", newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1));
+                        }
+                        let newLines = [];
+                        for (let i = 0; i < newLinesSymbolsStart.length - 1; i++) {
+                            newLines.push(text.substring(newLinesSymbolsStart[i] + 1, newLinesSymbolsStart[i + 1]));
+                        }
+                        let before = text.substring(0, newLinesSymbolsStart[0]);
+                        let after = text.substring(newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1);
+                        let firstL = newLines[0].length;
+                        let totalL = 0;
+                        for (let mapElement of newLines.map(it => it.length)) {
+                            totalL += mapElement;
+                        }
+                        let selectionStart = target.selectionStart;
+                        let selectionEnd = target.selectionEnd;
+                        if (ev.shiftKey) {
+                            newLines = newLines.map(it => {
+                                return TAB_SYMBOL.repeat(Math.max(0, calculateTabSize(it, 0) - TAB_INCREASER)) +
+                                    it.trim();
+                            });
+                            selectionStart -= firstL - newLines[0].length;
+                            for (let mapElement of newLines.map(it => it.length)) {
+                                totalL -= mapElement;
+                            }
+                            selectionEnd -= totalL;
+                        }
+                        else {
+                            newLines = newLines.map(it => {
+                                return TAB_SYMBOL.repeat(TAB_INCREASER) + it;
+                            });
+                            selectionStart += TAB_INCREASER;
+                            selectionEnd += TAB_INCREASER * newLines.length;
+                        }
+                        let updatedLines = newLines.join("\n");
+                        target.value = before + "\n" + updatedLines + "\n" + after;
+                        target.setSelectionRange(selectionStart, selectionEnd);
+                    }
+                    ev.preventDefault();
+                    break;
+                }
+                case "Enter": {
+                    let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
                     let tabSize = calculateTabSize(text, nlStart);
-                    let newBlock = text[target.selectionStart - 2] == "{";
-                    let tabSymbols = " ".repeat(tabSize);
-                    let part1 = text.substring(0, target.selectionStart) + tabSymbols;
-                    let part2 = text.substring(target.selectionEnd);
+                    let newBlock = text[target.selectionStart - 1] == "{";
+                    let tabSymbols = TAB_SYMBOL.repeat(tabSize);
+                    let part1 = beforeSelection + "\n" + tabSymbols;
+                    let part2 = afterSelection;
                     let nlStart1 = text.indexOf("\n", target.selectionEnd);
                     let tabSize2 = nlStart1 == -1 ? -1 : calculateTabSize(text, nlStart1 + 1);
                     if (newBlock) {
-                        let tabSymbol = " ".repeat(4);
                         part1 += tabSymbol;
-                        if (tabSize2 == tabSize + 4) {
+                        if (tabSize2 == tabSize + TAB_INCREASER) {
                             text = part1 + part2;
                         }
                         else {
-                            text = part1 + "\n" + tabSymbols + "}" + part2;
+                            text = part1 + "\n" + tabSymbols + part2;
                         }
                     }
                     else {
@@ -91,15 +159,33 @@ function TextareaExtension(target, processor, font) {
                     }
                     target.value = text;
                     target.selectionStart = target.selectionEnd = part1.length;
-                    target.selectionDirection = "none";
                     ev.preventDefault();
+                    target.selectionDirection = "none";
                     break;
-                case "(":
-                    console.log(ev);
+                }
+                case "{": {
+                    ev.preventDefault();
+                    if (selectionValue.trim().length == 0) {
+                        target.value = beforeSelection + "{}" + afterSelection;
+                        let index = beforeSelection.length + 1;
+                        target.setSelectionRange(index, index);
+                    }
+                    else {
+                        let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
+                        let tabSize = calculateTabSize(text, nlStart);
+                        let tabSymbols = TAB_SYMBOL.repeat(tabSize + TAB_INCREASER);
+                        selectionValue = selectionValue.split("\n").map(it => tabSymbols + it.trim())
+                            .join("\n");
+                        target.value = beforeSelection + "{\n" + selectionValue + "\n" + TAB_SYMBOL.repeat(tabSize) + "}" + afterSelection;
+                        target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
+                    }
                     break;
+                }
             }
             self.analyse();
-        }, false);
+        };
+        // target.addEventListener("keypress", )
+        target.addEventListener("keyup", self.analyse, false);
         target.addEventListener("scroll", self.scrollSync, false);
         target.addEventListener("mousemove", self.resize, false);
     }

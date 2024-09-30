@@ -76,14 +76,14 @@ namespace Lexer {
     }
 
 // noinspection JSCheckFunctionSignatures
-    const BRACES = [
+    export const BRACES = [
         contentPair("`"),
         contentPair("(", ")"),
         contentPair("\""),
         titlePair("[", "]")
     ]
-    const OPEN_BRACES = BRACES.map(it => it.braces.open)
-    const CLOSE_BRACES = BRACES.map(it => it.braces.close)
+    export const OPEN_BRACES = BRACES.map(it => it.braces.open)
+    export const CLOSE_BRACES = BRACES.map(it => it.braces.close)
     const SEARCH_COMMAND = 0;
     const SEARCH_BRACES = 1;
     const TERMINATE_SYMBOLS = RegExp("[^\\w\\x01\\x00]")
@@ -201,11 +201,11 @@ namespace Lexer {
 
             }
         }
-        console.log(tokens.map(it => {
+       /* console.log(tokens.map(it => {
             let token1 = Object.assign({}, it);
             token1.kind = TokenKind[token1.kind] as any
             return token1
-        }))
+        }))*/
         return tokens
     }
 }

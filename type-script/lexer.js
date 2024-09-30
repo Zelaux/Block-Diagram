@@ -63,14 +63,14 @@ var Lexer;
         return { braces, token };
     }
     // noinspection JSCheckFunctionSignatures
-    const BRACES = [
+    Lexer.BRACES = [
         contentPair("`"),
         contentPair("(", ")"),
         contentPair("\""),
         titlePair("[", "]")
     ];
-    const OPEN_BRACES = BRACES.map(it => it.braces.open);
-    const CLOSE_BRACES = BRACES.map(it => it.braces.close);
+    Lexer.OPEN_BRACES = Lexer.BRACES.map(it => it.braces.open);
+    Lexer.CLOSE_BRACES = Lexer.BRACES.map(it => it.braces.close);
     const SEARCH_COMMAND = 0;
     const SEARCH_BRACES = 1;
     const TERMINATE_SYMBOLS = RegExp("[^\\w\\x01\\x00]");
@@ -83,12 +83,12 @@ var Lexer;
         /**@type {0|1}*/
         let state = SEARCH_COMMAND;
         function findContentBrace(char, i) {
-            let braceIndex = OPEN_BRACES.indexOf(char);
+            let braceIndex = Lexer.OPEN_BRACES.indexOf(char);
             if (braceIndex === -1) {
                 // tokens.push(token(TokenKind.Error, range(i, i + 1), ("Expected chars '" + OPEN_BRACES.join("', '") + "' but found '" + char + "'", i)))
                 return -1;
             }
-            let braceInfo = BRACES[braceIndex];
+            let braceInfo = Lexer.BRACES[braceIndex];
             let open = token(braceInfo.token.open, range(i));
             let openIdx = tokens.length;
             tokens.push(open);
@@ -111,7 +111,7 @@ var Lexer;
                     hasSlash = true;
                     continue;
                 }
-                if (!hasSlash && CLOSE_BRACES[braceIndex] === _char) {
+                if (!hasSlash && Lexer.CLOSE_BRACES[braceIndex] === _char) {
                     break;
                 }
                 buffer += _char;
@@ -186,11 +186,11 @@ var Lexer;
                     break;
             }
         }
-        console.log(tokens.map(it => {
-            let token1 = Object.assign({}, it);
-            token1.kind = TokenKind[token1.kind];
-            return token1;
-        }));
+        /* console.log(tokens.map(it => {
+             let token1 = Object.assign({}, it);
+             token1.kind = TokenKind[token1.kind] as any
+             return token1
+         }))*/
         return tokens;
     }
     Lexer.lex = lex;
