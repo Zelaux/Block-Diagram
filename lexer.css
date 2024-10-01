@@ -1,0 +1,19 @@
+
+.token-GraphName {
+    color: blue;
+}
+
+.token-Error {
+    color: red;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: darkred;
+}
+
+.token-Title {
+    color: green;
+}
+
+.token-TitleBraceOpen, .token-TitleBraceClose {
+    /*color: darkgreen;*/
+}

@@ -2,6 +2,25 @@
 const cursorElement = `<div class="cursor"><div></div></div>`;
 function TextareaExtension(target, font) {
     //Прямой поиск
+    (function () {
+        function time() {
+            return new Date().getTime();
+        }
+        let lastTime = time();
+        let value = true;
+        const DELAY_MILLIS = 500;
+        function blink() {
+            let time_ = time();
+            let delta = time_ - lastTime;
+            let delay = DELAY_MILLIS;
+            delay = delay * 2 - delta;
+            // @ts-ignore
+            document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
+            setTimeout(blink, delay);
+            lastTime = time_ + DELAY_MILLIS - delta;
+        }
+        setTimeout(blink);
+    })();
     function findText(text, word) {
         for (let i = 0; i < text.length - word.length + 1; i++) {
             let equals = true;

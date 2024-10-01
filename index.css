@@ -38,21 +38,6 @@ textarea {
     border: 2px #eeeeee solid;
 }
 
-.token-GraphName {
-    color: blue;
-}
-
-.token-Error {
-    color: red;
-    text-decoration: underline;
-    text-decoration-style: wavy;
-    text-decoration-color: darkred;
-}
-
-.token-Title {
-    color: green;
-}
-
 .input_area {
     line-height: 1;
     width: 100%;
@@ -75,29 +60,37 @@ textarea {
     overflow: visible;
 }
 
+:root {
+    --cursor-blink: 1
+}
+
 .cursor > * {
     margin: 0;
     /*width: 1px;*/
     border-left: 1px solid black;
     height: 1em;
     display: inline-block;
+    opacity: var(--cursor-blink);
 }
-.text-area-selection>span{
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.text-area-selection > span {
     /*height: 1.2em;*/
 
 }
-.text-area-selection {
-    position:absolute;
-    padding:4px;
-    z-index:-1;
-    display:block;
-    word-wrap:break-word;
-    white-space:pre-wrap;
-    color:black;
-    overflow:scroll;
-}
 
-.text-color-bordered {
-    color: greenyellow;
-    border-bottom: 1px dotted red;
+.text-area-selection {
+    position: absolute;
+    padding: 4px;
+    z-index: -1;
+    display: block;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    color: black;
+    overflow: scroll;
 }
