@@ -1,9 +1,6 @@
-type Processor2 = (word: string) => boolean
+const cursorElement = `<div class="cursor"><div></div></div>`;
 
-type Processor = (word: string) => string
-
-
-function TextareaExtension(target: HTMLTextAreaElement, processor: Processor2, font?: string) {
+function TextareaExtension(target: HTMLTextAreaElement, font?: string) {
     //Прямой поиск
 
     function findText(text: string, word: string): number {
@@ -50,7 +47,8 @@ function TextareaExtension(target: HTMLTextAreaElement, processor: Processor2, f
 
         preItem.innerHTML = result.replace("\x00",
             // `<span class="cursor">|</span>`
-            `<svg class="cursor">${makePath("m 0 0 l 0 100%")}</svg>`
+            target.selectionStart == target.selectionEnd + 1 ? "" :
+                cursorElement
         );
     };
 
@@ -73,6 +71,7 @@ function TextareaExtension(target: HTMLTextAreaElement, processor: Processor2, f
         target.addEventListener("change", self.analyse, false);
         target.addEventListener("mouseup", self.analyse, false);
         target.addEventListener("mousedown", self.analyse, false);
+        target.addEventListener("mousemove", self.analyse, false);
 
         const TAB_SYMBOL = " ";
         const TAB_INCREASER = 4;
@@ -148,7 +147,7 @@ function TextareaExtension(target: HTMLTextAreaElement, processor: Processor2, f
                             selectionEnd += TAB_INCREASER * newLines.length
                         }
                         let updatedLines = newLines.join("\n");
-                        target.value = before+"\n"  + updatedLines + "\n" + after
+                        target.value = before + "\n" + updatedLines + "\n" + after
                         target.setSelectionRange(selectionStart, selectionEnd)
 
                     }
@@ -230,17 +229,3 @@ function TextareaExtension(target: HTMLTextAreaElement, processor: Processor2, f
 
 }
 
-
-/*
-
-//Example
-let a, b;
-window.onload = function () {
-    a = TextareaExtension(document.getElementById("areaId")!, function (a) {
-        return a.indexOf('а') >= 0;
-    });
-
-    b = TextareaExtension(document.getElementById("areaId2")!, function (a) {
-        return a.indexOf('а') >= 0;
-    });
-}*/

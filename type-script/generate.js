@@ -12,6 +12,13 @@ setTimeout(function () {
     /**@type HTMLButtonElement*/
     let generateButton = document.querySelector("button.generate_button");
     let downloadButton = document.querySelector("button.download_button");
+    document.querySelector("body").addEventListener("keypress", ev => {
+        if (ev.key == "Enter" && ev.ctrlKey) {
+            ev.preventDefault();
+            // @ts-ignore
+            generateButton.onclick();
+        }
+    });
     generateButton.onclick = function () {
         let result = Parser.parse(textAreaElement.value);
         if (result.error != null) {
@@ -20,10 +27,11 @@ setTimeout(function () {
         else {
             labelElement.innerHTML = "";
             let data = result.data;
-            svgElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
-                .join("\n");
+            // svgElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
+            //     .join("\n")
+            svgElement.innerHTML = data.block.compile(0, new Cursor(0), 1).join("\n");
             let width = 1;
-            for (let child of svgElement.children) {
+            for (let child of svgElement.querySelectorAll("text")) {
                 width = Math.max(child.getBBox().width + 10, width);
             }
             let calculateWidth = data.block.calculateWidth();

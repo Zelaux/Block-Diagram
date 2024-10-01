@@ -1,68 +1,94 @@
 
-
-.main_div{
+.main_div {
     display: grid;
     grid-template-columns: 2fr 1fr;
 }
-.main_div>svg{
+
+.main_div > svg {
     margin: auto;
 }
-textarea{
+
+textarea {
     border: 3px solid black;
 }
-.error_label{
+
+.error_label {
     width: 100%;
 }
-.buttons{
+
+.buttons {
     display: flex;
 }
-.generate_button,.download_button{
+
+.generate_button, .download_button {
     padding: 8px;
     background: #eeeeee;
     border: 2px darkgray solid;
 }
-.generate_button:hover,.download_button:hover{
+
+.generate_button:hover, .download_button:hover {
 
     background: gray;
     border: 2px darkgray solid;
 }
-.generate_button:active,.download_button:active{
+
+.generate_button:active, .download_button:active {
     background: darkgray;
     color: white;
     border: 2px #eeeeee solid;
 }
-.token-GraphName{
+
+.token-GraphName {
     color: blue;
 }
-.token-Error{
+
+.token-Error {
     color: red;
     text-decoration: underline;
     text-decoration-style: wavy;
-    text-decoration-color: darkred ;
+    text-decoration-color: darkred;
 }
-.token-Title{
+
+.token-Title {
     color: green;
 }
-.input_area{
-    height: 100%;
+
+.input_area {
+    line-height: 1;
     width: 100%;
+    /*padding: 1px 2px 2px;*/
     display: block;
     resize: vertical;
 }
-.cursor{
-    width: 1px;
-    background: black;
-    color: black;
+
+.cursor {
+    width: 0px;
     height: 1em;
+    /*border-left: 1px solid black;*/
+    /*box-shadow: 1px 0px black;*/
+    /*box-shadow: black 1px;*/
+    /*outline: black solid 1px;*/
+    /*box-sizing: revert;*/
     display: inline-block;
     position: relative;
     vertical-align: bottom;
-    transition-timing-function: steps(1);
+    overflow: visible;
+}
+
+.cursor > * {
+    margin: 0;
+    /*width: 1px;*/
+    border-left: 1px solid black;
+    height: 1em;
+    display: inline-block;
+}
+.text-area-selection>span{
+    /*height: 1.2em;*/
 
 }
 .text-area-selection {
     position:absolute;
-    padding:2px;
+    padding:4px;
     z-index:-1;
     display:block;
     word-wrap:break-word;
@@ -73,5 +99,5 @@ textarea{
 
 .text-color-bordered {
     color: greenyellow;
-    border-bottom:1px dotted red;
+    border-bottom: 1px dotted red;
 }

@@ -14,6 +14,14 @@ setTimeout(function () {
     /**@type HTMLButtonElement*/
     let generateButton: HTMLButtonElement = document.querySelector("button.generate_button")!;
     let downloadButton: HTMLButtonElement = document.querySelector("button.download_button")!;
+    document.querySelector("body")!.addEventListener("keypress",ev=>{
+
+        if (ev.key == "Enter" && ev.ctrlKey) {
+            ev.preventDefault()
+            // @ts-ignore
+            generateButton.onclick()
+        }
+    })
     generateButton.onclick = function () {
         let result = Parser.parse((textAreaElement as unknown as { value: string }).value);
         if (result.error != null) {
@@ -22,12 +30,13 @@ setTimeout(function () {
             labelElement.innerHTML = ""
 
             let data = result.data!;
-            svgElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
-                .join("\n")
+            // svgElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
+            //     .join("\n")
+            svgElement.innerHTML = data.block.compile(0, new Cursor(0), 1).join("\n")
             let width = 1;
 
-            for (let child of svgElement.children) {
-                width = Math.max((child as SVGGraphicsElement).getBBox().width + 10, width)
+            for (let child of svgElement.querySelectorAll("text")) {
+                width = Math.max(child.getBBox().width + 10, width)
             }
             let calculateWidth = data.block.calculateWidth();
             let totalWidth = calculateWidth * width + calculateWidth * 15 + 40
@@ -45,6 +54,7 @@ setTimeout(function () {
     downloadButton.onclick = function () {
         // @ts-ignore
         generateButton.onclick()
+
         function download(filename: string, text: string) {
             let element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));

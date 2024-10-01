@@ -1,5 +1,6 @@
 "use strict";
-function TextareaExtension(target, processor, font) {
+const cursorElement = `<div class="cursor"><div></div></div>`;
+function TextareaExtension(target, font) {
     //Прямой поиск
     function findText(text, word) {
         for (let i = 0; i < text.length - word.length + 1; i++) {
@@ -40,7 +41,8 @@ function TextareaExtension(target, processor, font) {
         }
         preItem.innerHTML = result.replace("\x00", 
         // `<span class="cursor">|</span>`
-        `<svg class="cursor">${makePath("m 0 0 l 0 100%")}</svg>`);
+        target.selectionStart == target.selectionEnd + 1 ? "" :
+            cursorElement);
     };
     self.scrollSync = function () {
         preItem.scrollTop = target.scrollTop;
@@ -57,6 +59,7 @@ function TextareaExtension(target, processor, font) {
         target.addEventListener("change", self.analyse, false);
         target.addEventListener("mouseup", self.analyse, false);
         target.addEventListener("mousedown", self.analyse, false);
+        target.addEventListener("mousemove", self.analyse, false);
         const TAB_SYMBOL = " ";
         const TAB_INCREASER = 4;
         const tabSymbol = TAB_SYMBOL.repeat(TAB_INCREASER);
@@ -203,16 +206,3 @@ function TextareaExtension(target, processor, font) {
     }
     setTimeout(self.analyse);
 }
-/*
-
-//Example
-let a, b;
-window.onload = function () {
-    a = TextareaExtension(document.getElementById("areaId")!, function (a) {
-        return a.indexOf('а') >= 0;
-    });
-
-    b = TextareaExtension(document.getElementById("areaId2")!, function (a) {
-        return a.indexOf('а') >= 0;
-    });
-}*/
