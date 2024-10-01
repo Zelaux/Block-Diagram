@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="487.275" height="721.467"><path d="M 243.63750457763672 0 L 243.63750457763672 -15" style="fill: none" stroke="black"></path>
+<svg xmlns="http://www.w3.org/2000/svg" width="487.275" height="721.467">
+    <rect width="100%" height="100%" fill="white" /><path d="M 243.63750457763672 0 L 243.63750457763672 -15" style="fill: none" stroke="black"></path>
 <path d="M 243.63750457763672 67.74444580078125 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(243.63750457763672 33.872222900390625)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x % 2 = 0</tspan></text>
@@ -81,5 +82,4 @@
 <path d="M 411.06250762939453 514.8500061035156 L 411.06250762939453 578.7222290039062" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(294.44583892822266 509.8500061035156)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="start"><tspan x="0" dy="0em">&gt;</tspan></text>
-</g>
-  <rect width="100%" height="100%" fill="aliceblue" style="z-index: 1"/></svg>
+</g></svg>

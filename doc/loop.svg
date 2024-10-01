@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="129.35" height="362.444"><rect x="21.558332443237305" y="0" width="86.23332977294922" height="57.48888651529948" style="fill: none" stroke="black"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="129.35" height="362.444">
+    <rect width="100%" height="100%" fill="white" /><rect x="21.558332443237305" y="0" width="86.23332977294922" height="57.48888651529948" style="fill: none" stroke="black"></rect>
 <g class="text-group" transform="translate(64.67499732971191 28.74444325764974)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x = 0</tspan></text>
 </g>
@@ -21,5 +22,4 @@
 <path d="M 0 289.9555460611979 l 21.558332443237305 57.48888651529948 l 107.79166221618652 0 l -21.558332443237305 -57.48888651529948 Z" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(64.67499732971191 318.6999893188476)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
-</g>
-  <rect width="100%" height="100%" fill="aliceblue" style="z-index: 1"/></svg>
+</g></svg>

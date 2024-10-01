@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="314.5" height="145.667"><path d="M 157.25 0 L 157.25 -15" style="fill: none" stroke="black"></path>
+<svg xmlns="http://www.w3.org/2000/svg" width="314.5" height="145.667">
+    <rect width="100%" height="100%" fill="white" /><path d="M 157.25 0 L 157.25 -15" style="fill: none" stroke="black"></path>
 <path d="M 15.25 25.166666666666664 q 0 10.166666666666666 10.166666666666666 10.166666666666666 l 40.66666666666667 0 q 10.166666666666666 0 10.166666666666666 -10.166666666666666 q 0 -10.166666666666666 -10.166666666666666 -10.166666666666666 l -40.66666666666667 0 q -10.166666666666666 0 -10.166666666666666 10.166666666666666" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(45.75 25.166666666666664)" data-aspect="0.3333333333333333" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Начало</tspan></text>
@@ -25,5 +26,4 @@
 <path d="M 238.25 60.49999999999999 q 0 10.166666666666666 10.166666666666666 10.166666666666666 l 40.66666666666667 0 q 10.166666666666666 0 10.166666666666666 -10.166666666666666 q 0 -10.166666666666666 -10.166666666666666 -10.166666666666666 l -40.66666666666667 0 q -10.166666666666666 0 -10.166666666666666 10.166666666666666" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(268.75 60.49999999999999)" data-aspect="0.3333333333333333" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Конец</tspan></text>
-</g>
-  <rect width="100%" height="100%" fill="aliceblue" style="z-index: 1"/></svg>
+</g></svg>

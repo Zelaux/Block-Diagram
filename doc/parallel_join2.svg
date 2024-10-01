@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="472.975" height="248.289"><path d="M 236.48750114440918 0 L 236.48750114440918 -15" style="fill: none" stroke="black"></path>
+<svg xmlns="http://www.w3.org/2000/svg" width="472.975" height="248.289">
+    <rect width="100%" height="100%" fill="white" /><path d="M 236.48750114440918 0 L 236.48750114440918 -15" style="fill: none" stroke="black"></path>
 <circle r="16.03611119588216" cx="72.16250038146973" cy="31.03611119588216" fill="none" stroke="black" stroke-width="1"></circle>
 <g class="text-group" transform="translate(72.16250038146973 31.03611119588216)" data-aspect="1" data-widthaspect="0.3333333333333333">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">1</tspan></text>
@@ -24,5 +25,4 @@
 <path d="M 188.3791675567627 217.25277837117514 q 0 16.03611119588216 16.03611119588216 16.03611119588216 l 64.14444478352866 0 q 16.03611119588216 0 16.03611119588216 -16.03611119588216 q 0 -16.03611119588216 -16.03611119588216 -16.03611119588216 l -64.14444478352866 0 q -16.03611119588216 0 -16.03611119588216 16.03611119588216" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(236.48750114440918 217.25277837117514)" data-aspect="0.3333333333333333" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Конец</tspan></text>
-</g>
-  <rect width="100%" height="100%" fill="aliceblue" style="z-index: 1"/></svg>
+</g></svg>

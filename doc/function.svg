@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="156.3" height="337.867"><rect x="20.049999237060547" y="0" width="116.19999694824219" height="69.46666463216145" style="fill: none" stroke="black"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="156.3" height="337.867">
+    <rect width="100%" height="100%" fill="white" /><rect x="20.049999237060547" y="0" width="116.19999694824219" height="69.46666463216145" style="fill: none" stroke="black"></rect>
 <path d="M 26.049999237060547 0 l 0 69.46666463216145 M 130.24999618530273 0 l 0 69.46666463216145" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(78.14999771118164 34.73333231608073)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">function(a,b,c)</tspan></text>
@@ -20,5 +21,4 @@
 <path d="M 26.049999237060547 253.39999389648438 l 0 69.46666463216145 M 130.24999618530273 253.39999389648438 l 0 69.46666463216145" style="fill: none" stroke="black"></path>
 <g class="text-group" transform="translate(78.14999771118164 288.1333262125651)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">def(a,b,c)</tspan></text>
-</g>
-  <rect width="100%" height="100%" fill="aliceblue" style="z-index: 1"/></svg>
+</g></svg>
