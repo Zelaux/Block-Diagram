@@ -1,84 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="487.275" height="721.467"><path d="M 243.63750457763672 0 L 243.63750457763672 -15" style="fill: none; color: black"/>
-<path d="M 243.63750457763672 67.74444580078125 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: none; color: black"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="487.275" height="721.467"><path d="M 243.63750457763672 0 L 243.63750457763672 -15" style="fill: white" stroke="black"/>
+<path d="M 243.63750457763672 67.74444580078125 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(243.63750457763672 33.872222900390625)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x % 2 = 0</tspan></text>
 </g>
-<path d="M 83.7125015258789 97.74444580078125 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 83.7125015258789 97.74444580078125 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(159.9250030517578 131.61666870117188)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Чётное</tspan></text>
 </g>
-<path d="M 251.13750457763672 97.74444580078125 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 251.13750457763672 97.74444580078125 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(327.3500061035156 131.61666870117188)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Нечётное</tspan></text>
 </g>
-<path d="M 159.9250030517578 210.4888916015625 L 159.9250030517578 165.4888916015625" style="fill: none; color: black"/>
-<path d="M 327.3500061035156 210.4888916015625 L 327.3500061035156 165.4888916015625" style="fill: none; color: black"/>
-<path d="M 159.9250030517578 33.872222900390625 L 192.82917022705078 33.872222900390625" style="fill: none; color: black"/>
-<path d="M 159.9250030517578 33.872222900390625 L 159.9250030517578 97.74444580078125" style="fill: none; color: black"/>
+<path d="M 159.9250030517578 210.4888916015625 L 159.9250030517578 165.4888916015625" style="fill: white" stroke="black"/>
+<path d="M 327.3500061035156 210.4888916015625 L 327.3500061035156 165.4888916015625" style="fill: white" stroke="black"/>
+<path d="M 159.9250030517578 33.872222900390625 L 192.82917022705078 33.872222900390625" style="fill: white" stroke="black"/>
+<path d="M 159.9250030517578 33.872222900390625 L 159.9250030517578 97.74444580078125" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(192.82917022705078 28.872222900390625)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="end"><tspan x="0" dy="0em">Да</tspan></text>
 </g>
-<path d="M 327.3500061035156 33.872222900390625 L 294.44583892822266 33.872222900390625" style="fill: none; color: black"/>
-<path d="M 327.3500061035156 33.872222900390625 L 327.3500061035156 97.74444580078125" style="fill: none; color: black"/>
+<path d="M 327.3500061035156 33.872222900390625 L 294.44583892822266 33.872222900390625" style="fill: white" stroke="black"/>
+<path d="M 327.3500061035156 33.872222900390625 L 327.3500061035156 97.74444580078125" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(294.44583892822266 28.872222900390625)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="start"><tspan x="0" dy="0em">Нет</tspan></text>
 </g>
-<path d="M 159.9250030517578 210.4888916015625 L 327.3500061035156 210.4888916015625" style="fill: none; color: black"/>
-<path d="M 243.63750457763672 240.4888916015625 L 243.63750457763672 210.4888916015625" style="fill: none; color: black"/>
-<path d="M 243.63750457763672 308.23333740234375 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: none; color: black"/>
+<path d="M 159.9250030517578 210.4888916015625 L 327.3500061035156 210.4888916015625" style="fill: white" stroke="black"/>
+<path d="M 243.63750457763672 240.4888916015625 L 243.63750457763672 210.4888916015625" style="fill: white" stroke="black"/>
+<path d="M 243.63750457763672 308.23333740234375 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(243.63750457763672 274.3611145019531)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x % 2</tspan></text>
 </g>
-<path d="M 83.7125015258789 338.23333740234375 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 83.7125015258789 338.23333740234375 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(159.9250030517578 372.1055603027344)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Чётное</tspan></text>
 </g>
-<path d="M 251.13750457763672 338.23333740234375 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 251.13750457763672 338.23333740234375 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(327.3500061035156 372.1055603027344)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Нечётное</tspan></text>
 </g>
-<path d="M 159.9250030517578 450.977783203125 L 159.9250030517578 405.977783203125" style="fill: none; color: black"/>
-<path d="M 327.3500061035156 450.977783203125 L 327.3500061035156 405.977783203125" style="fill: none; color: black"/>
-<path d="M 159.9250030517578 274.3611145019531 L 192.82917022705078 274.3611145019531" style="fill: none; color: black"/>
-<path d="M 159.9250030517578 274.3611145019531 L 159.9250030517578 338.23333740234375" style="fill: none; color: black"/>
+<path d="M 159.9250030517578 450.977783203125 L 159.9250030517578 405.977783203125" style="fill: white" stroke="black"/>
+<path d="M 327.3500061035156 450.977783203125 L 327.3500061035156 405.977783203125" style="fill: white" stroke="black"/>
+<path d="M 159.9250030517578 274.3611145019531 L 192.82917022705078 274.3611145019531" style="fill: white" stroke="black"/>
+<path d="M 159.9250030517578 274.3611145019531 L 159.9250030517578 338.23333740234375" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(192.82917022705078 269.3611145019531)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="end"><tspan x="0" dy="0em">0</tspan></text>
 </g>
-<path d="M 327.3500061035156 274.3611145019531 L 294.44583892822266 274.3611145019531" style="fill: none; color: black"/>
-<path d="M 327.3500061035156 274.3611145019531 L 327.3500061035156 338.23333740234375" style="fill: none; color: black"/>
+<path d="M 327.3500061035156 274.3611145019531 L 294.44583892822266 274.3611145019531" style="fill: white" stroke="black"/>
+<path d="M 327.3500061035156 274.3611145019531 L 327.3500061035156 338.23333740234375" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(294.44583892822266 269.3611145019531)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="start"><tspan x="0" dy="0em">1</tspan></text>
 </g>
-<path d="M 159.9250030517578 450.977783203125 L 327.3500061035156 450.977783203125" style="fill: none; color: black"/>
-<path d="M 243.63750457763672 480.977783203125 L 243.63750457763672 450.977783203125" style="fill: none; color: black"/>
-<path d="M 243.63750457763672 548.7222290039062 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: none; color: black"/>
+<path d="M 159.9250030517578 450.977783203125 L 327.3500061035156 450.977783203125" style="fill: white" stroke="black"/>
+<path d="M 243.63750457763672 480.977783203125 L 243.63750457763672 450.977783203125" style="fill: white" stroke="black"/>
+<path d="M 243.63750457763672 548.7222290039062 l 50.80833435058594 -33.872222900390625 l -50.80833435058594 -33.872222900390625 l -50.80833435058594 33.872222900390625 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(243.63750457763672 514.8500061035156)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x и 0</tspan></text>
 </g>
-<path d="M 0 578.7222290039062 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 0 578.7222290039062 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(76.2125015258789 612.5944519042969)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Меньше нуля</tspan></text>
 </g>
-<path d="M 167.4250030517578 578.7222290039062 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 167.4250030517578 578.7222290039062 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(243.63750457763672 612.5944519042969)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Равно нулю</tspan></text>
 </g>
-<path d="M 334.8500061035156 578.7222290039062 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: none; color: black"/>
+<path d="M 334.8500061035156 578.7222290039062 l 25.40416717529297 67.74444580078125 l 127.02083587646484 0 l -25.40416717529297 -67.74444580078125 Z" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(411.06250762939453 612.5944519042969)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Больше нуля</tspan></text>
 </g>
-<path d="M 76.2125015258789 514.8500061035156 L 192.82917022705078 514.8500061035156" style="fill: none; color: black"/>
-<path d="M 76.2125015258789 514.8500061035156 L 76.2125015258789 578.7222290039062" style="fill: none; color: black"/>
+<path d="M 76.2125015258789 514.8500061035156 L 192.82917022705078 514.8500061035156" style="fill: white" stroke="black"/>
+<path d="M 76.2125015258789 514.8500061035156 L 76.2125015258789 578.7222290039062" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(192.82917022705078 509.8500061035156)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="end"><tspan x="0" dy="0em">&lt;</tspan></text>
 </g>
-<path d="M 243.63750457763672 548.7222290039062 L 243.63750457763672 548.7222290039062" style="fill: none; color: black"/>
-<path d="M 243.63750457763672 548.7222290039062 L 243.63750457763672 578.7222290039062" style="fill: none; color: black"/>
+<path d="M 243.63750457763672 548.7222290039062 L 243.63750457763672 548.7222290039062" style="fill: white" stroke="black"/>
+<path d="M 243.63750457763672 548.7222290039062 L 243.63750457763672 578.7222290039062" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(248.63750457763672 548.7222290039062)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="hanging" text-anchor="start"><tspan x="0" dy="0em">==</tspan></text>
 </g>
-<path d="M 411.06250762939453 514.8500061035156 L 294.44583892822266 514.8500061035156" style="fill: none; color: black"/>
-<path d="M 411.06250762939453 514.8500061035156 L 411.06250762939453 578.7222290039062" style="fill: none; color: black"/>
+<path d="M 411.06250762939453 514.8500061035156 L 294.44583892822266 514.8500061035156" style="fill: white" stroke="black"/>
+<path d="M 411.06250762939453 514.8500061035156 L 411.06250762939453 578.7222290039062" style="fill: white" stroke="black"/>
 <g class="text-group" transform="translate(294.44583892822266 509.8500061035156)" data-aspect="null" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="auto" text-anchor="start"><tspan x="0" dy="0em">&gt;</tspan></text>
 </g></svg>
