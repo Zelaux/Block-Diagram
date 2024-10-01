@@ -1,23 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="156.3" height="337.867"><rect x="20.049999237060547" y="0" width="116.19999694824219" height="69.46666463216145" style="fill: none" stroke="black"></rect>
-<path d="M 26.049999237060547 0 l 0 69.46666463216145 M 130.24999618530273 0 l 0 69.46666463216145" style="fill: none" stroke="black"></path>
+<svg xmlns="http://www.w3.org/2000/svg" width="156.3" height="337.867"><rect x="20.049999237060547" y="0" width="116.19999694824219" height="69.46666463216145" style="fill: none; color: var(--fgColor-default)"></rect>
+<path d="M 26.049999237060547 0 l 0 69.46666463216145 M 130.24999618530273 0 l 0 69.46666463216145" style="fill: none; color: var(--fgColor-default)"/>
 <g class="text-group" transform="translate(78.14999771118164 34.73333231608073)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">function(a,b,c)</tspan></text>
 </g>
-<path d="M 78.14999771118164 84.46666463216145 L 78.14999771118164 69.46666463216145" style="fill: none" stroke="black"></path>
-<rect x="20.049999237060547" y="84.46666463216145" width="116.19999694824219" height="69.46666463216145" style="fill: none" stroke="black"></rect>
-<path d="M 26.049999237060547 84.46666463216145 l 0 69.46666463216145 M 130.24999618530273 84.46666463216145 l 0 69.46666463216145" style="fill: none" stroke="black"></path>
+<path d="M 78.14999771118164 84.46666463216145 L 78.14999771118164 69.46666463216145" style="fill: none; color: var(--fgColor-default)"/>
+<rect x="20.049999237060547" y="84.46666463216145" width="116.19999694824219" height="69.46666463216145" style="fill: none; color: var(--fgColor-default)"></rect>
+<path d="M 26.049999237060547 84.46666463216145 l 0 69.46666463216145 M 130.24999618530273 84.46666463216145 l 0 69.46666463216145" style="fill: none; color: var(--fgColor-default)"/>
 <g class="text-group" transform="translate(78.14999771118164 119.19999694824219)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">func(a,b,c)</tspan></text>
 </g>
-<path d="M 78.14999771118164 168.9333292643229 L 78.14999771118164 153.9333292643229" style="fill: none" stroke="black"></path>
-<rect x="20.049999237060547" y="168.9333292643229" width="116.19999694824219" height="69.46666463216145" style="fill: none" stroke="black"></rect>
-<path d="M 26.049999237060547 168.9333292643229 l 0 69.46666463216145 M 130.24999618530273 168.9333292643229 l 0 69.46666463216145" style="fill: none" stroke="black"></path>
+<path d="M 78.14999771118164 168.9333292643229 L 78.14999771118164 153.9333292643229" style="fill: none; color: var(--fgColor-default)"/>
+<rect x="20.049999237060547" y="168.9333292643229" width="116.19999694824219" height="69.46666463216145" style="fill: none; color: var(--fgColor-default)"></rect>
+<path d="M 26.049999237060547 168.9333292643229 l 0 69.46666463216145 M 130.24999618530273 168.9333292643229 l 0 69.46666463216145" style="fill: none; color: var(--fgColor-default)"/>
 <g class="text-group" transform="translate(78.14999771118164 203.66666158040363)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">fun(a,b,c)</tspan></text>
 </g>
-<path d="M 78.14999771118164 253.39999389648438 L 78.14999771118164 238.39999389648438" style="fill: none" stroke="black"></path>
-<rect x="20.049999237060547" y="253.39999389648438" width="116.19999694824219" height="69.46666463216145" style="fill: none" stroke="black"></rect>
-<path d="M 26.049999237060547 253.39999389648438 l 0 69.46666463216145 M 130.24999618530273 253.39999389648438 l 0 69.46666463216145" style="fill: none" stroke="black"></path>
+<path d="M 78.14999771118164 253.39999389648438 L 78.14999771118164 238.39999389648438" style="fill: none; color: var(--fgColor-default)"/>
+<rect x="20.049999237060547" y="253.39999389648438" width="116.19999694824219" height="69.46666463216145" style="fill: none; color: var(--fgColor-default)"></rect>
+<path d="M 26.049999237060547 253.39999389648438 l 0 69.46666463216145 M 130.24999618530273 253.39999389648438 l 0 69.46666463216145" style="fill: none; color: var(--fgColor-default)"/>
 <g class="text-group" transform="translate(78.14999771118164 288.1333262125651)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">def(a,b,c)</tspan></text>
 </g></svg>
