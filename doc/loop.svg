@@ -1,24 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="129.35" height="362.444"><rect x="21.558332443237305" y="0" width="86.23332977294922" height="57.48888651529948" style="fill: none; color: var(--fgColor-default)"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="129.35" height="362.444"><rect x="21.558332443237305" y="0" width="86.23332977294922" height="57.48888651529948" style="fill: none; color: black"></rect>
 <g class="text-group" transform="translate(64.67499732971191 28.74444325764974)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x = 0</tspan></text>
 </g>
-<path d="M 64.67499732971191 72.48888651529947 L 64.67499732971191 57.48888651529947" style="fill: none; color: var(--fgColor-default)"/>
-<path d="M 21.558332443237305 129.97777303059894 l 86.23332977294922 0 l 0 -43.11666488647461 l -14.37222162882487 -14.37222162882487 l -57.488886515299484 0 l -14.37222162882487 14.37222162882487 Z" style="fill: none; color: var(--fgColor-default)"/>
+<path d="M 64.67499732971191 72.48888651529947 L 64.67499732971191 57.48888651529947" style="fill: none; color: black"/>
+<path d="M 21.558332443237305 129.97777303059894 l 86.23332977294922 0 l 0 -43.11666488647461 l -14.37222162882487 -14.37222162882487 l -57.488886515299484 0 l -14.37222162882487 14.37222162882487 Z" style="fill: none; color: black"/>
 <g class="text-group" transform="translate(64.67499732971191 101.2333297729492)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">pre-text</tspan></text>
 </g>
-<path d="M 64.67499732971191 144.97777303059894 L 64.67499732971191 129.97777303059894" style="fill: none; color: var(--fgColor-default)"/>
-<path d="M 0 144.97777303059894 l 21.558332443237305 57.48888651529948 l 107.79166221618652 0 l -21.558332443237305 -57.48888651529948 Z" style="fill: none; color: var(--fgColor-default)"/>
+<path d="M 64.67499732971191 144.97777303059894 L 64.67499732971191 129.97777303059894" style="fill: none; color: black"/>
+<path d="M 0 144.97777303059894 l 21.558332443237305 57.48888651529948 l 107.79166221618652 0 l -21.558332443237305 -57.48888651529948 Z" style="fill: none; color: black"/>
 <g class="text-group" transform="translate(64.67499732971191 173.7222162882487)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Тело цикла</tspan></text>
 </g>
-<path d="M 64.67499732971191 217.4666595458984 L 64.67499732971191 202.4666595458984" style="fill: none; color: var(--fgColor-default)"/>
-<path d="M 21.558332443237305 217.4666595458984 l 86.23332977294922 0 l 0 43.11666488647461 l -14.37222162882487 14.37222162882487 l -57.488886515299484 0 l -14.37222162882487 -14.37222162882487 Z" style="fill: none; color: var(--fgColor-default)"/>
+<path d="M 64.67499732971191 217.4666595458984 L 64.67499732971191 202.4666595458984" style="fill: none; color: black"/>
+<path d="M 21.558332443237305 217.4666595458984 l 86.23332977294922 0 l 0 43.11666488647461 l -14.37222162882487 14.37222162882487 l -57.488886515299484 0 l -14.37222162882487 -14.37222162882487 Z" style="fill: none; color: black"/>
 <g class="text-group" transform="translate(64.67499732971191 246.21110280354816)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">post-text</tspan></text>
 </g>
-<path d="M 64.67499732971191 289.9555460611979 L 64.67499732971191 274.9555460611979" style="fill: none; color: var(--fgColor-default)"/>
-<path d="M 0 289.9555460611979 l 21.558332443237305 57.48888651529948 l 107.79166221618652 0 l -21.558332443237305 -57.48888651529948 Z" style="fill: none; color: var(--fgColor-default)"/>
+<path d="M 64.67499732971191 289.9555460611979 L 64.67499732971191 274.9555460611979" style="fill: none; color: black"/>
+<path d="M 0 289.9555460611979 l 21.558332443237305 57.48888651529948 l 107.79166221618652 0 l -21.558332443237305 -57.48888651529948 Z" style="fill: none; color: black"/>
 <g class="text-group" transform="translate(64.67499732971191 318.6999893188476)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
 </g></svg>

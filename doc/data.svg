@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="156.325" height="168.956"><path d="M 0 0 l 26.054166793823242 69.47777811686197 l 130.2708339691162 0 l -26.054166793823242 -69.47777811686197 Z" style="fill: none; color: var(--fgColor-default)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="156.325" height="168.956"><path d="M 0 0 l 26.054166793823242 69.47777811686197 l 130.2708339691162 0 l -26.054166793823242 -69.47777811686197 Z" style="fill: none; color: black"/>
 <g class="text-group" transform="translate(78.16250038146973 34.738889058430985)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Hello, world!</tspan></text>
 </g>
-<path d="M 78.16250038146973 84.47777811686197 L 78.16250038146973 69.47777811686197" style="fill: none; color: var(--fgColor-default)"/>
-<path d="M 0 84.47777811686197 l 26.054166793823242 69.47777811686197 l 130.2708339691162 0 l -26.054166793823242 -69.47777811686197 Z" style="fill: none; color: var(--fgColor-default)"/>
+<path d="M 78.16250038146973 84.47777811686197 L 78.16250038146973 69.47777811686197" style="fill: none; color: black"/>
+<path d="M 0 84.47777811686197 l 26.054166793823242 69.47777811686197 l 130.2708339691162 0 l -26.054166793823242 -69.47777811686197 Z" style="fill: none; color: black"/>
 <g class="text-group" transform="translate(78.16250038146973 119.21666717529295)" data-aspect="0.6666666666666666" data-widthaspect="1">
 <text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Hello, world2!</tspan></text>
 </g></svg>
