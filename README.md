@@ -1,11 +1,6 @@
 # Block-Diagram
 
 Блок схемы в соответсвии с ГОСТ 19.701-90(По крайней мере я старался)
-<style>
-svg{
-background: var(--bgColor-default)
-}
-</style>
 
 ## Синтаксис
 
