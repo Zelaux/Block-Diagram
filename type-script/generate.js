@@ -34,8 +34,8 @@ setTimeout(function () {
             for (let child of svgElement.querySelectorAll("text")) {
                 width = Math.max(child.getBBox().width + 10, width);
             }
-            let calculateWidth = data.block.calculateWidth();
-            let totalWidth = calculateWidth * width + calculateWidth * 15 + 40;
+            let calculateWidth = data.block.calculateWidth(width);
+            let totalWidth = calculateWidth;
             let y = 0;
             let x = totalWidth / 2 - width / 2;
             let heightInfo = data.block.calculateHeight();

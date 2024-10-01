@@ -1,4 +1,3 @@
-
 const startKeyWord = () => "Начало";
 const endKeyWord = () => "Конец";
 
@@ -13,6 +12,7 @@ function terminatorConstructor(isNullProvider: () => string) {
         ]
     };
 }
+
 
 let blockList = [
     graphElement("start", 1 / 3, simpleHandler(terminatorConstructor(startKeyWord))),
@@ -52,7 +52,15 @@ let blockList = [
     graphElement("loop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
 
-        let subBlock: Block = new HorizontalBlockOfBlocks(null)
+        let subBlock: Block = new HorizontalBlockOfBlocks(null).apply(function () {
+            if (thisNode.content[0] !== undefined) {
+                try {
+                    this.marginBetweenBlocks = Number.parseInt(thisNode.content[0])
+                } catch (e) {
+                }
+            }
+        })
+
         for (let child of thisNode.children) {
             if (child.length == 0) continue
             let innerBlock: Block = new ElementBlock();

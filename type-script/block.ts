@@ -11,7 +11,9 @@ interface Block {
 
     compile(x: number, y: Cursor, width: number): string[]
 
-    calculateWidth(): number
+    calculateExtraWidth(): number
+
+    calculateWidth(width: number): number
 
     calculateHeight(): HeightInfo
 
@@ -23,6 +25,8 @@ interface Block {
 abstract class AbstractBlock implements Block {
     abstract isEmpty(): boolean
 
+    abstract calculateExtraWidth(): number
+
     abstract isBlockContainer(): boolean
 
     abstract addBlock(block: Block): BlockOfBlocks;
@@ -31,7 +35,7 @@ abstract class AbstractBlock implements Block {
 
     abstract compile(x: number, y: Cursor, width: number): string[];
 
-    abstract calculateWidth(): number;
+    abstract calculateWidth(width: number): number;
 
     abstract calculateHeight(): HeightInfo;
 
@@ -64,6 +68,11 @@ abstract class AbstractBlock implements Block {
 
 
 abstract class BlockOfBlocks extends AbstractBlock implements Block {
+    marginBetweenBlocks: number = 15
+
+    calculateExtraWidth() {
+        return this.marginBetweenBlocks * (this.innerElements.length - 1)
+    }
 
     isEmpty(): boolean {
         return this.rootElement == null && this.innerElements.length == 0;
@@ -122,6 +131,12 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         super(rootElement);
     }
 
+
+    apply(applier: (this: HorizontalBlockOfBlocks) => void): HorizontalBlockOfBlocks {
+        applier.apply(this)
+        return this
+    }
+
     calculateHeight(): HeightInfo {
 
         let max: HeightInfo = {totalElements: 0, unscaledHeight: 0};
@@ -145,7 +160,7 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
     ;
 
     static TITLE_POSITION: TitlePosition[][] = (function () {
-        let center = TitlePosition.new("hanging", "start",Vector.new(5,0));
+        let center = TitlePosition.new("hanging", "start", Vector.new(5, 0));
         let left = TitlePosition.new("auto", "end", Vector.new(0, -5));
         let right = TitlePosition.new("auto", "start", Vector.new(0, -5));
         return [
@@ -167,16 +182,18 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         let svgResult: string[] = []
 
         let maxY = cursorY.value;
-        const margin = 15
+        const margin = this.marginBetweenBlocks
         let amount = this.innerElements.length;
         let sizes = []
 
-        let sum = 0;
+        let myBlockWidth = 0;
         for (let i = 0; i < amount; i++) {
-            sizes[i] = this.innerElements[i].calculateWidth()
-            sum += sizes[i]
+            sizes[i] = this.innerElements[i].calculateWidth(width)
+            myBlockWidth += sizes[i]
+            if (i > 0) {
+                myBlockWidth += margin
+            }
         }
-        let myBlockWidth = sum * width + (sum - 1) * margin;
 
         class BranchInfo {
             rootPosition?: Vector
@@ -215,8 +232,7 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
             let innerElement = this.innerElements[i];
             branchInfo.isEmpty = innerElement.isEmpty()
             let cloneY = cursorY.clone();
-            let size = sizes[i];
-            let blockWidth = (width * size + margin * (size - 1));
+            let blockWidth = sizes[i];
             let outputX = currentX + blockWidth / 2;
             svgResult.push.apply(svgResult, innerElement.compile(outputX - width / 2, cloneY, width))
             maxY = Math.max(maxY, cloneY.value)
@@ -273,15 +289,15 @@ class HorizontalBlockOfBlocks extends BlockOfBlocks {
         return svgResult
     }
 
-    calculateWidth(): number {
-        let result = 0;
+    calculateWidth(width: number): number {
+        let result = this.calculateExtraWidth();
         for (let element of this.innerElements) {
-            result += element.calculateWidth();
+            result += element.calculateWidth(width);
         }
         if (this.nextBlock == null) {
-            return Math.max(1, result)
+            return Math.max(width, result)
         }
-        return Math.max(1, result, this.nextBlock.calculateWidth())
+        return Math.max(width, result, this.nextBlock.calculateWidth(width))
     }
 }
 
@@ -290,6 +306,11 @@ function svgLine(x1: number, y1: number, x2: number, y2: number) {
 }
 
 class ElementBlock extends AbstractBlock {
+
+    calculateExtraWidth(): number {
+        return 0;
+    }
+
     isEmpty(): boolean {
         return this.innerElements.length == 0
     }
@@ -350,11 +371,11 @@ class ElementBlock extends AbstractBlock {
         return info;
     }
 
-    calculateWidth(): number {
-        let number = 1.50;
+    calculateWidth(width: number): number {
+        let number = 1.50 * width;
         if (this.nextBlock == null) {
             return number
         }
-        return Math.max(number, this.nextBlock.calculateWidth())
+        return Math.max(number, this.nextBlock.calculateWidth(width))
     }
 }

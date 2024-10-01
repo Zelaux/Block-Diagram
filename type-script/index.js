@@ -48,7 +48,15 @@ let blockList = [
     ])),
     graphElement("loop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
-        let subBlock = new HorizontalBlockOfBlocks(null);
+        let subBlock = new HorizontalBlockOfBlocks(null).apply(function () {
+            if (thisNode.content[0] !== undefined) {
+                try {
+                    this.marginBetweenBlocks = Number.parseInt(thisNode.content[0]);
+                }
+                catch (e) {
+                }
+            }
+        });
         for (let child of thisNode.children) {
             if (child.length == 0)
                 continue;
