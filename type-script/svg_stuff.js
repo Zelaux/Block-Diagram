@@ -3,7 +3,7 @@
 function textOr(text, fallback) {
     return (text === undefined) || (text == null) || text.length === 0 ? fallback : text;
 }
-function defaultCenterText(x, y, width, height, text, baseline = "middle", anchor = "middle") {
+function defaultCenterText(x, y, width, height, text, baseline = "middle", anchor = "middle", widthAspect = 1) {
     let notNullText = textOr(text, "");
     let arrayText;
     if (typeof notNullText == "string") {
@@ -23,10 +23,11 @@ function defaultCenterText(x, y, width, height, text, baseline = "middle", ancho
             arrayText[i] = `<tspan x="0" dy="1.2em">${it}</tspan>`;
         }
     }
+    let aspect = height / width;
     let compiledText = arrayText.join("\n");
     let cx = x + width / 2;
     let cy = y + height / 2;
-    return `<g transform="translate(${cx} ${cy})">
+    return `<g class="text-group" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
 <text x="0" y="0" dominant-baseline="${baseline}" text-anchor="${anchor}">${compiledText}</text>
 </g>`;
     // return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>`;

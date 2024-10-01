@@ -12,10 +12,10 @@
 ```
 У большинства элементов текст внутри элемента можно задать написав `(текст)`,
 ``` `текст` ```,`"текст"` после названия блока. Например
-```flow-graph   
-start(start1)
-start`start2`
-start"start3"
+```flow-graph
+start(1)
+start`2`
+start"2"
 ```
 Обратите внимание, если вы хотите использовать закрывающий элемент(`)`, ``` ` ``` или `"`) внутри текста блока, то его нужно экранировать
 Например
@@ -25,7 +25,7 @@ end
 ```
 
 ## Элементы
-Через `/` написаны вариант имени одного и того же элемента
+Через `/` написаны вариант имени одного и того же элемента 
 
 ### start
 
@@ -33,19 +33,16 @@ end
 start
 start(Custom)
 ```
-![loop.svg](doc%2Fstart.svg)
 ### end/stop
 ```flow-graph
 end
 end(Custom)
 ```
-![loop.svg](doc%2Fend.svg)
 ### connector
 ```flow-graph
 connector
 connector(1)
 ```
-![loop.svg](doc%2Fconnector.svg)
 ### program
 Этот элемент улучшает визуальную состовляющую кода схемы, заменяя `start` и `end`
 ```flow-graph
@@ -53,21 +50,18 @@ program(CustomStart)(CustomEnd){
     data(Hello, world!)
 }
 ```
-![loop.svg](doc%2Fprogram.svg)
 ### process/block
 
 ```flow-graph
 process(x = 0)
 block(x = x + 1)
 ```
-![loop.svg](doc%2Fprocess.svg)
 
 ### data/io
 ```flow-graph
 data(Hello, world!)
 io(Hello, world2!)
 ```
-![loop.svg](doc%2Fdata.svg)
 
 ### function/func/fun/def
 ```flow-graph
@@ -76,7 +70,7 @@ func`func(a,b,c)`
 fun`fun(a,b,c)`
 def`def(a,b,c)`
 ```
-![loop.svg](doc%2Ffunction.svg)
+
 ### if
 Поддерживает `2` и `3` ветки. Названия по умолчанию имеются только для двух
 Блок имеет дочерние блоки.
@@ -99,7 +93,7 @@ if(x и 0)[<][==][>]{
     io(Больше нуля)
 }
 ```
-![loop.svg](doc%2Fif.svg)
+
 ### loop
 ```flow-graph
 block(x = 0)
@@ -108,7 +102,7 @@ loop(pre-text)(post-text){
 }
 io(Done.)
 ```
-![loop.svg](doc%2Floop.svg)
+
 ### for
 Делает такой же loop, но при этом реализуя привычный нам for
 ```flow-graph
@@ -116,7 +110,7 @@ for(i = 0)(i < 10)(i++){
     io(i)
 }
 ```
-![for.svg](doc%2Ffor.svg)
+
 ### parallel/join
 Имеет неограниченное число дочерних последовательностей элементов
 Имеется возможность указать растояние между последовательностями
@@ -132,16 +126,3 @@ parallel(20){
     end
 }
 ```
-![parallel.svg](doc%2Fparallel.svg)
-```flow-graph
-parallel(20){
-    connector(1)
-}{
-    connector(2)
-}{
-    connector(3)
-}
-io(Hello, world!)
-end
-```
-![parallel_join2.svg](doc%2Fparallel_join2.svg)

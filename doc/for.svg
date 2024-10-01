@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="71.2" height="233.222"><rect x="11.866666793823242" y="0" width="47.46666717529297" height="31.644444783528645" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(35.60000038146973 15.822222391764322)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i = 0</tspan></text>
+</g>
+<path d="M 35.60000038146973 46.64444478352864 L 35.60000038146973 31.64444478352864" style="fill: none" stroke="black"></path>
+<path d="M 11.866666793823242 78.28888956705728 l 47.46666717529297 0 l 0 -23.733333587646484 l -7.911111195882161 -7.911111195882161 l -31.644444783528648 0 l -7.911111195882161 7.911111195882161 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(35.60000038146973 62.46666717529296)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i &lt; 10</tspan></text>
+</g>
+<path d="M 35.60000038146973 93.28888956705728 L 35.60000038146973 78.28888956705728" style="fill: none" stroke="black"></path>
+<path d="M 0 93.28888956705728 l 11.866666793823242 31.644444783528645 l 59.33333396911621 0 l -11.866666793823242 -31.644444783528645 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(35.60000038146973 109.11111195882161)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i</tspan></text>
+</g>
+<path d="M 35.60000038146973 139.93333435058594 L 35.60000038146973 124.93333435058594" style="fill: none" stroke="black"></path>
+<rect x="11.866666793823242" y="139.93333435058594" width="47.46666717529297" height="31.644444783528645" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(35.60000038146973 155.75555674235025)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i++</tspan></text>
+</g>
+<path d="M 35.60000038146973 186.57777913411456 L 35.60000038146973 171.57777913411456" style="fill: none" stroke="black"></path>
+<path d="M 11.866666793823242 186.57777913411456 l 47.46666717529297 0 l 0 23.733333587646484 l -7.911111195882161 7.911111195882161 l -31.644444783528648 0 l -7.911111195882161 -7.911111195882161 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(35.60000038146973 202.40000152587888)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em"></tspan></text>
+</g></svg>

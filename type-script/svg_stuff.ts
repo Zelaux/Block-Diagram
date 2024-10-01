@@ -8,7 +8,8 @@ type SVGDominantBaseline =
     // | "central"
     // | "mathematical"
     | "hanging"
-    // | "text-top"
+
+// | "text-top"
 
 function textOr(text: NullableGraphText, fallback: GraphText) {
 
@@ -16,7 +17,7 @@ function textOr(text: NullableGraphText, fallback: GraphText) {
 }
 
 
-function defaultCenterText(x: number, y: number, width: number, height: number, text: NullableGraphText, baseline: SVGDominantBaseline = "middle", anchor: SVGTextAnchor = "middle") {
+function defaultCenterText(x: number, y: number, width: number, height: number, text: NullableGraphText, baseline: SVGDominantBaseline = "middle", anchor: SVGTextAnchor = "middle", widthAspect: number = 1) {
     let notNullText = textOr(text, "");
     let arrayText: string[];
     if (typeof notNullText == "string") {
@@ -24,6 +25,7 @@ function defaultCenterText(x: number, y: number, width: number, height: number, 
     } else {
         arrayText = notNullText
     }
+
     // @ts-ignore
     arrayText = arrayText.flatMap((it: string) => it.split("\n"))
     for (let i = 0; i < arrayText.length; i++) {
@@ -35,10 +37,11 @@ function defaultCenterText(x: number, y: number, width: number, height: number, 
         }
 
     }
+    let aspect = height / width;
     let compiledText = arrayText.join("\n")
     let cx = x + width / 2;
     let cy = y + height / 2;
-    return `<g transform="translate(${cx} ${cy})">
+    return `<g class="text-group" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
 <text x="0" y="0" dominant-baseline="${baseline}" text-anchor="${anchor}">${compiledText}</text>
 </g>`;
     // return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>`;

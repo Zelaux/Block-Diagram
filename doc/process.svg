@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="102.05" height="120.711"><rect x="17.008333206176758" y="0" width="68.03333282470703" height="45.35555521647135" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(51.02499961853027 22.677777608235676)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x = 0</tspan></text>
+</g>
+<path d="M 51.02499961853027 60.35555521647135 L 51.02499961853027 45.35555521647135" style="fill: none" stroke="black"></path>
+<rect x="17.008333206176758" y="60.35555521647135" width="68.03333282470703" height="45.35555521647135" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(51.02499961853027 83.03333282470703)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x = x + 1</tspan></text>
+</g></svg>

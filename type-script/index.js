@@ -19,7 +19,7 @@ let blockList = [
         width = width / 3;
         return [
             `<circle r="${width / 2}" cx="${x + width / 2}" cy="${y + width / 2}" fill="none" stroke="black" stroke-width="1"></circle>`,
-            defaultCenterText(x, y, width, height, text)
+            defaultCenterText(x, y, width, height, text, "middle", "middle", 1 / 3)
         ];
     })),
     graphElement("program", 1 / 3, openCloseHandler(terminatorConstructor(startKeyWord), terminatorConstructor(endKeyWord))),
@@ -34,7 +34,7 @@ let blockList = [
             defaultCenterText(x, y, width, height, text)
         ];
     })),
-    graphElement(["function", "func", "def"], 2 / 3, simpleHandler((x, y, width, height, text) => {
+    graphElement(["function", "func", "fun", "def"], 2 / 3, simpleHandler((x, y, width, height, text) => {
         const padding = 6;
         return [
             makeRect(x - padding, y, width + padding * 2, height),

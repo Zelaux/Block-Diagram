@@ -35,8 +35,20 @@ setTimeout(function () {
             svgElement.innerHTML = data.block.compile(0, new Cursor(0), 1).join("\n")
             let width = 1;
 
-            for (let child of svgElement.querySelectorAll("text")) {
-                width = Math.max(child.getBBox().width + 10, width)
+            for (let child of svgElement.querySelectorAll(".text-group")) {
+                let bBox = (child as SVGSVGElement).getBBox();
+                let aspect: number = JSON.parse((child as SVGSVGElement).dataset.aspect!);
+                let widthAspect: number = JSON.parse((child as SVGSVGElement).dataset.widthaspect!);
+                let myWidth = bBox.width / widthAspect + 10;
+
+                if (aspect != 0 && Number.isFinite(aspect)) {
+                    let expectedHeight = bBox.width * aspect;
+                    if (bBox.height > expectedHeight) {
+                        myWidth = bBox.height / aspect / widthAspect + 10
+                    }
+                }
+
+                width = Math.max(myWidth, width)
             }
             let calculateWidth = data.block.calculateWidth(width);
             let totalWidth = calculateWidth
@@ -65,7 +77,7 @@ setTimeout(function () {
             document.body.removeChild(element);
         }
 
-        download("block-graph.svg", svgElement.outerHTML)
+        download("brace_preview.svg", svgElement.outerHTML)
 
     }
 })

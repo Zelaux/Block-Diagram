@@ -31,8 +31,18 @@ setTimeout(function () {
             //     .join("\n")
             svgElement.innerHTML = data.block.compile(0, new Cursor(0), 1).join("\n");
             let width = 1;
-            for (let child of svgElement.querySelectorAll("text")) {
-                width = Math.max(child.getBBox().width + 10, width);
+            for (let child of svgElement.querySelectorAll(".text-group")) {
+                let bBox = child.getBBox();
+                let aspect = JSON.parse(child.dataset.aspect);
+                let widthAspect = JSON.parse(child.dataset.widthaspect);
+                let myWidth = bBox.width / widthAspect + 10;
+                if (aspect != 0 && Number.isFinite(aspect)) {
+                    let expectedHeight = bBox.width * aspect;
+                    if (bBox.height > expectedHeight) {
+                        myWidth = bBox.height / aspect / widthAspect + 10;
+                    }
+                }
+                width = Math.max(myWidth, width);
             }
             let calculateWidth = data.block.calculateWidth(width);
             let totalWidth = calculateWidth;
@@ -59,6 +69,6 @@ setTimeout(function () {
             element.click();
             document.body.removeChild(element);
         }
-        download("block-graph.svg", svgElement.outerHTML);
+        download("brace_preview.svg", svgElement.outerHTML);
     };
 });
