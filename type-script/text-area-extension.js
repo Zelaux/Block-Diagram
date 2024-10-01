@@ -1,26 +1,26 @@
 "use strict";
 const cursorElement = `<div class="cursor"><div></div></div>`;
+(function () {
+    function time() {
+        return new Date().getTime();
+    }
+    let lastTime = time();
+    let value = true;
+    const DELAY_MILLIS = 500;
+    function blink() {
+        let time_ = time();
+        let delta = time_ - lastTime;
+        let delay = DELAY_MILLIS;
+        delay = delay * 2 - delta;
+        // @ts-ignore
+        document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
+        setTimeout(blink, delay);
+        lastTime = time_ + DELAY_MILLIS - delta;
+    }
+    setTimeout(blink);
+})();
 function TextareaExtension(target, font) {
     //Прямой поиск
-    (function () {
-        function time() {
-            return new Date().getTime();
-        }
-        let lastTime = time();
-        let value = true;
-        const DELAY_MILLIS = 500;
-        function blink() {
-            let time_ = time();
-            let delta = time_ - lastTime;
-            let delay = DELAY_MILLIS;
-            delay = delay * 2 - delta;
-            // @ts-ignore
-            document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
-            setTimeout(blink, delay);
-            lastTime = time_ + DELAY_MILLIS - delta;
-        }
-        setTimeout(blink);
-    })();
     function findText(text, word) {
         for (let i = 0; i < text.length - word.length + 1; i++) {
             let equals = true;
@@ -159,6 +159,12 @@ function TextareaExtension(target, font) {
                     break;
                 }
                 case "Enter": {
+                    if (ev.ctrlKey) {
+                        // ev.preventDefault()
+                        setTimeout(self.analyse, 1);
+                        setTimeout(self.resize, 1);
+                        return;
+                    }
                     let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
                     let tabSize = calculateTabSize(text, nlStart);
                     let newBlock = text[target.selectionStart - 1] == "{";
