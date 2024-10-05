@@ -63,7 +63,6 @@ setTimeout(function () {
             svgElement.height.baseVal.value = cursor.value
         }
     }
-    console.log("has generate")
     downloadButton.onclick = function () {
         // @ts-ignore
         generateButton.onclick()
