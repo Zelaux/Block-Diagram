@@ -12,6 +12,7 @@ function setup(div) {
     let areaElement = div.querySelector("textarea");
     let mokArea = div.querySelector(".code-textarea");
     TextareaExtension(areaElement);
+    // div.innerHTML+=
 }
 setup(document.querySelector(".textarea-container"));
 function hightligh(code) {

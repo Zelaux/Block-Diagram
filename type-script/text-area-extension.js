@@ -19,9 +19,8 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
     }
     setTimeout(blink);
 })();
-function TextareaExtension(target, font) {
-    //Прямой поиск
-    let setStyleOptions = function () {
+const TextareaExtension = (function () {
+    function setStyleOptions(target, preItem, font) {
         preItem.className = "text-area-selection";
         target.parentNode.appendChild(preItem);
         target.style.font = preItem.style.font = font || "14px Arial";
@@ -33,186 +32,201 @@ function TextareaExtension(target, font) {
         target.style.color = "transparent";
         target.style.overflow = "scroll";
         preItem.style.margin = "0px 0px";
-    };
-    let self = {};
-    self.analyse = function () {
-        let cursorStart = target.selectionStart;
-        let text = target.value;
-        text = text.substring(0, cursorStart) + "\x00" + text.substring(cursorStart, target.selectionEnd) /*+"\x01"*/ + text.substring(target.selectionEnd);
-        let tokens = Lexer.lex(text, false);
-        let result = "";
-        let prevEnd = 0;
-        for (let token of tokens) {
-            result += text.substring(prevEnd, token.range.start)
-                + "<span class='token-" + TokenKind[token.kind] + "'>" + text.substring(token.range.start, token.range.end) + "</span>";
-            prevEnd = token.range.end;
-        }
-        preItem.innerHTML = result.replace("\x00", target.selectionStart == target.selectionEnd + 1 ? "" :
-            cursorElement);
-    };
-    self.scrollSync = function () {
-        preItem.scrollTop = target.scrollTop;
-    };
-    self.resize = function () {
-        preItem.style.width = target.style.width;
-        preItem.style.height = target.style.height;
-        preItem.style.top = target.offsetTop + "px";
-        preItem.style.left = target.offsetLeft + "px";
-    };
-    let preItem = document.createElement("pre");
-    setStyleOptions();
-    if (target.addEventListener) {
-        target.addEventListener("change", self.analyse, false);
-        target.addEventListener("mouseup", self.analyse, false);
-        target.addEventListener("mousedown", self.analyse, false);
-        target.addEventListener("mousemove", self.analyse, false);
-        const TAB_SYMBOL = " ";
-        const TAB_INCREASER = 4;
-        const tabSymbol = TAB_SYMBOL.repeat(TAB_INCREASER);
-        target.onkeydown = ev => {
-            function calculateTabSize(text, nlStart) {
-                let tabSize = 0;
-                for (; text[nlStart + tabSize] == TAB_SYMBOL; tabSize++) {
-                }
-                return tabSize;
-            }
+    }
+    return function (target, font) {
+        let preItem = document.createElement("pre");
+        setStyleOptions(target, preItem, font);
+        function analyse() {
+            let cursorStart = target.selectionStart;
             let text = target.value;
-            let beforeSelection = text.substring(0, target.selectionStart);
-            let afterSelection = text.substring(target.selectionEnd);
-            let selectionValue = text.substring(target.selectionStart, target.selectionEnd);
-            let selectionValueTrim = selectionValue.trim();
-            let openedBrace = Lexer.OPEN_BRACES.indexOf(ev.key);
-            if (openedBrace != -1) {
-                ev.preventDefault();
-                if (selectionValueTrim.length == 0) {
-                    target.value = beforeSelection + ev.key + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
-                    target.setSelectionRange(beforeSelection.length + 1, beforeSelection.length + 1, "forward");
-                }
-                else {
-                    target.value = beforeSelection + ev.key + selectionValue + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
-                    target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
-                }
+            text = text.substring(0, cursorStart) + "\x00" + text.substring(cursorStart, target.selectionEnd) /*+"\x01"*/ + text.substring(target.selectionEnd);
+            let tokens = Lexer.lex(text, false);
+            let result = "";
+            let prevEnd = 0;
+            for (let token of tokens) {
+                result += text.substring(prevEnd, token.range.start)
+                    + "<span class='token-" + TokenKind[token.kind] + "'>" + text.substring(token.range.start, token.range.end) + "</span>";
+                prevEnd = token.range.end;
             }
-            switch (ev.key) {
-                case "Tab": {
-                    if (selectionValue.length == 0) {
-                        target.value = beforeSelection + TAB_SYMBOL.repeat(TAB_INCREASER) + afterSelection;
-                        let idx = beforeSelection.length + TAB_INCREASER;
-                        target.setSelectionRange(idx, idx, "forward");
+            preItem.innerHTML = result.replace("\x00", target.selectionStart == target.selectionEnd + 1 ? "" :
+                cursorElement);
+        }
+        function scrollSync() {
+            preItem.scrollTop = target.scrollTop;
+        }
+        function resize() {
+            preItem.style.width = target.style.width;
+            preItem.style.height = target.style.height;
+            preItem.style.top = target.offsetTop + "px";
+            preItem.style.left = target.offsetLeft + "px";
+        }
+        if (target.addEventListener) {
+            target.addEventListener("change", analyse, false);
+            target.addEventListener("mouseup", analyse, false);
+            target.addEventListener("mousedown", analyse, false);
+            target.addEventListener("mousemove", analyse, false);
+            const TAB_SYMBOL = " ";
+            const TAB_INCREASER = 4;
+            const tabSymbol = TAB_SYMBOL.repeat(TAB_INCREASER);
+            target.onkeydown = ev => {
+                function calculateTabSize(text, nlStart) {
+                    let tabSize = 0;
+                    for (; text[nlStart + tabSize] == TAB_SYMBOL; tabSize++) {
                     }
-                    else {
-                        let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1), 0);
-                        let newLinesSymbolsStart = [nlStart];
-                        while (newLinesSymbolsStart[newLinesSymbolsStart.length - 1] < target.selectionEnd) {
-                            newLinesSymbolsStart.push(text.indexOf("\n", newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1));
-                        }
-                        let newLines = [];
-                        for (let i = 0; i < newLinesSymbolsStart.length - 1; i++) {
-                            newLines.push(text.substring(newLinesSymbolsStart[i] + 1, newLinesSymbolsStart[i + 1]));
-                        }
-                        let before = text.substring(0, newLinesSymbolsStart[0]);
-                        let after = text.substring(newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1);
-                        let firstL = newLines[0].length;
-                        let totalL = 0;
-                        for (let mapElement of newLines.map(it => it.length)) {
-                            totalL += mapElement;
-                        }
-                        let selectionStart = target.selectionStart;
-                        let selectionEnd = target.selectionEnd;
-                        if (ev.shiftKey) {
-                            newLines = newLines.map(it => {
-                                return TAB_SYMBOL.repeat(Math.max(0, calculateTabSize(it, 0) - TAB_INCREASER)) +
-                                    it.trim();
-                            });
-                            selectionStart -= firstL - newLines[0].length;
-                            for (let mapElement of newLines.map(it => it.length)) {
-                                totalL -= mapElement;
-                            }
-                            selectionEnd -= totalL;
-                        }
-                        else {
-                            newLines = newLines.map(it => {
-                                return TAB_SYMBOL.repeat(TAB_INCREASER) + it;
-                            });
-                            selectionStart += TAB_INCREASER;
-                            selectionEnd += TAB_INCREASER * newLines.length;
-                        }
-                        let updatedLines = newLines.join("\n");
-                        target.value = before + "\n" + updatedLines + "\n" + after;
-                        target.setSelectionRange(selectionStart, selectionEnd);
-                    }
-                    ev.preventDefault();
-                    break;
+                    return tabSize;
                 }
-                case "Enter": {
-                    if (ev.ctrlKey) {
-                        setTimeout(self.analyse, 1);
-                        setTimeout(self.resize, 1);
-                        return;
-                    }
-                    let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
-                    let tabSize = calculateTabSize(text, nlStart);
-                    let newBlock = text[target.selectionStart - 1] == "{";
-                    let tabSymbols = TAB_SYMBOL.repeat(tabSize);
-                    let part1 = beforeSelection + "\n" + tabSymbols;
-                    let part2 = afterSelection;
-                    let nlStart1 = text.indexOf("\n", target.selectionEnd);
-                    let tabSize2 = nlStart1 == -1 ? -1 : calculateTabSize(text, nlStart1 + 1);
-                    if (newBlock) {
-                        part1 += tabSymbol;
-                        if (tabSize2 == tabSize + TAB_INCREASER) {
-                            text = part1 + part2;
-                        }
-                        else {
-                            text = part1 + "\n" + tabSymbols + part2;
-                        }
+                let text = target.value;
+                let beforeSelection = text.substring(0, target.selectionStart);
+                let afterSelection = text.substring(target.selectionEnd);
+                let selectionValue = text.substring(target.selectionStart, target.selectionEnd);
+                let selectionValueTrim = selectionValue.trim();
+                let openedBrace = Lexer.OPEN_BRACES.indexOf(ev.key);
+                if (openedBrace != -1) {
+                    ev.preventDefault();
+                    if (selectionValueTrim.length == 0) {
+                        target.value = beforeSelection + ev.key + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
+                        target.setSelectionRange(beforeSelection.length + 1, beforeSelection.length + 1, "forward");
                     }
                     else {
-                        text = part1 + part2;
-                    }
-                    target.value = text;
-                    target.selectionStart = target.selectionEnd = part1.length;
-                    ev.preventDefault();
-                    target.selectionDirection = "none";
-                    break;
-                }
-                case "{": {
-                    ev.preventDefault();
-                    if (selectionValue.trim().length == 0) {
-                        target.value = beforeSelection + "{}" + afterSelection;
-                        let index = beforeSelection.length + 1;
-                        target.setSelectionRange(index, index);
-                    }
-                    else {
-                        let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
-                        let tabSize = calculateTabSize(text, nlStart);
-                        let tabSymbols = TAB_SYMBOL.repeat(tabSize + TAB_INCREASER);
-                        selectionValue = selectionValue.split("\n").map(it => tabSymbols + it.trim())
-                            .join("\n");
-                        target.value = beforeSelection + "{\n" + selectionValue + "\n" + TAB_SYMBOL.repeat(tabSize) + "}" + afterSelection;
+                        target.value = beforeSelection + ev.key + selectionValue + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
                         target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
                     }
-                    break;
                 }
-            }
-            self.analyse();
-        };
-        // target.addEventListener("keypress", )
-        target.addEventListener("keyup", self.analyse, false);
-        target.addEventListener("scroll", self.scrollSync, false);
-        target.addEventListener("mousemove", self.resize, false);
-    }
-    else { // @ts-ignore
-        if (target.attachEvent) {
-            // @ts-ignore
-            target.attachEvent("onchange", self.analyse);
-            // @ts-ignore
-            target.attachEvent("onkeyup", self.analyse);
-            // @ts-ignore
-            target.attachEvent("onscroll", self.scrollSync);
-            // @ts-ignore
-            target.attachEvent("mousemove", self.resize);
+                switch (ev.key) {
+                    case "Tab": {
+                        if (selectionValue.length == 0) {
+                            target.value = beforeSelection + TAB_SYMBOL.repeat(TAB_INCREASER) + afterSelection;
+                            let idx = beforeSelection.length + TAB_INCREASER;
+                            target.setSelectionRange(idx, idx, "forward");
+                        }
+                        else {
+                            let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1), 0);
+                            let newLinesSymbolsStart = [nlStart];
+                            while (newLinesSymbolsStart[newLinesSymbolsStart.length - 1] < target.selectionEnd) {
+                                newLinesSymbolsStart.push(text.indexOf("\n", newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1));
+                            }
+                            let newLines = [];
+                            for (let i = 0; i < newLinesSymbolsStart.length - 1; i++) {
+                                newLines.push(text.substring(newLinesSymbolsStart[i] + 1, newLinesSymbolsStart[i + 1]));
+                            }
+                            let before = text.substring(0, newLinesSymbolsStart[0]);
+                            let after = text.substring(newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1);
+                            let firstL = newLines[0].length;
+                            let totalL = 0;
+                            for (let mapElement of newLines.map(it => it.length)) {
+                                totalL += mapElement;
+                            }
+                            let selectionStart = target.selectionStart;
+                            let selectionEnd = target.selectionEnd;
+                            if (ev.shiftKey) {
+                                newLines = newLines.map(it => {
+                                    return TAB_SYMBOL.repeat(Math.max(0, calculateTabSize(it, 0) - TAB_INCREASER)) +
+                                        it.trim();
+                                });
+                                selectionStart -= firstL - newLines[0].length;
+                                for (let mapElement of newLines.map(it => it.length)) {
+                                    totalL -= mapElement;
+                                }
+                                selectionEnd -= totalL;
+                            }
+                            else {
+                                newLines = newLines.map(it => {
+                                    return TAB_SYMBOL.repeat(TAB_INCREASER) + it;
+                                });
+                                selectionStart += TAB_INCREASER;
+                                selectionEnd += TAB_INCREASER * newLines.length;
+                            }
+                            let updatedLines = newLines.join("\n");
+                            target.value = before + "\n" + updatedLines + "\n" + after;
+                            target.setSelectionRange(selectionStart, selectionEnd);
+                        }
+                        ev.preventDefault();
+                        break;
+                    }
+                    case "Enter": {
+                        if (ev.ctrlKey) {
+                            setTimeout(analyse, 1);
+                            setTimeout(resize, 1);
+                            return;
+                        }
+                        let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
+                        let tabSize = calculateTabSize(text, nlStart);
+                        let newBlock = text[target.selectionStart - 1] == "{";
+                        let tabSymbols = TAB_SYMBOL.repeat(tabSize);
+                        let part1 = beforeSelection + "\n" + tabSymbols;
+                        let part2 = afterSelection;
+                        let nlStart1 = text.indexOf("\n", target.selectionEnd);
+                        let tabSize2 = nlStart1 == -1 ? -1 : calculateTabSize(text, nlStart1 + 1);
+                        if (newBlock) {
+                            part1 += tabSymbol;
+                            if (tabSize2 == tabSize + TAB_INCREASER) {
+                                text = part1 + part2;
+                            }
+                            else {
+                                text = part1 + "\n" + tabSymbols + part2;
+                            }
+                        }
+                        else {
+                            text = part1 + part2;
+                        }
+                        target.value = text;
+                        target.selectionStart = target.selectionEnd = part1.length;
+                        ev.preventDefault();
+                        target.selectionDirection = "none";
+                        break;
+                    }
+                    case "{": {
+                        ev.preventDefault();
+                        if (selectionValue.trim().length == 0) {
+                            target.value = beforeSelection + "{}" + afterSelection;
+                            let index = beforeSelection.length + 1;
+                            target.setSelectionRange(index, index);
+                        }
+                        else {
+                            let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
+                            let tabSize = calculateTabSize(text, nlStart);
+                            let tabSymbols = TAB_SYMBOL.repeat(tabSize + TAB_INCREASER);
+                            selectionValue = selectionValue.split("\n").map(it => tabSymbols + it.trim())
+                                .join("\n");
+                            target.value = beforeSelection + "{\n" + selectionValue + "\n" + TAB_SYMBOL.repeat(tabSize) + "}" + afterSelection;
+                            target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
+                        }
+                        break;
+                    }
+                }
+                analyse();
+            };
+            // target.addEventListener("keypress", )
+            target.addEventListener("keyup", analyse, false);
+            target.addEventListener("scroll", scrollSync, false);
+            target.addEventListener("mousemove", resize, false);
         }
-    }
-    setTimeout(self.analyse);
-}
+        else { // @ts-ignore
+            if (target.attachEvent) {
+                // @ts-ignore
+                target.attachEvent("onchange", analyse);
+                // @ts-ignore
+                target.attachEvent("onkeyup", analyse);
+                // @ts-ignore
+                target.attachEvent("onscroll", scrollSync);
+                // @ts-ignore
+                target.attachEvent("mousemove", resize);
+            }
+        }
+        setTimeout(analyse);
+        setTimeout(function () {
+            setTimeout(() => {
+                let btn = document.querySelector("button.generate_button");
+                let prev = btn.onclick;
+                btn.onclick = function (ev) {
+                    prev.call(this, ev);
+                    setTimeout(function () {
+                        setTimeout(analyse);
+                        setTimeout(resize);
+                        setTimeout(scrollSync);
+                    });
+                };
+            });
+        });
+    };
+})();
