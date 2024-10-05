@@ -40,8 +40,8 @@ let blockList = [
     graphElement(["function", "func", "fun", "def"], 2 / 3, simpleHandler((x, y, width, height, text) => {
         const padding = 6
         return [
-            makeRect(x - padding, y, width + padding * 2, height),
-            makePath(`M ${x} ${y} l 0 ${height} M ${x + width} ${y} l 0 ${height}`),
+            makeRect(x, y, width , height),
+            makePath(`M ${x+padding} ${y} l 0 ${height} M ${x + width-padding} ${y} l 0 ${height}`),
             defaultCenterText(x, y, width, height, text)
         ]
     })),
