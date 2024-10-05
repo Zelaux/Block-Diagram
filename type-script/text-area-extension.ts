@@ -14,8 +14,11 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
         let delta = time_ - lastTime
         let delay = DELAY_MILLIS
         delay = delay * 2 - delta
-        // @ts-ignore
-        document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
+        try {
+            // @ts-ignore
+            document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
+        } catch (e) {
+        }
         setTimeout(blink, delay)
         lastTime = time_ + DELAY_MILLIS - delta
     }
@@ -240,18 +243,22 @@ const TextareaExtension = (function () {
         setTimeout(analyse)
         setTimeout(function () {
 
-           setTimeout(()=>{
-               let btn: HTMLButtonElement = document.querySelector("button.generate_button")!;
-               let prev = btn.onclick!;
-               btn.onclick = function (ev: MouseEvent) {
-                   prev.call(this,ev)
-                   setTimeout(function (){
-                       setTimeout(analyse)
-                       setTimeout(resize)
-                       setTimeout(scrollSync)
-                   })
-               }
-           })
+            let updateAll = function () {
+                setTimeout(analyse)
+                setTimeout(resize)
+                setTimeout(scrollSync)
+            };
+            setTimeout(function () {
+                window.addEventListener('resize', updateAll)
+            }, 0.5)
+            setTimeout(() => {
+                let btn: HTMLButtonElement = document.querySelector("button.generate_button")!;
+                let prev = btn.onclick!;
+                btn.onclick = function (ev: MouseEvent) {
+                    prev.call(this, ev)
+                    setTimeout(updateAll)
+                }
+            })
         })
 
 
