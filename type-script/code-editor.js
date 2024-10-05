@@ -11,8 +11,7 @@ function setup(div) {
     });
     let areaElement = div.querySelector("textarea");
     let mokArea = div.querySelector(".code-textarea");
-    TextareaExtension(areaElement, (word) => blockMap[word] !== undefined);
-    // div.innerHTML+=
+    TextareaExtension(areaElement);
 }
 setup(document.querySelector(".textarea-container"));
 function hightligh(code) {

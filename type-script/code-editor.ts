@@ -12,7 +12,7 @@ function setup(div: HTMLDivElement) {
     })
     let areaElement = div.querySelector("textarea")!;
     let mokArea: HTMLTextAreaElement = div.querySelector(".code-textarea")!;
-    TextareaExtension(areaElement, (word) => blockMap[word] !== undefined)
+    TextareaExtension(areaElement)
     // div.innerHTML+=
 }
 

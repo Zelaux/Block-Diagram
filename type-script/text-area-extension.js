@@ -21,17 +21,6 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
 })();
 function TextareaExtension(target, font) {
     //Прямой поиск
-    function findText(text, word) {
-        for (let i = 0; i < text.length - word.length + 1; i++) {
-            let equals = true;
-            for (let j = 0; j < word.length && equals; j++) {
-                equals = (word[j] == text[i + j]);
-            }
-            if (equals)
-                return i;
-        }
-        return -1;
-    }
     let setStyleOptions = function () {
         preItem.className = "text-area-selection";
         target.parentNode.appendChild(preItem);
@@ -58,9 +47,7 @@ function TextareaExtension(target, font) {
                 + "<span class='token-" + TokenKind[token.kind] + "'>" + text.substring(token.range.start, token.range.end) + "</span>";
             prevEnd = token.range.end;
         }
-        preItem.innerHTML = result.replace("\x00", 
-        // `<span class="cursor">|</span>`
-        target.selectionStart == target.selectionEnd + 1 ? "" :
+        preItem.innerHTML = result.replace("\x00", target.selectionStart == target.selectionEnd + 1 ? "" :
             cursorElement);
     };
     self.scrollSync = function () {
@@ -108,7 +95,6 @@ function TextareaExtension(target, font) {
             }
             switch (ev.key) {
                 case "Tab": {
-                    // console.log(JSON.stringify(selectionValue), selectionValue.length)
                     if (selectionValue.length == 0) {
                         target.value = beforeSelection + TAB_SYMBOL.repeat(TAB_INCREASER) + afterSelection;
                         let idx = beforeSelection.length + TAB_INCREASER;
@@ -160,7 +146,6 @@ function TextareaExtension(target, font) {
                 }
                 case "Enter": {
                     if (ev.ctrlKey) {
-                        // ev.preventDefault()
                         setTimeout(self.analyse, 1);
                         setTimeout(self.resize, 1);
                         return;

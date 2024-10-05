@@ -25,19 +25,6 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
 
 function TextareaExtension(target: HTMLTextAreaElement, font?: string) {
     //Прямой поиск
-
-
-    function findText(text: string, word: string): number {
-        for (let i = 0; i < text.length - word.length + 1; i++) {
-            let equals = true;
-            for (let j = 0; j < word.length && equals; j++) {
-                equals = (word[j] == text[i + j]);
-            }
-            if (equals) return i;
-        }
-        return -1;
-    }
-
     let setStyleOptions = function () {
         preItem.className = "text-area-selection";
         target.parentNode!.appendChild(preItem);
@@ -70,7 +57,6 @@ function TextareaExtension(target: HTMLTextAreaElement, font?: string) {
         }
 
         preItem.innerHTML = result.replace("\x00",
-            // `<span class="cursor">|</span>`
             target.selectionStart == target.selectionEnd + 1 ? "" :
                 cursorElement
         );
@@ -129,7 +115,6 @@ function TextareaExtension(target: HTMLTextAreaElement, font?: string) {
             }
             switch (ev.key) {
                 case "Tab": {
-                    // console.log(JSON.stringify(selectionValue), selectionValue.length)
                     if (selectionValue.length == 0) {
                         target.value = beforeSelection + TAB_SYMBOL.repeat(TAB_INCREASER) + afterSelection
                         let idx = beforeSelection.length + TAB_INCREASER
@@ -180,7 +165,6 @@ function TextareaExtension(target: HTMLTextAreaElement, font?: string) {
                 }
                 case "Enter": {
                     if (ev.ctrlKey) {
-                        // ev.preventDefault()
                         setTimeout(self.analyse,1)
                         setTimeout(self.resize,1)
                         return
