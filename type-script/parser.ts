@@ -41,7 +41,7 @@ namespace Parser {
         let root = ParsedNode.new(null)
         root.newChildren()
         let current = root
-        let nodeStack=[current]
+        let nodeStack = [current]
         let tokens = Lexer.lex(text, true);
         for (let token of tokens) {
             if (token.kind == TokenKind.Error) {
@@ -55,7 +55,7 @@ namespace Parser {
             let nextToken = i + 1 >= tokens.length ? null : tokens[i + 1]
 
             function log(...args: any[]) {
-                let newVar = [["--".repeat(level+1)], args];
+                let newVar = [["--".repeat(level + 1)], args];
 
                 // @ts-ignore
                 console.log.apply(console, newVar.flatMap(it => it))
@@ -63,14 +63,15 @@ namespace Parser {
 
             switch (token.kind) {
                 case TokenKind.GraphName:
+                    let currentName = current.element == null ? null : current.element.oneName();
                     if (current.children.length == 0 && prevToken != null && (prevToken.kind == TokenKind.ContentBraceClose || prevToken.kind == TokenKind.GraphName) || prevToken != null && prevToken.kind == TokenKind.ChildrenBraceClose) {
                         current = current.parent!.child(token.payload)
-                        log("add sibling `", current.element.oneName(),"`")
+                        log("add sibling `", current.element.oneName(), "`[", currentName, ']')
                     } else {
                         current = current.child(token.payload)
-                        log("add child `", current.element.oneName(),'`')
+                        log("add child `", current.element.oneName(), "`[", currentName, ']')
                     }
-                    nodeStack[level]=current
+                    nodeStack[level] = current
                     break;
                 case TokenKind.Content:
                     current.content.push(token.payload)
@@ -92,15 +93,18 @@ namespace Parser {
                     if (current.children.length == 0) {
                         level--;
                         current = current.parent
-                        log("}children close")
+                        log("}children close (" + current.element.oneName() + ")")
                     } else if (current.children[current.children.length - 1].length == 0) {
 
-
+                        level--;
+                        if (prevToken != null && prevToken.kind == TokenKind.ChildrenBraceClose) {
+                            current = current.parent
+                        }
                         log("}empty children close (" + current.element.oneName() + ")")
                     } else {
-                        current = current.parent
                         level--;
-                        log("}children close")
+                        current = current.parent
+                        log("}children close (" + current.element.oneName() + ")")
                     }
                     break;
                 case TokenKind.Title:

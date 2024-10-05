@@ -48,13 +48,14 @@ var Parser;
             }
             switch (token.kind) {
                 case TokenKind.GraphName:
+                    let currentName = current.element == null ? null : current.element.oneName();
                     if (current.children.length == 0 && prevToken != null && (prevToken.kind == TokenKind.ContentBraceClose || prevToken.kind == TokenKind.GraphName) || prevToken != null && prevToken.kind == TokenKind.ChildrenBraceClose) {
                         current = current.parent.child(token.payload);
-                        log("add sibling `", current.element.oneName(), "`");
+                        log("add sibling `", current.element.oneName(), "`[", currentName, ']');
                     }
                     else {
                         current = current.child(token.payload);
-                        log("add child `", current.element.oneName(), '`');
+                        log("add child `", current.element.oneName(), "`[", currentName, ']');
                     }
                     nodeStack[level] = current;
                     break;
@@ -78,15 +79,19 @@ var Parser;
                     if (current.children.length == 0) {
                         level--;
                         current = current.parent;
-                        log("}children close");
+                        log("}children close (" + current.element.oneName() + ")");
                     }
                     else if (current.children[current.children.length - 1].length == 0) {
+                        level--;
+                        if (prevToken != null && prevToken.kind == TokenKind.ChildrenBraceClose) {
+                            current = current.parent;
+                        }
                         log("}empty children close (" + current.element.oneName() + ")");
                     }
                     else {
-                        current = current.parent;
                         level--;
-                        log("}children close");
+                        current = current.parent;
+                        log("}children close (" + current.element.oneName() + ")");
                     }
                     break;
                 case TokenKind.Title:
