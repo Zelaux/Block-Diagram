@@ -11,6 +11,9 @@ function terminatorConstructor(isNullProvider) {
         ];
     };
 }
+function miniPadding(width, height) {
+    return width / 10;
+}
 let blockList = [
     graphElement("start", 1 / 3, simpleHandler(terminatorConstructor(startKeyWord))),
     graphElement(["end", "stop"], 1 / 3, simpleHandler(terminatorConstructor(endKeyWord))),
@@ -35,7 +38,7 @@ let blockList = [
         ];
     })),
     graphElement(["function", "func", "fun", "def"], 2 / 3, simpleHandler((x, y, width, height, text) => {
-        const padding = 6;
+        const padding = miniPadding(width, height);
         return [
             makeRect(x, y, width, height),
             makePath(`M ${x + padding} ${y} l 0 ${height} M ${x + width - padding} ${y} l 0 ${height}`),
