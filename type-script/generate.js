@@ -44,6 +44,8 @@ setTimeout(function () {
                 }
                 width = Math.max(myWidth, width);
             }
+            let element = document.querySelector("input#extra-width");
+            width += element.valueAsNumber;
             let calculateWidth = data.block.calculateWidth(width);
             let totalWidth = calculateWidth;
             let y = 0;

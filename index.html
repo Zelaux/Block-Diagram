@@ -26,7 +26,7 @@
 </head>
 <body style="">
 <div class="main_div">
-    <svg  xmlns="http://www.w3.org/2000/svg" width="500" height="1000">
+    <svg xmlns="http://www.w3.org/2000/svg" width="500" height="1000">
         <!--    <rect x="0" y="0" width="200" height="100" stroke="red" stroke-width="3px" fill="white"/>-->
         <!--    <path stroke="black" style="fill: none" d="M 0 10 l 10 100 l 100 0 l -10 -100" />-->
         <!--    <text x="60" y="60" dominant-baseline="middle" text-anchor="middle">Hello</text>-->
@@ -37,23 +37,29 @@
             <div class="cursors"></div>
             <!--suppress HtmlFormInputWithoutLabel -->
             <textarea rows="30" class="input_area" spellcheck="false"></textarea>
-<!--            <div class="code-textarea">-->
+            <!--            <div class="code-textarea">-->
 
-<!--            </div>-->
+            <!--            </div>-->
 
         </div>
-<!--        <label>-->
-<!--            <textarea class="input_area" rows="10" ></textarea>-->
-<!--        </label>-->
+        <!--        <label>-->
+        <!--            <textarea class="input_area" rows="10" ></textarea>-->
+        <!--        </label>-->
         <label class="error_label"></label>
-       <div class="buttons">
-           <button class="generate_button">
-               Generate
-           </button>
-           <button class="download_button">
-               Download
-           </button>
-       </div>
+        <div class="buttons">
+            <button class="generate_button">
+                Generate
+            </button>
+            <button class="download_button">
+                Download
+            </button>
+        </div>
+        <div class="fields">
+            <div>
+                <label>Extra Width:</label>
+                <input id="extra-width" type="number" value="0"/>
+            </div>
+        </div>
     </div>
 
 </div>
