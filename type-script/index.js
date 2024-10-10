@@ -33,7 +33,7 @@ let blockList = [
     graphElement(["data", "io"], 2 / 3, simpleHandler((x, y, width, height, text) => {
         const padding = width / 4;
         return [
-            makePath(`M ${x - padding} ${y} l ${padding} ${height} l ${width + padding} 0 l ${-padding} ${-height} Z`),
+            makePath(`M ${x} ${y} l ${-padding} ${height} l ${width + padding} 0 l ${padding} ${-height} Z`),
             defaultCenterText(x, y, width, height, text)
         ];
     })),
