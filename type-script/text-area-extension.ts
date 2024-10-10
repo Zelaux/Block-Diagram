@@ -34,11 +34,13 @@ const TextareaExtension = (function () {
 
         target.style.width = preItem.style.width = target.offsetWidth + "px";
         target.style.height = preItem.style.height = target.offsetHeight + "px";
+
         preItem.style.top = target.offsetTop + "px";
         preItem.style.left = target.offsetLeft + "px";
         target.style.background = "transparent";
         target.style.color = "transparent";
         target.style.overflow = "scroll";
+        preItem.style.overflow = "scroll";
         preItem.style.margin = "0px 0px";
     }
 
@@ -62,10 +64,11 @@ const TextareaExtension = (function () {
                 prevEnd = token.range.end
             }
 
-            preItem.innerHTML = result.replace("\x00",
+            let innerHTML = result.replace("\x00",
                 target.selectionStart == target.selectionEnd + 1 ? "" :
                     cursorElement
             );
+            preItem.innerHTML = `<div style="height: ${target.scrollHeight}px;">${innerHTML}</div>`;
         }
 
         function scrollSync() {

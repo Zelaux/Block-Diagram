@@ -35,6 +35,7 @@ const TextareaExtension = (function () {
         target.style.background = "transparent";
         target.style.color = "transparent";
         target.style.overflow = "scroll";
+        preItem.style.overflow = "scroll";
         preItem.style.margin = "0px 0px";
     }
     return function (target, font) {
@@ -52,8 +53,9 @@ const TextareaExtension = (function () {
                     + "<span class='token-" + TokenKind[token.kind] + "'>" + text.substring(token.range.start, token.range.end) + "</span>";
                 prevEnd = token.range.end;
             }
-            preItem.innerHTML = result.replace("\x00", target.selectionStart == target.selectionEnd + 1 ? "" :
+            let innerHTML = result.replace("\x00", target.selectionStart == target.selectionEnd + 1 ? "" :
                 cursorElement);
+            preItem.innerHTML = `<div style="height: ${target.scrollHeight}px;">${innerHTML}</div>`;
         }
         function scrollSync() {
             preItem.scrollTop = target.scrollTop;
