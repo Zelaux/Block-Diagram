@@ -32,7 +32,7 @@ function terminatorConstructor(isNullProvider: () => string) {
 
 
 function miniPadding(width: number, height: number) {
-    return width / 10;
+    return Math.max(width / 30, 6);
 }
 
 let blockList = [

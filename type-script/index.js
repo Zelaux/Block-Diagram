@@ -29,7 +29,7 @@ function terminatorConstructor(isNullProvider) {
     };
 }
 function miniPadding(width, height) {
-    return width / 10;
+    return Math.max(width / 30, 6);
 }
 let blockList = [
     graphElement("start", 1 / 3, simpleHandler(terminatorConstructor(startKeyWord))),
