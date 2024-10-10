@@ -1,6 +1,23 @@
 const startKeyWord = () => "Начало";
 const endKeyWord = () => "Конец";
 
+let prepareElementCompiler: RawCompiler = (x, y, width, height, text) => {
+    let padding = miniPadding(width, height);
+    let hh = height / 2
+    let bigSide = width - 2 * padding;
+    return [
+        makePath(`
+        M ${x} ${y + hh}
+        l ${padding} ${hh}
+        l ${bigSide} 0
+        l ${padding} ${-hh}
+        l ${-padding} ${-hh}
+        l ${-bigSide} 0
+        Z
+        `),
+        defaultCenterText(x, y, width, height, text)
+    ]
+}
 
 function terminatorConstructor(isNullProvider: () => string) {
     return (x: number, y: number, width: number, height: number, text: NullableGraphText) => {
@@ -97,7 +114,24 @@ let blockList = [
         thisNode.element = graphElement
         currentBlock = currentBlock.addElement(prepare(thisNode, undefined, loopCloseRawCompiler))
         return Result.ok(currentBlock)
-    })
+    }),
+    graphElement("document", 2 / 3, simpleHandler((x, y, width, height, text) => {
+        let amplitude = 10;
+        let delta4 = width / 4
+        let delta2 = width / 2
+        return [
+            makePath(`
+            M ${x} ${y}
+            l ${width} 0
+            l 0 ${height}
+            q ${-delta4} ${-amplitude} ${-delta2} 0 
+            q ${-delta4} ${amplitude} ${-delta2} 0 
+            Z
+            `),
+            defaultCenterText(x, y, width, height, text)
+        ]
+    })),
+    graphElement("prepare", 2 / 3, simpleHandler(prepareElementCompiler))
     //TODO while, do-while
 ]
 
