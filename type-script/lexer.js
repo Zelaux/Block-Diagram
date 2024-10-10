@@ -102,6 +102,7 @@ var Lexer;
                         tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i - 1), buffer));
                     }
                     tokens.push(token(TokenKind.Error, range(i), `No close symbol for '${char}'`));
+                    hasError = true;
                     return i;
                 }
                 let _char = text[i];
@@ -123,13 +124,22 @@ var Lexer;
             return i; //i - pointed on close part
         }
         let openedChildrenBraces = [];
+        let hasError = false;
         for (let i = 0; i <= text.length; i++) {
             let char = i >= text.length ? '' : text[i];
+            if (hasError) {
+                if (char != "\n") {
+                    tokens[tokens.length - 1].range.end = i;
+                    continue;
+                }
+                hasError = false;
+            }
             switch (state) {
                 case SEARCH_COMMAND:
                     if (char === "}") {
                         if (openedChildrenBraces.length == 0) {
                             tokens.push(token(TokenKind.Error, range(i), "Nothing to close"));
+                            hasError = true;
                             continue;
                         }
                         let idx = openedChildrenBraces.pop();
@@ -151,7 +161,9 @@ var Lexer;
                     let foundBlock = blockMap[blockName];
                     if (foundBlock == null) {
                         tokens.push(token(TokenKind.Error, range(prevIdx, i), "Unknown graph element `" + blockName + "`"));
-                        prevIdx = i + 1;
+                        state = SEARCH_BRACES;
+                        prevIdx = i;
+                        i--; //substring stuff? and regexp stuff reason
                         continue;
                     }
                     state = SEARCH_BRACES;
@@ -177,6 +189,7 @@ var Lexer;
                     }
                     if (char !== "{") {
                         tokens.push(token(TokenKind.Error, range(i), "'{' expected "));
+                        hasError = true;
                         continue;
                     }
                     state = SEARCH_COMMAND;

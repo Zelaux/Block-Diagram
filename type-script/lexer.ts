@@ -115,10 +115,11 @@ namespace Lexer {
             i++;
             for (; ; i++) {
                 if (i === text.length) {
-                    if(startIdx+1<i-1) {
+                    if (startIdx + 1 < i - 1) {
                         tokens.push(token(braceInfo.token.inside, range(startIdx + 1, i - 1), buffer))
                     }
                     tokens.push(token(TokenKind.Error, range(i), `No close symbol for '${char}'`))
+                    hasError = true
                     return i
                 }
                 let _char = text[i];
@@ -140,13 +141,22 @@ namespace Lexer {
         }
 
         let openedChildrenBraces: number[] = []
+        let hasError = false
         for (let i = 0; i <= text.length; i++) {
             let char = i >= text.length ? '' : text[i];
+            if (hasError) {
+                if (char != "\n") {
+                    tokens[tokens.length - 1].range.end = i
+                    continue
+                }
+                hasError = false;
+            }
             switch (state) {
                 case SEARCH_COMMAND:
                     if (char === "}") {
                         if (openedChildrenBraces.length == 0) {
                             tokens.push(token(TokenKind.Error, range(i), "Nothing to close"))
+                            hasError = true
                             continue
                         }
                         let idx = openedChildrenBraces.pop()!;
@@ -166,7 +176,9 @@ namespace Lexer {
                     let foundBlock = blockMap[blockName];
                     if (foundBlock == null) {
                         tokens.push(token(TokenKind.Error, range(prevIdx, i), "Unknown graph element `" + blockName + "`"))
-                        prevIdx = i + 1
+                        state = SEARCH_BRACES
+                        prevIdx = i
+                        i--;//substring stuff? and regexp stuff reason
                         continue
                     }
                     state = SEARCH_BRACES
@@ -191,6 +203,7 @@ namespace Lexer {
                     }
                     if (char !== "{") {
                         tokens.push(token(TokenKind.Error, range(i), "'{' expected "));
+                        hasError = true
                         continue
                     }
                     state = SEARCH_COMMAND
@@ -201,11 +214,11 @@ namespace Lexer {
 
             }
         }
-       /* console.log(tokens.map(it => {
-            let token1 = Object.assign({}, it);
-            token1.kind = TokenKind[token1.kind] as any
-            return token1
-        }))*/
+        /* console.log(tokens.map(it => {
+             let token1 = Object.assign({}, it);
+             token1.kind = TokenKind[token1.kind] as any
+             return token1
+         }))*/
         return tokens
     }
 }
