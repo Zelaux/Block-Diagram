@@ -23,6 +23,7 @@ start(start1)
 start`start2`
 start"start3"
 ```
+![brace_preview.svg](doc%2Fbrace_preview.svg)
 
 Обратите внимание, если вы хотите использовать закрывающий элемент(`)`, ``` ` ``` или `"`) внутри текста блока, то его
 нужно экранировать
@@ -32,6 +33,7 @@ start"start3"
 start(function1(a1, a2\))
 end
 ```
+![escaping.svg](doc%2Fescaping.svg)
 
 ## Элементы
 
@@ -44,7 +46,7 @@ start
 start(Custom)
 ```
 
-![loop.svg](doc%2Fstart.svg)
+![start.svg](doc%2Fstart.svg)
 
 ### end/stop
 
@@ -53,7 +55,7 @@ end
 end(Custom)
 ```
 
-![loop.svg](doc%2Fend.svg)
+![end.svg](doc%2Fend.svg)
 
 ### connector
 
@@ -62,7 +64,7 @@ connector
 connector(1)
 ```
 
-![loop.svg](doc%2Fconnector.svg)
+![connector.svg](doc%2Fconnector.svg)
 
 ### program
 
@@ -74,7 +76,7 @@ program(CustomStart)(CustomEnd){
 }
 ```
 
-![loop.svg](doc%2Fprogram.svg)
+![program.svg](doc%2Fprogram.svg)
 
 ### process/block
 
@@ -83,7 +85,7 @@ process(x = 0)
 block(x = x + 1)
 ```
 
-![loop.svg](doc%2Fprocess.svg)
+![process.svg](doc%2Fprocess.svg)
 
 ### data/io
 
@@ -92,7 +94,7 @@ data(Hello, world!)
 io(Hello, world2!)
 ```
 
-![loop.svg](doc%2Fdata.svg)
+![data.svg](doc%2Fdata.svg)
 
 ### function/func/fun/def
 
@@ -103,7 +105,7 @@ fun`fun(a,b,c)`
 def`def(a,b,c)`
 ```
 
-![loop.svg](doc%2Ffunction.svg)
+![function.svg](doc%2Ffunction.svg)
 
 ### if
 
@@ -130,7 +132,7 @@ if(x и 0)[<][==][>]{
 }
 ```
 
-![loop.svg](doc%2Fif.svg)
+![if.svg](doc%2Fif.svg)
 
 ### loop
 
@@ -144,6 +146,21 @@ io(Done.)
 
 ![loop.svg](doc%2Floop.svg)
 
+### sideLoop
+
+делает цикл со сдвигом. Если элементов недостаточно, делает обычный loop
+
+```flow-graph
+block(x = 0)
+sideLoop(pre-text)(post-text){
+    block(Тело цикла)
+    block(Тело цикла)
+}
+io(Done.)
+```
+
+![sideLoop.svg](doc%2FsideLoop.svg)
+
 ### for
 
 Делает такой же loop, но при этом реализуя привычный нам for
@@ -155,6 +172,17 @@ for(i = 0)(i < 10)(i++){
 ```
 
 ![for.svg](doc%2Ffor.svg)
+### sideFor
+
+Делает sideLoop, из структуры for
+
+```flow-graph
+sideFor(i = 0)(i < 10)(i++){
+    block(j = i + 1)
+    func(print(j\))
+}
+```
+![sideFor.svg](doc%2FsideFor.svg)
 
 ### parallel/join
 

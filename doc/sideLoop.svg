@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="245.67977905273438px" height="384.23968505859375px"
+     viewBox="166.40786743164062 0 240.67977905273438 379.23968505859375">
+
+    <rect x="166.40786743164062" y="0" width="240.67977905273438" height="379.23968505859375" fill="white" />
+    <!--<rect x="5" y="5" width="474.2236022949219" height="394.23970540364576" style="fill: none" data-type="undefined" stroke="green"/>-->
+<!--<rect x="166.40786743164062" y="5" width="151.40786743164062" height="66.84794108072916" style="fill: none" data-type="elements" stroke="blue"/>-->
+<rect x="194.97584533691406" y="5" width="94.27191162109375" height="62.847941080729164" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(242.11180114746094 36.42397054036458)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">x = 0</tspan></text>
+</g>
+<path d="M 242.11180114746094 67.84794108072916 L 242.11180114746094 82.84794108072916" style="fill: none" stroke="black"></path>
+<path d="M 194.97584533691406 145.69588216145831 l 94.27191162109375 0 l 0 -47.135955810546875 l -15.711985270182291 -15.711985270182291 l -62.84794108072917 0 l -15.711985270182291 15.711985270182291 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(242.11180114746094 114.27191162109374)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">pre-text</tspan></text>
+</g>
+<path d="M 289.2477569580078 114.27191162109374 L 312.81573486328125 114.27191162109374" style="fill: none" stroke="black"></path>
+<!--<rect x="171.40786743164062" y="82.84794108072916" width="302.81573486328125" height="226.54382324218747" style="fill: none" data-type="" stroke="purple"/>-->
+<!--<rect x="284.2477569580078" y="82.84794108072916" width="151.40786743164062" height="222.54382324218747" style="fill: none" data-type="elements" stroke="blue"/>-->
+<rect x="312.81573486328125" y="82.84794108072916" width="94.27191162109375" height="62.847941080729164" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(359.9516906738281 114.27191162109374)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Тело цикла</tspan></text>
+</g>
+<path d="M 359.9516906738281 160.69588216145831 L 359.9516906738281 145.69588216145831" style="fill: none" stroke="black"></path>
+<rect x="312.81573486328125" y="160.69588216145831" width="94.27191162109375" height="62.847941080729164" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(359.9516906738281 192.1198527018229)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Тело цикла2</tspan></text>
+</g>
+<path d="M 359.9516906738281 238.54382324218747 L 359.9516906738281 223.54382324218747" style="fill: none" stroke="black"></path>
+<rect x="312.81573486328125" y="238.54382324218747" width="94.27191162109375" height="62.847941080729164" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(359.9516906738281 269.96779378255206)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Тело цикла</tspan></text>
+</g>
+<path d="M 289.2477569580078 269.96779378255206 L 312.81573486328125 269.96779378255206" style="fill: none" stroke="black"></path>
+<path d="M 194.97584533691406 238.54382324218747 l 94.27191162109375 0 l 0 47.135955810546875 l -15.711985270182291 15.711985270182291 l -62.84794108072917 0 l -15.711985270182291 -15.711985270182291 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(242.11180114746094 269.96779378255206)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">post-text</tspan></text>
+</g>
+<path d="M 242.11180114746094 301.39176432291663 L 242.11180114746094 316.39176432291663" style="fill: none" stroke="black"></path>
+<!--<rect x="166.40786743164062" y="316.39176432291663" width="151.40786743164062" height="66.84794108072916" style="fill: none" data-type="elements" stroke="blue"/>-->
+<path d="M 194.97584533691406 316.39176432291663 l -23.567977905273438 62.847941080729164 l 117.83988952636719 0 l 23.567977905273438 -62.847941080729164 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(242.11180114746094 347.8157348632812)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
+</g></svg>

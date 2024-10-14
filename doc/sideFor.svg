@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="267.5771484375px" height="360.276611328125px" viewBox="225.33775329589844 0 262.5771484375 355.276611328125">
+
+    <rect x="225.33775329589844" y="0" width="262.5771484375" height="355.276611328125" fill="white" />
+    <!--<rect x="5" y="5" width="565.1542816162109" height="366.276611328125" style="fill: none" data-type="undefined" stroke="green"/>-->
+<!--<rect x="196.7180938720703" y="5" width="181.7180938720703" height="80.31915283203125" style="fill: none" data-type="elements" stroke="blue"/>-->
+<rect x="230.33777618408203" y="5" width="114.47872924804688" height="76.31915283203125" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(287.57714080810547 43.159576416015625)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i = 0</tspan></text>
+</g>
+<path d="M 287.57714080810547 81.31915283203125 L 287.57714080810547 96.31915283203125" style="fill: none" stroke="black"></path>
+<path d="M 230.33777618408203 172.6383056640625 l 114.47872924804688 0 l 0 -57.23936462402344 l -19.079788208007812 -19.079788208007812 l -76.31915283203125 0 l -19.079788208007812 19.079788208007812 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(287.57714080810547 134.47872924804688)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i &lt; 10</tspan></text>
+</g>
+<path d="M 344.8165054321289 134.47872924804688 L 373.4361877441406 134.47872924804688" style="fill: none" stroke="black"></path>
+<!--<rect x="201.7180938720703" y="96.31915283203125" width="363.4361877441406" height="266.95745849609375" style="fill: none" data-type="" stroke="purple"/>-->
+<!--<rect x="339.8165054321289" y="96.31915283203125" width="181.7180938720703" height="262.95745849609375" style="fill: none" data-type="elements" stroke="blue"/>-->
+<rect x="373.4361877441406" y="96.31915283203125" width="114.47872924804688" height="76.31915283203125" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(430.67555236816406 134.47872924804688)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">j = i + 1</tspan></text>
+</g>
+<path d="M 430.67555236816406 187.6383056640625 L 430.67555236816406 172.6383056640625" style="fill: none" stroke="black"></path>
+<rect x="373.4361877441406" y="187.6383056640625" width="114.47872924804688" height="76.31915283203125" style="fill: none" stroke="black"></rect>
+<g class="text-group" transform="translate(430.67555236816406 225.79788208007812)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">some operations</tspan></text>
+</g>
+<path d="M 430.67555236816406 278.95745849609375 L 430.67555236816406 263.95745849609375" style="fill: none" stroke="black"></path>
+<rect x="373.4361877441406" y="278.95745849609375" width="114.47872924804688" height="76.31915283203125" style="fill: none" stroke="black"></rect>
+<path d="M 379.4361877441406 278.95745849609375 l 0 76.31915283203125 M 481.9149169921875 278.95745849609375 l 0 76.31915283203125" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(430.67555236816406 317.1170349121094)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">print(j)</tspan></text>
+</g>
+<path d="M 344.8165054321289 317.1170349121094 L 373.4361877441406 317.1170349121094" style="fill: none" stroke="black"></path>
+<path d="M 230.33777618408203 278.95745849609375 l 114.47872924804688 0 l 0 57.23936462402344 l -19.079788208007812 19.079788208007812 l -76.31915283203125 0 l -19.079788208007812 -19.079788208007812 Z" style="fill: none" stroke="black"></path>
+<g class="text-group" transform="translate(287.57714080810547 317.1170349121094)" data-aspect="0.6666666666666666" data-widthaspect="1">
+<text x="0" y="0" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">i++</tspan></text>
+</g></svg>
