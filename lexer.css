@@ -1,3 +1,16 @@
+.text-area-selection {
+    color: black;
+}
+
+.token-Content {
+    /*background: lightgray;*/
+}
+
+.token-ContentBraceOpen, .token-ContentBraceClose {
+    color: #777777;
+    /*color: white;*/
+    /*background: dodgerblue;*/
+}
 
 .token-GraphName {
     color: blue;

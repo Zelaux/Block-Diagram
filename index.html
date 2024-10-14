@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Блок-Схемы</title>
     <link href="zero.css" type="text/css" rel="stylesheet"/>
-    <link href="index.css" type="text/css" rel="stylesheet"/>
     <link href="lexer.css" type="text/css" rel="stylesheet"/>
+    <link href="lexer-dark.css" type="text/css" rel="stylesheet"/>
+    <link href="index.css" type="text/css" rel="stylesheet"/>
 
     <script src="type-script/svg_stuff.js"></script>
     <script src="type-script/classes.js"></script>
@@ -29,12 +30,14 @@
 </head>
 <body style="">
 <div class="main_div">
-    <svg xmlns="http://www.w3.org/2000/svg" width="500" height="1000">
-        <!--    <rect x="0" y="0" width="200" height="100" stroke="red" stroke-width="3px" fill="white"/>-->
-        <!--    <path stroke="black" style="fill: none" d="M 0 10 l 10 100 l 100 0 l -10 -100" />-->
-        <!--    <text x="60" y="60" dominant-baseline="middle" text-anchor="middle">Hello</text>-->
-        <!--    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">TEXT</text>-->
-    </svg>
+    <div class="svg_container">
+        <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+            <!--    <rect x="0" y="0" width="200" height="100" stroke="red" stroke-width="3px" fill="white"/>-->
+            <!--    <path stroke="black" style="fill: none" d="M 0 10 l 10 100 l 100 0 l -10 -100" />-->
+            <!--    <text x="60" y="60" dominant-baseline="middle" text-anchor="middle">Hello</text>-->
+            <!--    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">TEXT</text>-->
+        </svg>
+    </div>
     <div>
         <div class="textarea-container">
             <div class="cursors"></div>
@@ -49,24 +52,30 @@
         <!--            <textarea class="input_area" rows="10" ></textarea>-->
         <!--        </label>-->
         <label class="error_label"></label>
-        <div class="buttons">
-            <button class="generate_button">
-                Generate
-            </button>
-            <button class="download_button">
-                Download
-            </button>
-        </div>
-        <div class="fields">
-            <div>
-
-                <label for="extra-width">Extra Width:</label>
-                <input id="extra-width" type="number" value="0"/>
-                <br>
-                <label for="draw-bb">Draw Bounding boxes:</label>
-                <input id="draw-bb" type="checkbox" value="0"/>
+        <div class="extra_container">
+            <div class="buttons">
+                <button class="generate_button">
+                    Generate
+                </button>
+                <button class="download_button">
+                    Download
+                </button>
             </div>
+            <div class="fields">
+                <div>
+                    <label for="extra-width">Extra Width:</label>
+                    <input id="extra-width" type="number" value="0"/>
+                </div>
+                <div>
+                    <label for="add-back">Add white background:</label>
+                    <input id="add-back" type="checkbox" value="0"/>
+                </div>
+                <div>
+                    <label for="draw-bb">Draw Bounding boxes:</label>
+                    <input id="draw-bb" type="checkbox" value="0"/>
+                </div>
 
+            </div>
         </div>
     </div>
 

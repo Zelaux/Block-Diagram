@@ -56,6 +56,9 @@ setTimeout(function () {
             if (compileInfo.drawBB) {
                 svgRootElement.width.baseVal.value = boundingBox.width + 10;
                 svgRootElement.height.baseVal.value = boundingBox.height + 10;
+                if (inputElement("#add-back").checked) {
+                    svgRootElement.innerHTML = `<rect width="100%" height="100%" fill="white"></rect>\n` + svgRootElement.innerHTML;
+                }
             }
             else {
                 let currentBox = undefined;
@@ -71,23 +74,32 @@ setTimeout(function () {
                     let box = svgElement.getBBox();
                     if (currentBox === undefined) {
                         currentBox = box;
+                        let strings = ["x", "y"];
+                        for (let prop of strings) {
+                            currentBox[prop] = currentBox[prop] - 5;
+                            let size = propToSize[prop];
+                            currentBox[size] = currentBox[size] + 5;
+                        }
                         continue;
                     }
                     if (box.x < 0)
                         debugPoint();
                     for (let prop_ of Object.keys(propToSize)) {
                         let prop = prop_;
-                        let other1 = otherSide(currentBox, prop);
-                        let other2 = otherSide(box, prop);
+                        let other1 = otherSide(currentBox, prop) + 5;
+                        let other2 = otherSide(box, prop) + 5;
                         let other = Math.max(other1, other2);
-                        currentBox[prop] = Math.min(currentBox[prop], box[prop]);
+                        currentBox[prop] = Math.min(currentBox[prop], box[prop] - 5);
                         currentBox[propToSize[prop]] = other - currentBox[prop];
                     }
                 }
                 currentBox = currentBox;
-                svgRootElement.setAttribute("viewBox", `${currentBox.x - 5} ${currentBox.y - 5} ${currentBox.width + 5} ${currentBox.height + 5}`);
-                svgRootElement.setAttribute("width", `${currentBox.width + 10}px`);
-                svgRootElement.setAttribute("height", `${currentBox.height + 10}px`);
+                if (inputElement("#add-back").checked) {
+                    svgRootElement.innerHTML = `<rect x="${currentBox.x}" y="${currentBox.y}" width="${currentBox.width}" height="${currentBox.height}" fill="white"></rect>\n` + svgRootElement.innerHTML;
+                }
+                svgRootElement.setAttribute("viewBox", `${currentBox.x} ${currentBox.y} ${currentBox.width} ${currentBox.height}`);
+                svgRootElement.setAttribute("width", `${currentBox.width}px`);
+                svgRootElement.setAttribute("height", `${currentBox.height}px`);
                 svgRootElement.width.baseVal.value = currentBox.width + 10;
                 svgRootElement.height.baseVal.value = currentBox.height + 10;
             }

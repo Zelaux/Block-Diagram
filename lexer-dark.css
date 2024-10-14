@@ -1,0 +1,36 @@
+@media (prefers-color-scheme: dark) {
+    .text-area-selection {
+        /*--text-color:;*/
+        /*color: darkgray;*/
+    }
+
+    .token-GraphName {
+        color: cornflowerblue;
+    }
+
+    .token-Content {
+        color: darkgray;
+        background: transparent;
+    }
+
+    .token-ContentBraceOpen, .token-ContentBraceClose {
+        color: white;
+        /*color: white;*/
+        /*background: dodgerblue;*/
+    }
+
+    .token-Error {
+        color: red;
+        text-decoration: underline;
+        text-decoration-style: wavy;
+        text-decoration-color: darkred;
+    }
+
+    .token-Title {
+        color: lightgreen;
+    }
+
+    .token-TitleBraceOpen, .token-TitleBraceClose {
+        color: darkgreen;
+    }
+}

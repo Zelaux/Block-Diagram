@@ -1,3 +1,35 @@
+:root {
+    --white: white;
+    --black: black;
+    --button-darkgray: darkgray;
+    --button-gray_d: #dddddd;
+    --button-gray_e: #eeeeee;
+    --gray_a: #aaaaaa;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: lightgray;
+        --white: black;
+        --black: white;
+        --button-darkgray: #565656;
+        --button-gray_d: #222222;
+        --button-gray_e: #111111;
+        --gray_a: #555555;
+    }
+
+    body {
+        background: black;
+    }
+
+    * {
+        color: var(--text-color);
+    }
+
+    svg {
+        background: gray;
+    }
+}
 
 .main_div {
     display: grid;
@@ -10,32 +42,65 @@
 
 textarea {
     border: 3px solid black;
+
+    @media (prefers-color-scheme: dark) {
+        border-color: lightgray;
+    }
 }
+
 
 .error_label {
     width: 100%;
 }
 
-.buttons {
+
+.extra_container {
     display: flex;
+    flex-direction: column;
+}
+
+.extra_container > * {
+    width: 100%;
+}
+
+.buttons, .fields {
+    display: flex;
+}
+
+.buttons > * {
+    flex: 1;
+}
+
+.fields {
+    flex-direction: column;
+}
+
+.fields > * {
+    width: 100%;
+    padding: 5px;
+    border: 3px solid var(--gray_a);
+}
+
+.fields > div > * {
+    @media (prefers-color-scheme: dark) {
+        /*color: ;*/
+    }
 }
 
 .generate_button, .download_button {
     padding: 8px;
-    background: #eeeeee;
-    border: 2px darkgray solid;
+    background: var(--button-gray_e);
+    border: 3px var(--button-darkgray) solid;
 }
 
 .generate_button:hover, .download_button:hover {
-
-    background: gray;
-    border: 2px darkgray solid;
+    background: var(--button-gray_d);
 }
 
 .generate_button:active, .download_button:active {
-    background: darkgray;
-    color: white;
-    border: 2px #eeeeee solid;
+    color: var(--button-gray_d);
+    background: var(--button-darkgray);
+    border-color: var(--button-gray_d);
 }
 
 .input_area {
@@ -49,11 +114,6 @@ textarea {
 .cursor {
     width: 0px;
     height: 1em;
-    /*border-left: 1px solid black;*/
-    /*box-shadow: 1px 0px black;*/
-    /*box-shadow: black 1px;*/
-    /*outline: black solid 1px;*/
-    /*box-sizing: revert;*/
     display: inline-block;
     position: relative;
     vertical-align: bottom;
@@ -68,6 +128,9 @@ textarea {
     margin: 0;
     /*width: 1px;*/
     border-left: 1px solid black;
+    @media (prefers-color-scheme: dark) {
+        border-color: white;
+    }
     height: 1em;
     display: inline-block;
     opacity: var(--cursor-blink);
@@ -91,6 +154,18 @@ textarea {
     display: block;
     word-wrap: break-word;
     white-space: pre-wrap;
-    color: black;
     overflow: scroll;
+}
+
+.svg_container {
+    display: flex;
+}
+
+.svg_container > svg {
+    margin: auto;
+    border: 3px solid black;
+
+    @media (prefers-color-scheme: dark) {
+        border-color: gray;
+    }
 }
