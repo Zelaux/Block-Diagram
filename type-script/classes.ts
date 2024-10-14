@@ -2,13 +2,19 @@ class Cursor {
 
     value: number
 
-    move(x: number) {
-        this.value += x;
+    move(value: number) {
+        this.value += value;
         return this;
     }
 
     constructor(v: number) {
         this.value = v;
+    }
+
+    withOffset(offset: number, closure: (() => void) | ((self: Cursor) => void)) {
+        this.value += offset;
+        closure(this)
+        this.value -= offset;
     }
 
     clone() {
@@ -24,13 +30,18 @@ class Vector {
     static X: Vector = Vector.new(1, 0);
     static Y: Vector = Vector.new(0, 1);
 
-    public static new(x: number, y: number) {
+    private static extractNumber(value: number | Cursor) {
+        return typeof value == "number" ? value : value.value;
+    }
+
+    public static new(x: number | Cursor, y: number | Cursor) {
         return new Vector(x, y)
     }
 
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
+
+    constructor(x: number | Cursor, y: number | Cursor) {
+        this.x = Vector.extractNumber(x);
+        this.y = Vector.extractNumber(y);
     }
 
     copy() {
@@ -43,9 +54,40 @@ class Vector {
         return this
     }
 
+    set(x: number, y: number) {
+        this.x = x
+        this.y = y
+        return this
+    }
+
     mul(x: number, y: number) {
         this.x *= x
         this.y *= y
         return this
+    }
+}
+
+class CompileInfo {
+    width: number
+    topMargin: number
+    extraWidth: number
+
+    constructor(width: number, topMargin: number, extraWidth: number) {
+        this.width = width;
+        this.topMargin = topMargin;
+        this.extraWidth = extraWidth;
+    }
+}
+
+class CompileResult {
+    /**
+     * Offset from end position
+     * */
+    output: Vector
+    svgCode: string[]
+
+    constructor(output: Vector, svgCode: string[]) {
+        this.output = output;
+        this.svgCode = svgCode;
     }
 }

@@ -1,5 +1,8 @@
 "use strict";
 // | "text-top"
+function debugPoint() {
+    let i = 0;
+}
 function textOr(text, fallback) {
     return (text === undefined) || (text == null) || text.length === 0 ? fallback : text;
 }
@@ -36,5 +39,8 @@ function makeRect(x, y, width, height) {
     return `<rect x="${x}" y="${y}" width="${width}" height="${height}" style="fill: none" stroke="black"/>`;
 }
 function makePath(path) {
+    if (typeof path != "string") {
+        path = path.join(" ");
+    }
     return `<path d="${path}" style="fill: none" stroke="black" />`;
 }

@@ -1,6 +1,6 @@
 type RawCompiler = (x: number, y: number, width: number, height: number, text: NullableGraphText) => string[]
 type Compiler = (x: number, y: number, width: number, height: number) => string[]
-type Handler = (currentBlock: Block, thisNode: ParsedNode) => Result<Block>
+type Handler = (parentBlock: Block, thisNode: ParsedNode) => Result<Block>
 type GraphText = string | string[]
 type NullableGraphText = GraphText | null | undefined
 

@@ -68,7 +68,7 @@ let blockList = [
     ])),
     graphElement("loop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
-        let subBlock = new HorizontalBlockOfBlocks(null).apply(function () {
+        let subBlock = new HorizontalBranchBlockOfBlocks(null).apply(function () {
             if (thisNode.content[0] !== undefined) {
                 try {
                     this.marginBetweenBlocks = Number.parseInt(thisNode.content[0]);
@@ -80,7 +80,7 @@ let blockList = [
         for (let child of thisNode.children) {
             if (child.length == 0)
                 continue;
-            let innerBlock = new ElementBlock();
+            let innerBlock = new BlockOfElements();
             let innerCurrentBlock = innerBlock;
             for (let parsedNode of child) {
                 let result = parsedNode.addToBlock(innerCurrentBlock);
@@ -90,23 +90,23 @@ let blockList = [
             }
             subBlock.addBlock(innerBlock);
         }
-        return Result.ok(currentBlock.next(subBlock));
+        return Result.ok(currentBlock.addBlock(subBlock));
     }),
     graphElement("for", 2 / 3, (currentBlock, thisNode) => {
         let blockMapElement = blockMap["block"];
         let graphElement = thisNode.element;
         thisNode.element = blockMapElement;
-        currentBlock = currentBlock.addElement(prepare(thisNode, thisNode.content[0], blockMapElement.handler.compiler));
+        currentBlock = currentBlock.addElement(prepareNode(thisNode, thisNode.content[0], blockMapElement.handler.compiler));
         thisNode.element = graphElement;
-        currentBlock = currentBlock.addElement(prepare(thisNode, thisNode.content[1], loopOpenRawCompiler));
+        currentBlock = currentBlock.addElement(prepareNode(thisNode, thisNode.content[1], loopOpenRawCompiler));
         let result = nodesToBlock(currentBlock, thisNode.children[0]);
         if (result.isError())
             return result;
         currentBlock = result.data;
         thisNode.element = blockMapElement;
-        currentBlock = currentBlock.addElement(prepare(thisNode, thisNode.content[2], blockMapElement.handler.compiler));
+        currentBlock = currentBlock.addElement(prepareNode(thisNode, thisNode.content[2], blockMapElement.handler.compiler));
         thisNode.element = graphElement;
-        currentBlock = currentBlock.addElement(prepare(thisNode, undefined, loopCloseRawCompiler));
+        currentBlock = currentBlock.addElement(prepareNode(thisNode, undefined, loopCloseRawCompiler));
         return Result.ok(currentBlock);
     }),
     graphElement("document", 2 / 3, simpleHandler((x, y, width, height, text) => {

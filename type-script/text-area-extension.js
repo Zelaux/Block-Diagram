@@ -109,7 +109,8 @@ const TextareaExtension = (function () {
                             let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1), 0);
                             let newLinesSymbolsStart = [nlStart];
                             while (newLinesSymbolsStart[newLinesSymbolsStart.length - 1] < target.selectionEnd) {
-                                newLinesSymbolsStart.push(text.indexOf("\n", newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1));
+                                let idx = text.indexOf("\n", newLinesSymbolsStart[newLinesSymbolsStart.length - 1] + 1);
+                                newLinesSymbolsStart.push(idx == -1 ? text.length : idx);
                             }
                             let newLines = [];
                             for (let i = 0; i < newLinesSymbolsStart.length - 1; i++) {

@@ -19,6 +19,7 @@ setTimeout(function () {
             generateButton.onclick();
         }
     });
+    const TEST_COMPILE_INFO = new CompileInfo(1, 0, 0);
     generateButton.onclick = function () {
         let result = Parser.parse(textAreaElement.value);
         if (result.error != null) {
@@ -29,7 +30,7 @@ setTimeout(function () {
             let data = result.data;
             // svgElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
             //     .join("\n")
-            svgElement.innerHTML = data.block.compile(0, new Cursor(0), 1).join("\n");
+            svgElement.innerHTML = data.block.compile(new Cursor(0), new Cursor(0), TEST_COMPILE_INFO).svgCode.join("\n");
             let width = 1;
             for (let child of svgElement.querySelectorAll(".text-group")) {
                 let bBox = child.getBBox();
@@ -45,18 +46,16 @@ setTimeout(function () {
                 width = Math.max(myWidth, width);
             }
             let element = document.querySelector("input#extra-width");
-            width += element.valueAsNumber;
-            let calculateWidth = data.block.calculateWidth(width);
-            let totalWidth = calculateWidth;
-            let y = 0;
-            let x = totalWidth / 2 - width / 2;
-            let heightInfo = data.block.calculateHeight();
-            let totalHeight = heightInfo.unscaledHeight * width + (heightInfo.totalElements + 4) * 15;
-            svgElement.width.baseVal.value = totalWidth;
-            console.log(width, heightInfo);
-            let cursor = new Cursor(y);
-            svgElement.innerHTML = data.block.compile(x, cursor, width).join("\n");
-            svgElement.height.baseVal.value = cursor.value;
+            let extraWidth = element.valueAsNumber;
+            width += extraWidth;
+            let compileInfo = new CompileInfo(width, 15, extraWidth);
+            let boundingBox = data.block.calculateBoundingBox(compileInfo);
+            svgElement.width.baseVal.value = boundingBox.width + 10;
+            svgElement.height.baseVal.value = boundingBox.height + 10;
+            console.log(width, boundingBox);
+            let cursorY = new Cursor(boundingBox.anchor.y + 5);
+            let cursorX = new Cursor(boundingBox.anchor.x + 5);
+            svgElement.innerHTML = data.block.compile(cursorX, cursorY, compileInfo).svgCode.join("\n");
         }
     };
     downloadButton.onclick = function () {

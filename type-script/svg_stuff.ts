@@ -10,6 +10,9 @@ type SVGDominantBaseline =
     | "hanging"
 
 // | "text-top"
+function debugPoint() {
+    let i = 0;
+}
 
 function textOr(text: NullableGraphText, fallback: GraphText) {
 
@@ -52,6 +55,9 @@ function makeRect(x: number, y: number, width: number, height: number) {
     return `<rect x="${x}" y="${y}" width="${width}" height="${height}" style="fill: none" stroke="black"/>`;
 }
 
-function makePath(path: string) {
+function makePath(path: string | string[]) {
+    if (typeof path != "string") {
+        path = path.join(" ")
+    }
     return `<path d="${path}" style="fill: none" stroke="black" />`;
 }

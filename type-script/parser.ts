@@ -121,7 +121,7 @@ namespace Parser {
 
         function buildBlock(nodes: ParsedNode[]): Result<Block> {
 
-            let first = new ElementBlock();
+            let first = new SimpleBlockOfBlocks();
             let block: Block = first;
 
             for (let node of nodes) {

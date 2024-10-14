@@ -104,7 +104,7 @@ var Parser;
         }
         console.log(root);
         function buildBlock(nodes) {
-            let first = new ElementBlock();
+            let first = new SimpleBlockOfBlocks();
             let block = first;
             for (let node of nodes) {
                 let result = node.addToBlock(block);
