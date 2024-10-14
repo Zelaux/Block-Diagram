@@ -1,5 +1,5 @@
 "use strict";
-//priority: 60
+//depends: block
 class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
     addBlock(block) {
         this.innerElements.push(block);
@@ -30,14 +30,14 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
         }
         height += compileInfo.topMargin;
         height += compileInfo.topMargin * 3;
-        return new BlockBoundingBox(Vector.new(1.50 * compileInfo.width / 2, 0), width, height);
+        return new BlockBoundingBox(Vector.new(width / 2, 0), width, height);
     }
     compile(centerXCursor, cursorY, compileInfo) {
         var _a;
         const topMargin = compileInfo.topMargin;
         const width = compileInfo.width;
         let svgResult = [
-            bbToSvg((_a = this.rootElement) === null || _a === void 0 ? void 0 : _a.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY))
+            bbToSvg((_a = this.rootElement) === null || _a === void 0 ? void 0 : _a.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo)
         ];
         const margin = this.marginBetweenBlocks;
         let amount = this.innerElements.length;
@@ -112,7 +112,18 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             }
         }
         let nextBlock = this.parentInfo !== undefined ? this.parentInfo.siblingIndex(1) : undefined;
-        if (nextBlock != undefined) { //Drawing output lines
+        let hasAfter = !compileInfo.isLast;
+        if (!hasAfter) {
+            let myParent = this.parentInfo;
+            // debugPoint()
+            while (myParent !== undefined) {
+                if (myParent.siblingIndex(1) !== undefined) {
+                    hasAfter = true;
+                }
+                myParent = myParent.parent.parentInfo;
+            }
+        }
+        if (hasAfter) { //Drawing output lines
             let lines = [];
             {
                 for (let info of branchInfos) {
@@ -121,7 +132,7 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
                 }
             }
             lines.push(rawSvgLine(branchInfos[0].output.x, maxY + topMargin * 2, branchInfos[branchInfos.length - 1].output.x, maxY + topMargin * 2));
-            if (nextBlock.isEmpty()) {
+            if (nextBlock != null && nextBlock.isEmpty()) {
                 lines.push(rawSvgLine(centerXCursor.value, cursorY.value - topMargin, centerXCursor.value, maxY + topMargin * 2));
             }
             else {

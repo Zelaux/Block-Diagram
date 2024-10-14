@@ -1,6 +1,7 @@
 //depends: block
 class SimpleBlockOfBlocks extends BlockOfBlocks {
     type = SimpleBlockOfBlocks
+    bbColor = "green"
 
     constructor() {
         super(null);
@@ -30,7 +31,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         for (let innerElement of this.innerElements) {
             let bb = innerElement.calculateBoundingBox(compileInfo);
             height += bb.height
-            width = Math.max(width, bb.width)
+            width = Math.max(width, (bb.width - bb.anchor.x) * 2, bb.anchor.x * 2)
         }
 
         return BlockBoundingBox.make(Vector.new(width / 2, 0), width, height)
@@ -41,12 +42,14 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         const topMargin = compileInfo.topMargin;
         let width = compileInfo.width;
         let svgResult: string[] = [
-            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), "green")
+            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo)
         ]
         let prevPosition: Vector | null = null
 
-
-        for (let innerElement of this.innerElements) {
+        let last = compileInfo.isLast;
+        for (let i = 0; i < this.innerElements.length; i++) {
+            let innerElement = this.innerElements[i];
+            compileInfo.isLast = last && (i == this.innerElements.length - 1)
             if (prevPosition !== null) {
 
                 svgResult.push(svgLine(

@@ -71,6 +71,7 @@ let blockList = [
         defaultCenterText(x, y, width, height, text)
     ])),
     graphElement("loop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler)),
+    graphElement("sideLoop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler, true)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
 
         let subBlock: Block = new HorizontalBranchBlockOfBlocks(null).apply(function () {
@@ -98,21 +99,44 @@ let blockList = [
     }),
 
     graphElement("for", 2 / 3, (currentBlock, thisNode) => {
-        let blockMapElement = blockMap["block"];
-        let graphElement = thisNode.element;
+        let localRoot = ParsedNode.new(null);
+        localRoot.newChildren()
+        localRoot.childByName("block")
+            .content.push(thisNode.content[0])
 
-        thisNode.element = blockMapElement
-        currentBlock = currentBlock.addElement(prepareNode(thisNode, thisNode.content[0], ((blockMapElement.handler as any).compiler as RawCompiler)))
-        thisNode.element = graphElement
-        currentBlock = currentBlock.addElement(prepareNode(thisNode, thisNode.content[1], loopOpenRawCompiler))
-        let result = nodesToBlock(currentBlock, thisNode.children[0]);
-        if (result.isError()) return result;
+        let loopNode = localRoot.childByName("loop");
+        loopNode.children = thisNode.children
+        loopNode.content = [thisNode.content[1], thisNode.content[2]]
+        let block = currentBlock;
+        for (let parsedNode of localRoot.children[0]) {
+            let result = parsedNode.addToBlock(block);
+            if (result.error) return result;
+            block = result.data!;
+        }
+        return Result.ok(block)
+    }),
+    graphElement("sideFor", 2 / 3, (currentBlock, thisNode) => {
+        let localRoot = ParsedNode.new(null);
+        localRoot.newChildren()
+        localRoot.childByName("block")
+            .content.push(thisNode.content[0])
 
-        currentBlock = result.data!
-        thisNode.element = blockMapElement
-        currentBlock = currentBlock.addElement(prepareNode(thisNode, thisNode.content[2], ((blockMapElement.handler as any).compiler as RawCompiler)))
-        thisNode.element = graphElement
-        currentBlock = currentBlock.addElement(prepareNode(thisNode, undefined, loopCloseRawCompiler))
+        let loopNode = localRoot.childByName("sideLoop");
+        loopNode.children = thisNode.children
+        loopNode.content = [thisNode.content[1], thisNode.content[2]]
+        {
+            let childElement = localRoot.children[0][0];
+            let r1 = childElement.addToBlock(currentBlock);
+            if (r1.error != null) return r1;
+            currentBlock=r1.data!
+        }
+
+        {
+            let parsedNode = localRoot.children[0][1]
+            let result = parsedNode.addToBlock(currentBlock);
+            if (result.error) return result;
+            currentBlock = result.data!;
+        }
         return Result.ok(currentBlock)
     }),
     graphElement("document", 2 / 3, simpleHandler((x, y, width, height, text) => {

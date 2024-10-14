@@ -1,12 +1,23 @@
 "use strict";
 class BlockBoundingBox {
     static make(input, width, height) {
-        return new BlockBoundingBox(input, width, height);
+        input.x += 5;
+        return new BlockBoundingBox(input, width + 10, height + 4);
     }
     constructor(input, width, height) {
         this.anchor = input;
         this.width = width;
         this.height = height;
+    }
+}
+function bbToSvg(name, bb, vector, color, compileInfo) {
+    let x = vector.x - bb.width / 2;
+    let y = vector.y;
+    if (compileInfo.drawBB) {
+        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
+    }
+    else {
+        return `<!--<rect x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
     }
 }
 class ParentInfo {
@@ -60,11 +71,6 @@ class TitlePosition {
     static new(baseline, anchor, offset = Vector.ZERO) {
         return new TitlePosition(baseline, anchor, offset);
     }
-}
-function bbToSvg(name, bb, vector, color = "red") {
-    let x = vector.x - bb.width / 2;
-    let y = vector.y;
-    return `<rect x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke="${color}"/>`;
 }
 function svgLine(x1, y1, x2, y2) {
     return makePath(`M ${x1} ${y1} L ${x2} ${y2}`);

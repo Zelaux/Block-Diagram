@@ -63,23 +63,84 @@ function nodesToBlock(block, children) {
     }
     return Result.ok(myBlock);
 }
+function compilePrepered(openPrepare, centerXCursor, cursorY, compileInfo) {
+    let width = compileInfo.width;
+    let height = compileInfo.width * openPrepare.aspect;
+    return openPrepare.compile(centerXCursor.value - width / 2, cursorY.value, width, height);
+}
 function openCloseHandler(open, close, useIndent = false) {
     return handler((block, thisNode) => {
-        block = block.addElement(prepareNode(thisNode, thisNode.content[0], open));
-        if (useIndent) {
+        let openPrepare = prepareNode(thisNode, thisNode.content[0], open);
+        let closePrepare = prepareNode(thisNode, thisNode.content[1], close);
+        let shouldUseIndent = useIndent;
+        if (thisNode.children[0].length < 2 && useIndent) {
+            let valid = false;
+            for (let child of thisNode.children[0]) {
+                if (valid)
+                    break;
+                if (child.children.length > 0) {
+                    valid = true;
+                    break;
+                }
+            }
+            shouldUseIndent = valid;
+        }
+        if (!shouldUseIndent) {
             let simpleBlockOfBlocks = new SimpleBlockOfBlocks();
-            let result = nodesToBlock(simpleBlockOfBlocks, thisNode.children[0]);
+            simpleBlockOfBlocks.bbColor = "gray";
+            let inner = simpleBlockOfBlocks.addElement(openPrepare);
+            let result = nodesToBlock(inner, thisNode.children[0]);
             if (result.isError())
                 return result;
-            block = block.addBlock(result.data);
+            result.data.addElement(closePrepare);
+            block = block.addBlock(simpleBlockOfBlocks);
         }
         else {
-            let result = nodesToBlock(block, thisNode.children[0]);
+            let blocks = new SimpleBlockOfBlocks();
+            let originalCalculateBoundingBox = blocks.calculateBoundingBox;
+            blocks.calculateBoundingBox = compileInfo => {
+                let boundingBox = originalCalculateBoundingBox.call(blocks, compileInfo);
+                let fullElementWidth = compileInfo.width * 1.5;
+                boundingBox.width += fullElementWidth;
+                boundingBox.anchor.x = fullElementWidth / 2;
+                return boundingBox;
+            };
+            let originalCompile = blocks.compile;
+            blocks.compile = (centerXCursor, cursorY, compileInfo) => {
+                let myBB = blocks.calculateBoundingBox(compileInfo);
+                let bbSvg = bbToSvg("", myBB, Vector.new(centerXCursor, cursorY), "purple", compileInfo);
+                let width = compileInfo.width;
+                let fullWidth = width * 1.5;
+                function drawLine(myStrings, lineX1, lineX2) {
+                    let closeY = cursorY.value + width * closePrepare.aspect / 2;
+                    myStrings.push(svgLine(lineX1, closeY, lineX2, closeY));
+                }
+                return centerXCursor.withOffset(-myBB.width / 2 + fullWidth / 2, () => {
+                    let myStrings = compilePrepered(openPrepare, centerXCursor, cursorY, compileInfo);
+                    let lineX1 = centerXCursor.value + width / 2;
+                    let lineX2 = centerXCursor.value + width / 2 + width / 4;
+                    drawLine(myStrings, lineX1, lineX2);
+                    // centerXCursor.value +=
+                    let v1 = centerXCursor.value;
+                    let compileResult = centerXCursor.withOffset(fullWidth - width / 4, () => originalCompile.call(blocks, centerXCursor, cursorY, compileInfo));
+                    centerXCursor.value = v1;
+                    compileResult.svgCode[0] = bbSvg;
+                    cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
+                        myStrings.push.apply(myStrings, compileResult.svgCode);
+                        drawLine(myStrings, lineX1, lineX2);
+                        myStrings.push.apply(myStrings, compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo));
+                        compileResult.svgCode = myStrings;
+                    });
+                    cursorY.value -= compileInfo.topMargin;
+                    compileResult.output.x = v1;
+                    return compileResult;
+                });
+            };
+            let result = nodesToBlock(blocks, thisNode.children[0]);
             if (result.isError())
                 return result;
-            block = result.data;
+            block = block.addBlock(blocks);
         }
-        block = block.addElement(prepareNode(thisNode, thisNode.content[1], close));
         return Result.ok(block);
     });
 }

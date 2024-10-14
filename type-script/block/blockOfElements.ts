@@ -46,7 +46,7 @@ class BlockOfElements extends AbstractBlock {
         let width = compileInfo.width;
         let svgResult: string[] = [
 
-            bbToSvg("elements", this.calculateBoundingBox(compileInfo), Vector.new(x, y), "blue")
+            bbToSvg("elements", this.calculateBoundingBox(compileInfo), Vector.new(x, y), "blue", compileInfo)
         ]
         let prevPosition: Vector | null = null
 

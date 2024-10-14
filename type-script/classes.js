@@ -9,8 +9,9 @@ class Cursor {
     }
     withOffset(offset, closure) {
         this.value += offset;
-        closure(this);
+        let v = closure(this);
         this.value -= offset;
+        return v;
     }
     clone() {
         return new Cursor(this.value);
@@ -51,6 +52,8 @@ Vector.X = Vector.new(1, 0);
 Vector.Y = Vector.new(0, 1);
 class CompileInfo {
     constructor(width, topMargin, extraWidth) {
+        this.isLast = true;
+        this.drawBB = false;
         this.width = width;
         this.topMargin = topMargin;
         this.extraWidth = extraWidth;

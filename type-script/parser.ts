@@ -22,8 +22,13 @@ class ParsedNode {
         return new ParsedNode(element as GraphElement)
     }
 
-    child(name: GraphElement) {
-        let node = ParsedNode.new(name);
+    childByName(name: string) {
+        return this.child(blockMap[name])
+    }
+
+    /**@return child*/
+    child(graphElement: GraphElement) {
+        let node = ParsedNode.new(graphElement);
         node.parent = this;
         this.children[this.children.length - 1].push(node)
         return node;

@@ -11,10 +11,11 @@ class Cursor {
         this.value = v;
     }
 
-    withOffset(offset: number, closure: (() => void) | ((self: Cursor) => void)) {
+    withOffset<T>(offset: number, closure: (() => T) | ((self: Cursor) => T)): T {
         this.value += offset;
-        closure(this)
+        let v = closure(this);
         this.value -= offset;
+        return v
     }
 
     clone() {
@@ -71,6 +72,8 @@ class CompileInfo {
     width: number
     topMargin: number
     extraWidth: number
+    isLast: boolean = true
+    drawBB:boolean=false
 
     constructor(width: number, topMargin: number, extraWidth: number) {
         this.width = width;

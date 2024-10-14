@@ -9,13 +9,24 @@ class BlockBoundingBox {
     height: number
 
     static make(input: Vector, width: number, height: number) {
-        return new BlockBoundingBox(input, width, height)
+        input.x += 5
+        return new BlockBoundingBox(input, width + 10, height + 4)
     }
 
     constructor(input: Vector, width: number, height: number) {
         this.anchor = input;
         this.width = width;
         this.height = height;
+    }
+}
+
+function bbToSvg(name: string | undefined, bb: BlockBoundingBox, vector: Vector, color: string, compileInfo: CompileInfo) {
+    let x = vector.x - bb.width / 2
+    let y = vector.y
+    if (compileInfo.drawBB) {
+        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
+    } else {
+        return `<!--<rect x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
     }
 }
 
@@ -124,12 +135,6 @@ class TitlePosition {
     static new(baseline: SVGDominantBaseline, anchor: SVGTextAnchor, offset: Vector = Vector.ZERO) {
         return new TitlePosition(baseline, anchor, offset)
     }
-}
-
-function bbToSvg(name: string | undefined, bb: BlockBoundingBox, vector: Vector, color: string = "red") {
-    let x = vector.x - bb.width / 2
-    let y = vector.y
-    return `<rect x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke="${color}"/>`;
 }
 
 function svgLine(x1: number, y1: number, x2: number, y2: number) {

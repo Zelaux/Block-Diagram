@@ -1,5 +1,5 @@
 "use strict";
-//priority: 60
+//depends: block
 class BlockOfElements extends AbstractBlock {
     constructor() {
         super(...arguments);
@@ -33,7 +33,7 @@ class BlockOfElements extends AbstractBlock {
         const topMargin = compileInfo.topMargin;
         let width = compileInfo.width;
         let svgResult = [
-            bbToSvg("elements", this.calculateBoundingBox(compileInfo), Vector.new(x, y), "blue")
+            bbToSvg("elements", this.calculateBoundingBox(compileInfo), Vector.new(x, y), "blue", compileInfo)
         ];
         let prevPosition = null;
         for (let i = 0; i < this.innerElements.length; i++) {

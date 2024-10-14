@@ -1,9 +1,10 @@
 "use strict";
-//priority: 60
+//depends: block
 class SimpleBlockOfBlocks extends BlockOfBlocks {
     constructor() {
         super(null);
         this.type = SimpleBlockOfBlocks;
+        this.bbColor = "green";
     }
     addChild(block) {
         block.parentInfo = new ParentInfo(this, this.innerElements.length);
@@ -24,7 +25,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         for (let innerElement of this.innerElements) {
             let bb = innerElement.calculateBoundingBox(compileInfo);
             height += bb.height;
-            width = Math.max(width, bb.width);
+            width = Math.max(width, (bb.width - bb.anchor.x) * 2, bb.anchor.x * 2);
         }
         return BlockBoundingBox.make(Vector.new(width / 2, 0), width, height);
     }
@@ -33,10 +34,13 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         const topMargin = compileInfo.topMargin;
         let width = compileInfo.width;
         let svgResult = [
-            bbToSvg((_a = this.rootElement) === null || _a === void 0 ? void 0 : _a.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), "green")
+            bbToSvg((_a = this.rootElement) === null || _a === void 0 ? void 0 : _a.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo)
         ];
         let prevPosition = null;
-        for (let innerElement of this.innerElements) {
+        let last = compileInfo.isLast;
+        for (let i = 0; i < this.innerElements.length; i++) {
+            let innerElement = this.innerElements[i];
+            compileInfo.isLast = last && (i == this.innerElements.length - 1);
             if (prevPosition !== null) {
                 svgResult.push(svgLine(prevPosition.x, prevPosition.y, x.value, y.value));
             }
