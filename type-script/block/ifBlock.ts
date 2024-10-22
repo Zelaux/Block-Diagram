@@ -125,14 +125,14 @@ class IfBlock extends AbstractBlock {
         let startY = cursorY.value
         let maxY = cursorY.value
 
-        let currentXOffset: number;
+        let currentXOffsets: number[];
 
         switch (this.branchType) {
             case IfBranchType.Left:
-                currentXOffset = -this.marginBetweenBlocks - sizes[0].width
+                currentXOffsets = [-this.marginBetweenBlocks + sizes[1].bounds.left + sizes[0].bounds.left, 0]
                 break;
             case IfBranchType.Right:
-                currentXOffset = 0
+                currentXOffsets = [0, this.marginBetweenBlocks + sizes[1].bounds.right + sizes[0].bounds.right]
                 break;
         }
         //Drawing inner elements
@@ -142,7 +142,7 @@ class IfBlock extends AbstractBlock {
 
             branchInfo.isEmpty = innerElement.isEmpty()
             let bb = sizes[i];
-            let outputXOffset = currentXOffset;
+            let outputXOffset = currentXOffsets[i];
             centerXCursor.withOffset(outputXOffset, centerXCursor => {
                 let yClone = cursorY.clone();
                 let compileResult = innerElement.compile(centerXCursor, yClone, compileInfo);
@@ -150,7 +150,6 @@ class IfBlock extends AbstractBlock {
                 maxY = Math.max(maxY, cursorY.value + bb.height)
                 branchInfo.output = compileResult.output
             })
-            currentXOffset += bb.width + margin;
         }
         cursorY.value = maxY + topMargin * 3;
         if (this.rootElement != null) {//Drawing lines from root to inner
