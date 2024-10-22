@@ -70,14 +70,14 @@ let blockList = [
         makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
         defaultCenterText(x, y, width, height, text)
     ])),
-    graphElement("left_if", 2 / 3,ifSideStatementHandler((x, y, width, height, text) => [
+    graphElement("left_if", 2 / 3, ifSideStatementHandler((x, y, width, height, text) => [
         makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
         defaultCenterText(x, y, width, height, text)
-    ],IfBranchType.Left)),
-    graphElement("right_if", 2 / 3,ifSideStatementHandler((x, y, width, height, text) => [
+    ], IfBranchType.Left)),
+    graphElement("right_if", 2 / 3, ifSideStatementHandler((x, y, width, height, text) => [
         makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
         defaultCenterText(x, y, width, height, text)
-    ],IfBranchType.Right)),
+    ], IfBranchType.Right)),
     graphElement("loop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler)),
     graphElement("sideLoop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler, true)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
@@ -96,14 +96,11 @@ let blockList = [
 
         for (let child of thisNode.children) {
             if (child.length == 0) continue
-            let innerBlock: Block = new BlockOfElements();
-            let innerCurrentBlock = innerBlock;
-            for (let parsedNode of child) {
-                let result = parsedNode.addToBlock(innerCurrentBlock);
-                if (result.isError()) return result
-                innerCurrentBlock = result.data!
-            }
-            subBlock.addBlock(innerBlock)
+
+            let simpleBlockOfBlocks = new BlockOfElements();
+            let innerBlock = nodesToBlock(simpleBlockOfBlocks, child);
+            if (innerBlock.isError()) return innerBlock
+            subBlock.addBlock(simpleBlockOfBlocks)
         }
 
         return Result.ok(currentBlock.addBlock(subBlock))

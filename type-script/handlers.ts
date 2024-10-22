@@ -29,13 +29,10 @@ function ifStatementHandler(compiler: RawCompiler): Handler {
         }
 
         for (let branchList of thisNode.children) {
-            let innerBlock: SimpleBlockOfBlocks = new SimpleBlockOfBlocks(), currentInnerBlock: Block = innerBlock;
-            for (let innerNode of branchList) {
-                let blockResult = innerNode.addToBlock(currentInnerBlock);
-                if (blockResult.isError()) return blockResult
-                currentInnerBlock = blockResult.data!
-            }
-            blockOfBlocks.addBlock(currentInnerBlock)
+            let blocks = new SimpleBlockOfBlocks();
+            let blockResult = nodesToBlock(blocks, branchList);
+            if (blockResult.isError()) return blockResult
+            blockOfBlocks.addBlock(blocks)
         }
 
         block = block.addBlock(blockOfBlocks)
@@ -57,9 +54,10 @@ function ifSideStatementHandler(compiler: RawCompiler, ifType: IfBranchType): Ha
         let branches: IfBlockBranch[] = []
         for (let i = 0; i < thisNode.children.length; i++) {
             let child = thisNode.children[i];
-            let branchBlock = nodesToBlock(new SimpleBlockOfBlocks(), child);
+            let blocks=new SimpleBlockOfBlocks()
+            let branchBlock = nodesToBlock(blocks, child);
             if (branchBlock.isError()) return branchBlock
-            branches[i] = new IfBlockBranch(branchBlock.data!, thisNode.titles[i])
+            branches[i] = new IfBlockBranch(blocks, thisNode.titles[i])
         }
         let ifBlock = new IfBlock(
             prepareNode(thisNode, thisNode.content, compiler),

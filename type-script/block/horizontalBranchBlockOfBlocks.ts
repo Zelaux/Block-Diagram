@@ -81,7 +81,7 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
         }
 
         let branchInfos: BranchInfo[] = this.innerElements.map(() => new BranchInfo())
-        let currentXOffset = -myBB.width / 2 - sizes[0].bounds.left
+        let currentXOffset = -myBB.width / 2
 
         if (this.rootElement != null) {
             let height = this.rootElement.aspect * width
@@ -108,16 +108,17 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             let innerElement = this.innerElements[i];
             branchInfo.isEmpty = innerElement.isEmpty()
             let bb = sizes[i];
-            let outputXOffset = currentXOffset;
+            let outputXOffset = currentXOffset - bb.bounds.left;
             centerXCursor.withOffset(outputXOffset, centerXCursor => {
                 let yClone = cursorY.clone();
                 let compileResult = innerElement.compile(centerXCursor, yClone, compileInfo);
                 svgResult.push.apply(svgResult, compileResult.svgCode)
-                maxY = Math.max(maxY, cursorY.value + bb.height)
+                maxY = Math.max(maxY, cursorY.value + bb.bounds.height())
                 branchInfo.output = compileResult.output
             })
+            debugPoint()
             let it = 0;
-            currentXOffset += bb.width + margin;
+            currentXOffset += bb.bounds.width() + margin;
         }
         cursorY.value = maxY + topMargin * 3;
         if (this.rootElement != null) {//Drawing lines from root to inner

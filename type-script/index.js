@@ -92,15 +92,11 @@ let blockList = [
         for (let child of thisNode.children) {
             if (child.length == 0)
                 continue;
-            let innerBlock = new BlockOfElements();
-            let innerCurrentBlock = innerBlock;
-            for (let parsedNode of child) {
-                let result = parsedNode.addToBlock(innerCurrentBlock);
-                if (result.isError())
-                    return result;
-                innerCurrentBlock = result.data;
-            }
-            subBlock.addBlock(innerBlock);
+            let simpleBlockOfBlocks = new BlockOfElements();
+            let innerBlock = nodesToBlock(simpleBlockOfBlocks, child);
+            if (innerBlock.isError())
+                return innerBlock;
+            subBlock.addBlock(simpleBlockOfBlocks);
         }
         return Result.ok(currentBlock.addBlock(subBlock));
     }),

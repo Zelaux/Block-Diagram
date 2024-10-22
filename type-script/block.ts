@@ -7,7 +7,9 @@ class BlockBoundingBox {
     // inputWireY: number = 0
     bounds: Bounds
     outputWire: number
+    /**@deprecated*/
     readonly width: number;
+    /**@deprecated*/
     readonly height: number;
 
     constructor( bounds: Bounds, output: number) {
