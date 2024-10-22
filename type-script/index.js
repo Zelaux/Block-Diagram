@@ -92,7 +92,7 @@ let blockList = [
         for (let child of thisNode.children) {
             if (child.length == 0)
                 continue;
-            let simpleBlockOfBlocks = new BlockOfElements();
+            let simpleBlockOfBlocks = new SimpleBlockOfBlocks();
             let innerBlock = nodesToBlock(simpleBlockOfBlocks, child);
             if (innerBlock.isError())
                 return innerBlock;
