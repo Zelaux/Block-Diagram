@@ -124,7 +124,7 @@ class IfBlock extends AbstractBlock {
         cursorY.value = maxY + topMargin * 3;
         if (this.rootElement != null) { //Drawing lines from root to inner
             for (let i = 0; i < branchInfos.length; i++) {
-                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[branchInfos.length][indecies[i]];
+                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[3][indecies[i]];
                 let branchInfo = branchInfos[i];
                 if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1)
                     continue;
