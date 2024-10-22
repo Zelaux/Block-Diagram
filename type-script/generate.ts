@@ -57,19 +57,28 @@ setTimeout(function () {
                 width, 15, extraWidth
             );
             compileInfo.drawBB = inputElement("input#draw-bb").checked;
-            let boundingBox = data.block.calculateBoundingBox(compileInfo);
-
-            console.log(width, boundingBox)
-            let cursorY = new Cursor(boundingBox.anchor.y + 5);
-            let cursorX = new Cursor(boundingBox.anchor.x + 5);
+            let blockBoundingBox = data.block.calculateBoundingBox(compileInfo);
+            let boundingBox = blockBoundingBox.bounds
+            console.log(width, blockBoundingBox)
+            let cursorX = new Cursor(0);
+            let cursorY = new Cursor(5);
             svgRootElement.innerHTML = data.block.compile(cursorX, cursorY, compileInfo).svgCode.join("\n");
-            if (compileInfo.drawBB) {
+            if (compileInfo.drawBB || true) {
 
-                svgRootElement.width.baseVal.value = boundingBox.width + 10
-                svgRootElement.height.baseVal.value = boundingBox.height + 10
+                svgRootElement.width.baseVal.value = boundingBox.width() + 10
+                svgRootElement.height.baseVal.value = boundingBox.height() + 10
+                let currentBox = new DOMRect(
+                    boundingBox.x(), boundingBox.y(), boundingBox.width(), boundingBox.height()
+                )
                 if (inputElement("#add-back").checked) {
-                    svgRootElement.innerHTML = `<rect width="100%" height="100%" fill="white"></rect>\n` + svgRootElement.innerHTML
+                    svgRootElement.innerHTML = `<rect x="${currentBox.x}" y="${currentBox.y}" width="${currentBox.width}" height="${currentBox.height}" fill="white"></rect>\n` + svgRootElement.innerHTML
                 }
+                svgRootElement.setAttribute("viewBox", `${currentBox.x} ${currentBox.y} ${currentBox.width} ${currentBox.height}`)
+                svgRootElement.setAttribute("width", `${currentBox.width}px`)
+                svgRootElement.setAttribute("height", `${currentBox.height}px`)
+
+                svgRootElement.width.baseVal.value = currentBox.width + 10
+                svgRootElement.height.baseVal.value = currentBox.height + 10
             } else {
                 let currentBox: undefined | DOMRect = undefined
                 let propToSize: { "x": "width", "y": "height" } = {
@@ -95,7 +104,7 @@ setTimeout(function () {
                         }
                         continue
                     }
-                    if (box.x < 0) debugPoint()
+                    // if (box.x < 0) debugPoint()
                     for (let prop_ of Object.keys(propToSize)) {
                         let prop = prop_ as ("x" | "y")
                         let other1 = otherSide(currentBox, prop) + 5

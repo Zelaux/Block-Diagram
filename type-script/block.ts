@@ -1,32 +1,59 @@
 type HeightInfo = { totalElements: number, unscaledHeight: number }
 
 class BlockBoundingBox {
-    /**
-     * @Also input
-     * */
-    anchor: Vector
-    width: number
-    height: number
+    // /**@deprecated*/
+    // inputWireX: number
+    // /**@deprecated*/
+    // inputWireY: number = 0
+    bounds: Bounds
+    outputWire: number
+    readonly width: number;
+    readonly height: number;
 
-    static make(input: Vector, width: number, height: number) {
-        input.x += 5
-        return new BlockBoundingBox(input, width + 10, height + 4)
+    constructor( bounds: Bounds, output: number) {
+        this.outputWire = output;
+        this.bounds = bounds;
+        this.width = bounds.width()
+        this.height = bounds.height()
+        if(output!=0){
+            debugPoint()
+        }
     }
 
-    constructor(input: Vector, width: number, height: number) {
-        this.anchor = input;
-        this.width = width;
-        this.height = height;
+    static makeCenter(width: number, height: number, output: number) {
+
+        let hw = width / 2 + 5;
+        return new BlockBoundingBox( new Bounds(-hw, -2, hw, height+2), output)
+    }
+
+    static make(bounds: Bounds, output: number) {
+        bounds = bounds.copy();
+        bounds.left -= 5
+        let topOffset = 2;
+        bounds.top -= topOffset
+        bounds.right += 5
+        bounds.bottom += topOffset
+        return new BlockBoundingBox( bounds, output)
+    }
+
+    updateBounds(bounds: Bounds = this.bounds) {
+        // @ts-ignore
+        this["width"] = bounds.width()
+        // @ts-ignore
+        this["height"] = bounds.height()
+        this.bounds = bounds;
     }
 }
 
 function bbToSvg(name: string | undefined, bb: BlockBoundingBox, vector: Vector, color: string, compileInfo: CompileInfo) {
-    let x = vector.x - bb.width / 2
-    let y = vector.y
+    let width = bb.bounds.width()
+    let height = bb.bounds.height()
+    let x = vector.x + bb.bounds.x()
+    let y = vector.y + bb.bounds.y()
     if (compileInfo.drawBB) {
-        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
+        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
     } else {
-        return `<!--<rect x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
+        return `<!--<rect x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
     }
 }
 
@@ -61,13 +88,13 @@ class ParentInfo {
 }
 
 abstract class AbstractBlock implements Block {
+    parentInfo?: ParentInfo
+
     next<T extends Block>(block: T): T {
         let parentInfo = this.assertHasParent();
         parentInfo.parent.innerElements.splice(parentInfo.inParentIndex + 1, 0, block)
         return block;
     }
-
-    parentInfo?: ParentInfo
 
     abstract calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBox
 
@@ -95,23 +122,19 @@ abstract class AbstractBlock implements Block {
 
 abstract class BlockOfBlocks extends AbstractBlock implements Block {
     marginBetweenBlocks: number = 15
-
-
-    isEmpty(): boolean {
-        return this.rootElement == null && this.innerElements.length == 0;
-    }
-
     rootElement: PreparedGraphElement | null
     branchTitles: NullableGraphText[] | null = null
+    innerElements: Block[] = []
+    ;
 
     protected constructor(rootElement: PreparedGraphElement | null) {
         super();
         this.rootElement = rootElement;
     }
 
-    innerElements: Block[] = []
-    ;
-
+    isEmpty(): boolean {
+        return this.rootElement == null && this.innerElements.length == 0;
+    }
 
     abstract addElement(element: PreparedGraphElement): BlockOfElements;
 

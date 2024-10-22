@@ -27,14 +27,28 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
     calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBox {
 
         let width = 1.50 * compileInfo.width;
+        let bounds = Bounds.makeZero()
+        bounds.right = width / 2
+        bounds.left = -width / 2
         let height = (this.innerElements.length - 1) * compileInfo.topMargin;
-        for (let innerElement of this.innerElements) {
+        let current_position = Vector.new(0, 0);
+        for (let i = 0; i < this.innerElements.length; i++) {
+            let innerElement = this.innerElements[i];
             let bb = innerElement.calculateBoundingBox(compileInfo);
-            height += bb.height
-            width = Math.max(width, (bb.width - bb.anchor.x) * 2, bb.anchor.x * 2)
+            let other = bb.bounds
+                .copy()
+                .shiftVector(current_position);
+            console.log(other)
+            bounds.expandBound(
+                other
+            )
+            current_position.x += bb.outputWire
+            current_position.y += bb.bounds.height()
+            if (i + 1 < this.innerElements.length) {
+                current_position.y += +compileInfo.topMargin
+            }
         }
-
-        return BlockBoundingBox.make(Vector.new(width / 2, 0), width, height)
+        return BlockBoundingBox.make(bounds, current_position.x)
     }
 
 
@@ -49,6 +63,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         let last = compileInfo.isLast;
         for (let i = 0; i < this.innerElements.length; i++) {
             let innerElement = this.innerElements[i];
+            let bb = innerElement.calculateBoundingBox(compileInfo)
             compileInfo.isLast = last && (i == this.innerElements.length - 1)
             if (prevPosition !== null) {
 
@@ -57,17 +72,14 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
                     x.value, y.value,
                 ))
             }
-            let bb = innerElement.calculateBoundingBox(compileInfo);
-            x.withOffset(bb.width / 2 - bb.anchor.x, () => {
-                y.withOffset(bb.anchor.y, () => {
-                    // noinspection SillyAssignmentJS
-                    let compileResult = innerElement.compile(x, y, compileInfo);
-                    svgResult.push.apply(svgResult, compileResult.svgCode)
-                    y.move(topMargin)
-                    prevPosition = compileResult.output
 
-                })
-            })
+            // noinspection SillyAssignmentJS
+            let compileResult = x.withOffset(0, () => {
+                return innerElement.compile(x, y, compileInfo)
+            });
+            svgResult.push.apply(svgResult, compileResult.svgCode)
+            y.move(topMargin)
+            prevPosition = compileResult.output
             // noinspection ConstantConditionalExpressionJS
             prevPosition = true ? prevPosition : Vector.ZERO
 

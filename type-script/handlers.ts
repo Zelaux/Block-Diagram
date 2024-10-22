@@ -44,6 +44,33 @@ function ifStatementHandler(compiler: RawCompiler): Handler {
 }
 
 
+function ifSideStatementHandler(compiler: RawCompiler, ifType: IfBranchType): Handler {
+    const defaultNames = [
+        "Да", "Нет"
+    ]
+    return handler((block: Block, thisNode: ParsedNode) => {
+        let childrenAmount = thisNode.children.length;
+        if (childrenAmount == 1) {
+            thisNode.children.push([])
+        }
+        if (thisNode.children.length != 2) return Result.error("Supported only with two children");
+        let branches: IfBlockBranch[] = []
+        for (let i = 0; i < thisNode.children.length; i++) {
+            let child = thisNode.children[i];
+            let branchBlock = nodesToBlock(new SimpleBlockOfBlocks(), child);
+            if (branchBlock.isError()) return branchBlock
+            branches[i] = new IfBlockBranch(branchBlock.data!, thisNode.titles[i])
+        }
+        let ifBlock = new IfBlock(
+            prepareNode(thisNode, thisNode.content, compiler),
+            branches[0], branches[1], ifType
+        );
+
+        return Result.ok(block.addBlock(ifBlock))
+    })
+}
+
+
 const handler = (h: Handler, extra?: any) => h;
 
 
@@ -111,9 +138,11 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
             let originalCalculateBoundingBox = blocks.calculateBoundingBox;
             blocks.calculateBoundingBox = compileInfo => {
                 let boundingBox = originalCalculateBoundingBox.call(blocks, compileInfo);
-                let fullElementWidth = compileInfo.width * 1.5;
-                boundingBox.width += fullElementWidth
-                boundingBox.anchor.x = fullElementWidth / 2
+                let fullElementWidth = compileInfo.width + compileInfo.width / 2;
+                boundingBox.bounds.shift(fullElementWidth, 0)
+                    .expand(-fullElementWidth / 2 - compileInfo.width / 4, 0)
+                    .expand(fullElementWidth / 2, openPrepare.aspect * compileInfo.width)
+                boundingBox.updateBounds()
                 return boundingBox
             }
             let originalCompile = blocks.compile;
@@ -121,6 +150,7 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
 
 
                 let myBB = blocks.calculateBoundingBox(compileInfo);
+                let originalBB = originalCalculateBoundingBox.call(blocks, compileInfo);
                 let bbSvg = bbToSvg("", myBB, Vector.new(centerXCursor, cursorY), "purple", compileInfo);
                 let width = compileInfo.width;
                 let fullWidth = width * 1.5;
@@ -130,32 +160,30 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
                     myStrings.push(svgLine(lineX1, closeY, lineX2, closeY))
                 }
 
-                return centerXCursor.withOffset(-myBB.width / 2 + fullWidth / 2, () => {
-                    let myStrings: string[] = compilePrepered(openPrepare, centerXCursor, cursorY, compileInfo)
-                    let lineX1 = centerXCursor.value + width / 2;
-                    let lineX2 = centerXCursor.value + width / 2 + width / 4;
-                    drawLine(myStrings, lineX1, lineX2)
-                    // centerXCursor.value +=
-                    let v1 = centerXCursor.value;
-                    let compileResult = centerXCursor.withOffset(fullWidth-width/4,
-                        () => originalCompile.call(blocks, centerXCursor, cursorY, compileInfo)
-                    );
+                let myStrings: string[] = compilePrepered(openPrepare, centerXCursor, cursorY, compileInfo)
+                let lineX1 = centerXCursor.value + width / 2;
+                let lineX2 = centerXCursor.value + width;
+                drawLine(myStrings, lineX1, lineX2)
+                // centerXCursor.value +=
+                let v1 = centerXCursor.value;
+                let compileResult = centerXCursor.withOffset(fullWidth,
+                    () => originalCompile.call(blocks, centerXCursor, cursorY, compileInfo)
+                );
 
-                    centerXCursor.value = v1;
-                    compileResult.svgCode[0] = bbSvg
+                centerXCursor.value = v1;
+                compileResult.svgCode[0] = bbSvg
 
-                    cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
+                cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
 
-                        myStrings.push.apply(myStrings, compileResult.svgCode)
-                        drawLine(myStrings, lineX1, lineX2);
-                        myStrings.push.apply(myStrings,
-                            compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo))
-                        compileResult.svgCode = myStrings
-                    })
-                    cursorY.value -= compileInfo.topMargin
-                    compileResult.output.x = v1;
-                    return compileResult
+                    myStrings.push.apply(myStrings, compileResult.svgCode)
+                    drawLine(myStrings, lineX1, lineX2);
+                    myStrings.push.apply(myStrings,
+                        compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo))
+                    compileResult.svgCode = myStrings
                 })
+                cursorY.value -= compileInfo.topMargin
+                compileResult.output.x = v1;
+                return compileResult
             }
 
             let result = nodesToBlock(blocks, thisNode.children[0]);

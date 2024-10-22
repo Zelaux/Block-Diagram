@@ -12,7 +12,7 @@ class BlockOfElements extends AbstractBlock {
         for (let innerElement of this.innerElements) {
             height += innerElement.aspect * compileInfo.width;
         }
-        return BlockBoundingBox.make(Vector.new(width / 2, 0), width, height);
+        return BlockBoundingBox.makeCenter(width, height, 0);
     }
     isEmpty() {
         return this.innerElements.length == 0;
@@ -36,6 +36,7 @@ class BlockOfElements extends AbstractBlock {
             bbToSvg("elements", this.calculateBoundingBox(compileInfo), Vector.new(x, y), "blue", compileInfo)
         ];
         let prevPosition = null;
+        console.log(x, y);
         for (let i = 0; i < this.innerElements.length; i++) {
             let innerElement = this.innerElements[i];
             let height = innerElement.aspect * width;

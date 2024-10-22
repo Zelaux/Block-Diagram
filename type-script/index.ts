@@ -70,6 +70,14 @@ let blockList = [
         makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
         defaultCenterText(x, y, width, height, text)
     ])),
+    graphElement("left_if", 2 / 3,ifSideStatementHandler((x, y, width, height, text) => [
+        makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
+        defaultCenterText(x, y, width, height, text)
+    ],IfBranchType.Left)),
+    graphElement("right_if", 2 / 3,ifSideStatementHandler((x, y, width, height, text) => [
+        makePath(`M ${x + width / 2} ${y + height} l ${width / 2} ${-height / 2} l ${-width / 2} ${-height / 2} l ${-width / 2} ${height / 2} Z`),
+        defaultCenterText(x, y, width, height, text)
+    ],IfBranchType.Right)),
     graphElement("loop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler)),
     graphElement("sideLoop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler, true)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
@@ -77,7 +85,10 @@ let blockList = [
         let subBlock: Block = new HorizontalBranchBlockOfBlocks(null).apply(function () {
             if (thisNode.content[0] !== undefined) {
                 try {
-                    this.marginBetweenBlocks = Number.parseInt(thisNode.content[0])
+                    let marginBetweenBlocks = Number.parseInt(thisNode.content[0]);
+                    if (!Number.isNaN(marginBetweenBlocks)) {
+                        this.marginBetweenBlocks = marginBetweenBlocks
+                    }
                 } catch (e) {
                 }
             }
@@ -128,7 +139,7 @@ let blockList = [
             let childElement = localRoot.children[0][0];
             let r1 = childElement.addToBlock(currentBlock);
             if (r1.error != null) return r1;
-            currentBlock=r1.data!
+            currentBlock = r1.data!
         }
 
         {

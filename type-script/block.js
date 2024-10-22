@@ -1,23 +1,45 @@
 "use strict";
 class BlockBoundingBox {
-    static make(input, width, height) {
-        input.x += 5;
-        return new BlockBoundingBox(input, width + 10, height + 4);
+    constructor(bounds, output) {
+        this.outputWire = output;
+        this.bounds = bounds;
+        this.width = bounds.width();
+        this.height = bounds.height();
+        if (output != 0) {
+            debugPoint();
+        }
     }
-    constructor(input, width, height) {
-        this.anchor = input;
-        this.width = width;
-        this.height = height;
+    static makeCenter(width, height, output) {
+        let hw = width / 2 + 5;
+        return new BlockBoundingBox(new Bounds(-hw, -2, hw, height + 2), output);
+    }
+    static make(bounds, output) {
+        bounds = bounds.copy();
+        bounds.left -= 5;
+        let topOffset = 2;
+        bounds.top -= topOffset;
+        bounds.right += 5;
+        bounds.bottom += topOffset;
+        return new BlockBoundingBox(bounds, output);
+    }
+    updateBounds(bounds = this.bounds) {
+        // @ts-ignore
+        this["width"] = bounds.width();
+        // @ts-ignore
+        this["height"] = bounds.height();
+        this.bounds = bounds;
     }
 }
 function bbToSvg(name, bb, vector, color, compileInfo) {
-    let x = vector.x - bb.width / 2;
-    let y = vector.y;
+    let width = bb.bounds.width();
+    let height = bb.bounds.height();
+    let x = vector.x + bb.bounds.x();
+    let y = vector.y + bb.bounds.y();
     if (compileInfo.drawBB) {
-        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
+        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
     }
     else {
-        return `<!--<rect x="${x}" y="${y}" width="${(bb.width)}" height="${(bb.height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
+        return `<!--<rect x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
     }
 }
 class ParentInfo {
@@ -48,15 +70,15 @@ class AbstractBlock {
     }
 }
 class BlockOfBlocks extends AbstractBlock {
-    isEmpty() {
-        return this.rootElement == null && this.innerElements.length == 0;
-    }
     constructor(rootElement) {
         super();
         this.marginBetweenBlocks = 15;
         this.branchTitles = null;
         this.innerElements = [];
         this.rootElement = rootElement;
+    }
+    isEmpty() {
+        return this.rootElement == null && this.innerElements.length == 0;
     }
     isBlockContainer() {
         return true;
