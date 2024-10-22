@@ -57,7 +57,7 @@ function ifSideStatementHandler(compiler, ifType) {
             let branchBlock = nodesToBlock(blocks, child);
             if (branchBlock.isError())
                 return branchBlock;
-            branches[i] = new IfBlockBranch(blocks, thisNode.titles[i]);
+            branches[i] = new IfBlockBranch(blocks, thisNode.titles[i] || defaultNames[i]);
         }
         let ifBlock = new IfBlock(prepareNode(thisNode, thisNode.content, compiler), branches[0], branches[1], ifType);
         return Result.ok(block.addBlock(ifBlock));

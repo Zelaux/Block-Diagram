@@ -57,7 +57,7 @@ function ifSideStatementHandler(compiler: RawCompiler, ifType: IfBranchType): Ha
             let blocks=new SimpleBlockOfBlocks()
             let branchBlock = nodesToBlock(blocks, child);
             if (branchBlock.isError()) return branchBlock
-            branches[i] = new IfBlockBranch(blocks, thisNode.titles[i])
+            branches[i] = new IfBlockBranch(blocks, thisNode.titles[i] || defaultNames[i])
         }
         let ifBlock = new IfBlock(
             prepareNode(thisNode, thisNode.content, compiler),

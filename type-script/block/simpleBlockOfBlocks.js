@@ -20,7 +20,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         return this;
     }
     calculateBoundingBox(compileInfo) {
-        let width = 1.50 * compileInfo.width;
+        let width = 1.50 * compileInfo.width * 0;
         let bounds = Bounds.makeZero();
         bounds.right = width / 2;
         bounds.left = -width / 2;
