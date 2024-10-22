@@ -72,17 +72,18 @@ class IfBlock extends AbstractBlock {
         class BranchInfo {
         }
         let branchInfos = elements.map(() => new BranchInfo());
+        let indecies;
+        switch (this.branchType) {
+            case IfBranchType.Left:
+                indecies = [0, 1];
+                break;
+            case IfBranchType.Right:
+                indecies = [1, 2];
+                break;
+        }
         if (this.rootElement != null) {
             let height = this.rootElement.aspect * width;
-            let positions = HorizontalBranchBlockOfBlocks.POSITIONS[3];
-            switch (this.branchType) {
-                case IfBranchType.Left:
-                    positions = [positions[0], positions[1]];
-                    break;
-                case IfBranchType.Right:
-                    positions = [positions[1], positions[2]];
-                    break;
-            }
+            let positions = indecies.map(it => HorizontalBranchBlockOfBlocks.POSITIONS[3][it]);
             for (let i = 0; i < positions.length; i++) {
                 let position = positions[i];
                 branchInfos[i].rootPosition = position.copy()
@@ -123,7 +124,7 @@ class IfBlock extends AbstractBlock {
         cursorY.value = maxY + topMargin * 3;
         if (this.rootElement != null) { //Drawing lines from root to inner
             for (let i = 0; i < branchInfos.length; i++) {
-                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[branchInfos.length][i];
+                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[branchInfos.length][indecies[i]];
                 let branchInfo = branchInfos[i];
                 if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1)
                     continue;
