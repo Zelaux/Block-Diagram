@@ -46,7 +46,8 @@ setTimeout(function () {
             }
             let extraWidth = inputElement("input#extra-width").valueAsNumber;
             width += extraWidth;
-            let compileInfo = new CompileInfo(width, 15, extraWidth);
+            let topMargin = 15;
+            let compileInfo = new CompileInfo(width, topMargin, extraWidth);
             compileInfo.drawBB = inputElement("input#draw-bb").checked;
             let blockBoundingBox = data.block.calculateBoundingBox(compileInfo);
             let boundingBox = blockBoundingBox.bounds;
@@ -55,9 +56,10 @@ setTimeout(function () {
             let cursorY = new Cursor(5);
             svgRootElement.innerHTML = data.block.compile(cursorX, cursorY, compileInfo).svgCode.join("\n");
             if (compileInfo.drawBB || true) {
-                svgRootElement.width.baseVal.value = boundingBox.width() + 10;
-                svgRootElement.height.baseVal.value = boundingBox.height() + 10;
-                let currentBox = new DOMRect(boundingBox.x(), boundingBox.y(), boundingBox.width(), boundingBox.height());
+                let safeSpace = topMargin;
+                let currentBox = new DOMRect(boundingBox.x(), boundingBox.y(), boundingBox.width(), boundingBox.height() + safeSpace);
+                svgRootElement.width.baseVal.value = currentBox.width;
+                svgRootElement.height.baseVal.value = currentBox.height;
                 if (inputElement("#add-back").checked) {
                     svgRootElement.innerHTML = `<rect x="${currentBox.x}" y="${currentBox.y}" width="${currentBox.width}" height="${currentBox.height}" fill="white"></rect>\n` + svgRootElement.innerHTML;
                 }
