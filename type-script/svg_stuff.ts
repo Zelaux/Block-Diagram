@@ -19,7 +19,7 @@ function textOr(text: NullableGraphText, fallback: GraphText) {
     return (text === undefined) || (text == null) || text.length === 0 ? fallback : text;
 }
 
-
+var FONT_SIZE=16
 function defaultCenterText(x: number, y: number, width: number, height: number, text: NullableGraphText, baseline: SVGDominantBaseline = "middle", anchor: SVGTextAnchor = "middle", widthAspect: number = 1) {
     let notNullText = textOr(text, "");
     let arrayText: string[];
@@ -44,7 +44,7 @@ function defaultCenterText(x: number, y: number, width: number, height: number, 
     let compiledText = arrayText.join("\n")
     let cx = x + width / 2;
     let cy = y + height / 2;
-    return `<g class="text-group" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
+    return `<g class="text-group" font-size="${FONT_SIZE}px" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
 <text x="0" y="0" dominant-baseline="${baseline}" text-anchor="${anchor}">${compiledText}</text>
 </g>`;
     // return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>`;

@@ -6,6 +6,7 @@ function debugPoint() {
 function textOr(text, fallback) {
     return (text === undefined) || (text == null) || text.length === 0 ? fallback : text;
 }
+var FONT_SIZE = 16;
 function defaultCenterText(x, y, width, height, text, baseline = "middle", anchor = "middle", widthAspect = 1) {
     let notNullText = textOr(text, "");
     let arrayText;
@@ -30,7 +31,7 @@ function defaultCenterText(x, y, width, height, text, baseline = "middle", ancho
     let compiledText = arrayText.join("\n");
     let cx = x + width / 2;
     let cy = y + height / 2;
-    return `<g class="text-group" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
+    return `<g class="text-group" font-size="${FONT_SIZE}px" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
 <text x="0" y="0" dominant-baseline="${baseline}" text-anchor="${anchor}">${compiledText}</text>
 </g>`;
     // return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>`;
