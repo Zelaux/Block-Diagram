@@ -8,7 +8,7 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
     let value = true
 
     const DELAY_MILLIS = 500;
-
+    let nextUpdate=0
     function blink() {
         let time_ = time()
         let delta = time_ - lastTime
@@ -19,7 +19,12 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
             document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
         } catch (e) {
         }
-        setTimeout(blink, delay)
+        let expect=nextUpdate+1
+        setTimeout(()=>{
+            if(expect==nextUpdate)
+                blink()
+        }, delay)
+        nextUpdate+=1;
         lastTime = time_ + DELAY_MILLIS - delta
     }
 
