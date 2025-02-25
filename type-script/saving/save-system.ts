@@ -43,8 +43,11 @@ setTimeout(function () {
 
 
 
+        // @ts-ignore
         input_area.dispatchEvent(new Event("change"))
-        (document.body.querySelector(".generate_button") as HTMLButtonElement).click()
+        document.body.querySelector(".svg_container>svg")!.innerHTML=""
+        // @ts-ignore
+        document.body.querySelector(".generate_button").dispatchEvent(new Event("click"))
     }
 
     function createSaveInfo(): SaveInfo {
