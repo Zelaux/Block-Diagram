@@ -28,6 +28,7 @@
 
 
     <script src="type-script/index.js"></script>
+    <script src="type-script/saving/save-system.js"></script>
 </head>
 <body style="">
 <div class="main_div">
@@ -64,14 +65,47 @@
             </div>
             <div class="fields">
                 <div>
+
+                    <div class="saves-setting" style="">
+                        <div style="display: flex; align-items: center;">
+                            <label for="save-name"></label>
+                            <input id="save-name" type="text" style="flex: 1;padding-left: 8px;height: calc(1.5em + 12px)">
+                            <div style="width: 8px"></div>
+                            <button class="base-button clear-button">Clear all</button>
+                            <button class="base-button save-button">Save</button>
+                        </div>
+                        <details open="">
+                            <summary>Saved
+                            </summary>
+                            <div class="save-container">
+                                <div class="save-entry">
+                                    <p>Some text</p>
+                                    <button class="base-button delete-save-button">Delete</button>
+                                    <button class="base-button load-save-button">Load</button>
+                                </div>
+                                <div class="save-entry">
+                                    <p>Some text</p>
+                                    <button class="base-button delete-save-button">Delete</button>
+                                    <button class="base-button load-save-button">Load</button>
+                                </div>
+                                <div class="save-entry">
+                                    <p>Some text</p>
+                                    <button class="base-button delete-save-button">Delete</button>
+                                    <button class="base-button load-save-button">Load</button>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                <div class="serialize">
                     <label for="extra-width">Extra Width:</label>
                     <input id="extra-width" type="number" value="0"/>
                 </div>
-                <div>
+                <div class="serialize">
                     <label for="add-back">Add white background:</label>
                     <input id="add-back" type="checkbox" value="0"/>
                 </div>
-                <div>
+                <div class="serialize">
                     <label for="draw-bb">Draw Bounding boxes:</label>
                     <input id="draw-bb" type="checkbox" value="0"/>
                 </div>
