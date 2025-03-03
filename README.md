@@ -187,7 +187,7 @@ sideFor(i = 0)(i < 10)(i++){
 ### parallel/join
 
 Имеет неограниченное число дочерних последовательностей элементов
-Имеется возможность указать растояние между последовательностями
+Имеется возможность указать расстояние между последовательностями
 
 ```flow-graph
 parallel(20){
@@ -217,3 +217,28 @@ end
 ```
 
 ![parallel_join2.svg](doc%2Fparallel_join2.svg)
+
+```flow-graph
+program{
+    left_if(a>b){
+        io(a)
+    }{
+        io(b)
+    }
+}
+```
+
+![left_if.svg](doc%2Fleft_if.svg)
+
+```flow-graph
+program{
+    right_if(a>b){
+        io(a)
+    }{
+        io(b)
+    }
+}
+
+```
+
+![right_if.svg](doc%2Fright_if.svg)
