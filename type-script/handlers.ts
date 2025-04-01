@@ -183,6 +183,7 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
                     compileResult.svgCode = myStrings
                 })
                 cursorY.value -= compileInfo.topMargin
+                compileResult.output.y = cursorY.value;
                 compileResult.output.x = v1;
                 return compileResult
             }
