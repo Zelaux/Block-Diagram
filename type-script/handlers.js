@@ -60,7 +60,7 @@ function ifSideStatementHandler(compiler, ifType) {
                 return branchBlock;
             branches[i] = new IfBlockBranch(blocks, thisNode.titles[i] || defaultNames[i]);
         }
-        let ifBlock = new IfBlock(prepareNode(thisNode, thisNode.content, compiler), branches[0], branches[1], ifType);
+        let ifBlock = new SidedIfBlock(prepareNode(thisNode, thisNode.content, compiler), branches[0], branches[1], ifType);
         return Result.ok(block.addBlock(ifBlock));
     });
 }

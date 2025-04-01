@@ -60,7 +60,7 @@ function ifSideStatementHandler(compiler: RawCompiler, ifType: IfBranchType): Ha
             if (branchBlock.isError()) return branchBlock
             branches[i] = new IfBlockBranch(blocks, thisNode.titles[i] || defaultNames[i])
         }
-        let ifBlock = new IfBlock(
+        let ifBlock = new SidedIfBlock(
             prepareNode(thisNode, thisNode.content, compiler),
             branches[0], branches[1], ifType
         );

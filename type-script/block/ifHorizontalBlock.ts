@@ -3,31 +3,6 @@
 type PossibleIfChildren = 2 | 3
 
 
-class IfBlockBoundingBox extends BlockBoundingBox {
-    children: BlockBoundingBox[]
-
-    constructor(bounds: Bounds, output: number, children: BlockBoundingBox[]) {
-        super(bounds, output);
-        this.children = children;
-    }
-
-    static makeCenter(width: number, height: number, output: number, children: BlockBoundingBox[]) {
-
-        return new IfBlockBoundingBox(makeCenteredBounds(width, height), output, children)
-    }
-
-    static make(bounds: Bounds, output: number, children: BlockBoundingBox[]) {
-        bounds = bounds.copy();
-        bounds.left -= 5
-        let topOffset = 2;
-        bounds.top -= topOffset
-        bounds.right += 5
-        bounds.bottom += topOffset
-        return new IfBlockBoundingBox(bounds, output, children)
-    }
-
-}
-
 class IfHorizontalBlock extends BlockOfBlocks {
 
 
@@ -69,7 +44,7 @@ class IfHorizontalBlock extends BlockOfBlocks {
         return this
     }
 
-    calculateBoundingBox(compileInfo: CompileInfo): IfBlockBoundingBox {
+    calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBoxWithChildren {
         let rootElement = this.rootElement!;
 
         let rootH = rootElement.aspect * compileInfo.width
@@ -103,7 +78,7 @@ class IfHorizontalBlock extends BlockOfBlocks {
         bounds.bottom += rootH + compileInfo.topMargin;
         bounds.bottom += compileInfo.topMargin * 4;
 
-        return new IfBlockBoundingBox(bounds, 0, boxes);
+        return new BlockBoundingBoxWithChildren(bounds, 0, boxes);
 
     }
 
@@ -121,34 +96,34 @@ class IfHorizontalBlock extends BlockOfBlocks {
             "<g class='block if horizontal'>",
             bbToSvg(rootElement.name, myBB, Vector.new(centerXCursor, cursorY), "red", compileInfo),
         ]
-        class BranchInfo {
-            rootPosition!: Vector
-            offset!: Vector;
-            bb!: BlockBoundingBox
-            bounds!: Bounds
-            output!: Vector
-            isEmpty!: boolean
-        }
 
-        let branchInfos: BranchInfo[] = this.innerElements.map(() => new BranchInfo())
+
+        let branchTitles = this.branchTitles;
         let amountOfInner: PossibleIfChildren = this.innerElements.length as PossibleIfChildren
         let positions = IfHorizontalBlock.POSITIONS[amountOfInner];
-        for (let i = 0; i < positions.length; i++) {
+        let branchInfos: HorizontalBranchInfo[] = this.innerElements.map((element, i) => {
+
             let position = positions[i];
-            let info = branchInfos[i];
+            let info = new HorizontalBranchInfo();
+            info.element = element;
             info.bb = myBB.children[i]
             info.bounds = info.bb.bounds
             info.rootPosition = position.copy()
                 .mul(rootW, rootH)
                 .add(centerXCursor.value, cursorY.value)
                 .add(-rootW / 2, 0)
-        }
+            if (branchTitles != null) {
+                info.title = new BranchTitle(branchTitles[i],IfHorizontalBlock.TITLE_POSITION[amountOfInner][i])
+            }
+            info.isEmpty = element.isEmpty()
+            return info
+        })
         switch (amountOfInner) {
             case 2: {
                 let left = branchInfos[0];
                 let right = branchInfos[1];
-                left.offset = new Vector(-left.bounds.right-this.marginBetweenBlocks/2,0)
-                right.offset = new Vector(-right.bounds.left+this.marginBetweenBlocks/2,0)
+                left.offset = new Vector(-left.bounds.right - this.marginBetweenBlocks / 2, 0)
+                right.offset = new Vector(-right.bounds.left + this.marginBetweenBlocks / 2, 0)
                 break;
             }
             case 3: {
@@ -159,93 +134,49 @@ class IfHorizontalBlock extends BlockOfBlocks {
                 let leftIn = center.bounds.left - this.marginBetweenBlocks - left.bounds.right;
                 let rightIn = center.bounds.right + this.marginBetweenBlocks - right.bounds.left;
 
-                left.offset=new Vector(leftIn,0)
-                right.offset=new Vector(rightIn,0)
-                center.offset=Vector.ZERO
+                left.offset = new Vector(leftIn, 0)
+                right.offset = new Vector(rightIn, 0)
+                center.offset = Vector.ZERO
             }
                 break;
         }
         svgResult.push.apply(svgResult, rootElement.compile(centerXCursor.value - rootW / 2, cursorY.value, rootW, rootH))
         cursorY.move(rootH)
         cursorY.move(topMargin)
+
         let startY = cursorY.value
-        let maxY = cursorY.value
-        //Drawing inner elements
-        for (let i = 0; i < amountOfInner; i++) {
-            let info = branchInfos[i];
-            let innerElement = this.innerElements[i];
-            info.isEmpty = innerElement.isEmpty()
-            centerXCursor.withOffset(info.offset.x, centerXCursor => {
-                let yClone = cursorY.clone();
-                let compileResult = innerElement.compile(centerXCursor, yClone, compileInfo);
-                svgResult.push.apply(svgResult, compileResult.svgCode)
-                maxY = Math.max(maxY, cursorY.value + info.bounds.height())
-                info.output = compileResult.output
-            })
-            debugPoint()
-        }
-        cursorY.value = maxY + topMargin * 3;
-         //Drawing lines from root to inner
-        for (let i = 0; i < branchInfos.length; i++) {
-            let titlePosition = IfHorizontalBlock.TITLE_POSITION[branchInfos.length][i];
-            let info = branchInfos[i];
-            if (info.isEmpty && branchInfos.length == 3 && i == 1) continue
-            let from = info.rootPosition!;
-            let to = info.output;
-            let tox = to.x;
-            if (!info.isEmpty) {
-                svgResult.push(makePath([
-                    rawSvgLine(tox, from.y, from.x, from.y),
-                    rawSvgLine(tox, from.y, tox, startY)
-                ]))
-            } else {
-                svgResult.push(makePath([
-                    rawSvgLine(tox, from.y, from.x, from.y),
-                    rawSvgLine(tox, from.y, tox, to.y)
-                ]))
-            }
-            let branchTitles = this.branchTitles;
-            if (branchTitles != null) {
-                svgResult.push(defaultCenterText(
-                    from.x + titlePosition.offset.x, from.y + titlePosition.offset.y
-                    , 0, 0,
-                    branchTitles[i],
-                    titlePosition.baseline, titlePosition.anchor))
-            }
-        }
 
-        let nextBlock = this.parentInfo !== undefined ? this.parentInfo.siblingIndex(1) : undefined;
+        HorizontalBranchBlockOfBlocks.displayBranches(this, cursorY, branchInfos, centerXCursor, compileInfo, svgResult, topMargin);
+        {
 
-        let hasAfter = !compileInfo.isLast;
-        if (!hasAfter) {
-            let myParent = this.parentInfo;
-
-            // debugPoint()
-            while (myParent !== undefined) {
-                if (myParent.siblingIndex(1) !== undefined) {
-                    hasAfter = true
+            //Drawing lines from root to inner
+            for (let i = 0; i < branchInfos.length; i++) {
+                let info = branchInfos[i];
+                if (info.isEmpty && branchInfos.length == 3 && i == 1) continue
+                let from = info.rootPosition!;
+                let to = info.output;
+                let tox = to.x;
+                if (!info.isEmpty) {
+                    svgResult.push(makePath([
+                        rawSvgLine(tox, from.y, from.x, from.y),
+                        rawSvgLine(tox, from.y, tox, startY)
+                    ]))
+                } else {
+                    svgResult.push(makePath([
+                        rawSvgLine(tox, from.y, from.x, from.y),
+                        rawSvgLine(tox, from.y, tox, to.y)
+                    ]))
                 }
-                myParent = myParent.parent.parentInfo
-            }
-        }
-        if (hasAfter) {//Drawing output lines
-            let lines: string[] = [];
-            {
-                for (let info of branchInfos) {
-                    let output = info.output;
-                    lines.push(rawSvgLine(output.x, maxY + topMargin * 2, output.x, output.y))
+                if (info.title !== undefined) {
+                    let title = info.title;
+                    let titlePosition = title.position;
+                    svgResult.push(defaultCenterText(
+                        from.x + titlePosition.offset.x, from.y + titlePosition.offset.y
+                        , 0, 0,
+                        title.text,
+                        titlePosition.baseline, titlePosition.anchor))
                 }
-
             }
-
-
-            lines.push(rawSvgLine(branchInfos[0].output.x, maxY + topMargin * 2, branchInfos[branchInfos.length - 1].output.x, maxY + topMargin * 2))
-            if (nextBlock != null && nextBlock.isEmpty()) {
-                lines.push(rawSvgLine(centerXCursor.value, cursorY.value - topMargin, centerXCursor.value, maxY + topMargin * 2))
-            } else {
-                lines.push(rawSvgLine(centerXCursor.value, cursorY.value, centerXCursor.value, maxY + topMargin * 2))
-            }
-            svgResult.push(makePath(lines.join(" ")))
         }
         svgResult.push("</g>")
         return new CompileResult(Vector.new(centerXCursor, cursorY), svgResult)

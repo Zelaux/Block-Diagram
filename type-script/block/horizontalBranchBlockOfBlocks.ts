@@ -1,4 +1,62 @@
 //depends: block
+class BranchTitle {
+    text:NullableGraphText
+    position:TitlePosition
+
+    constructor(text: NullableGraphText, position: TitlePosition) {
+        this.text = text;
+        this.position = position;
+    }
+}
+class HorizontalBranchInfo {
+    rootPosition?: Vector
+    title?:BranchTitle
+    offset!: Vector;
+    bb!: BlockBoundingBox
+    bounds!: Bounds
+    output!: Vector
+    isEmpty!: boolean
+    element!:Block
+
+    setBB(bb: BlockBoundingBox) {
+        this.bb = bb;
+        this.bounds = bb.bounds;
+    }
+
+    setElement(element: Block) {
+        this.element=element;
+        this.isEmpty=element.isEmpty()
+    }
+}
+
+// @ts-ignore
+class BlockBoundingBoxWithChildren extends BlockBoundingBox {
+    children: BlockBoundingBox[]
+
+    constructor(bounds: Bounds, output: number, children: BlockBoundingBox[]) {
+        super(bounds, output);
+        this.children = children;
+    }
+
+    static makeCenter(width: number, height: number, output: number, children: BlockBoundingBox[]) {
+
+        return new BlockBoundingBoxWithChildren(makeCenteredBounds(width, height), output, children)
+    }
+
+    static make(bounds: Bounds, output: number, children: BlockBoundingBox[]) {
+        bounds = bounds.copy();
+        bounds.left -= 5
+        let topOffset = 2;
+        bounds.top -= topOffset
+        bounds.right += 5
+        bounds.bottom += topOffset
+        return new BlockBoundingBoxWithChildren(bounds, output, children)
+    }
+
+}
+
+
+
 class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
 
     type = HorizontalBranchBlockOfBlocks
@@ -6,97 +64,30 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
     constructor() {
         super(null);
     }
-
-    addBlock(block: Block): BlockOfBlocks {
-        this.innerElements.push(block)
-        return this;
-    }
-
-    addElement(element: PreparedGraphElement): BlockOfElements {
-        return this.next(new BlockOfElements()).addElement(element);
-    }
-
-    apply(applier: (this: HorizontalBranchBlockOfBlocks) => void): HorizontalBranchBlockOfBlocks {
-        applier.apply(this)
-        return this
-    }
-
-    calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBox {
-        let width = 0
-        let height = 0
-
-        for (let innerElement of this.innerElements) {
-            let bb = innerElement.calculateBoundingBox(compileInfo);
-            width += bb.bounds.width()
-            // debugPoint()
-            height = Math.max(height, bb.bounds.height())
-        }
-        height += compileInfo.topMargin
-        height += compileInfo.topMargin * 3
-        return BlockBoundingBox.makeCenter(width, height, 0);
-    }
-
-    compile(centerXCursor: Cursor, cursorY: Cursor, compileInfo: CompileInfo) {
-
-        const topMargin = compileInfo.topMargin;
-        const width = compileInfo.width;
-        let rootElement:PreparedGraphElement|null = null;
-        let svgResult: string[] = [
-            "<g class='block horizontal'>",
-            bbToSvg("horiz", this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo),
-        ]
-
-        const margin = this.marginBetweenBlocks
-        let amount = this.innerElements.length;
-        let sizes: BlockBoundingBox[] = []
-
-        for (let i = 0; i < amount; i++) {
-            sizes[i] = this.innerElements[i].calculateBoundingBox(compileInfo)
-        }
-        let myBB = this.calculateBoundingBox(compileInfo)
-
-
-        class BranchInfo {
-            rootPosition?: Vector
-            // @ts-ignore
-            output: Vector//late init
-            // @ts-ignore
-            isEmpty: boolean//late init
-        }
-
-        let branchInfos: BranchInfo[] = this.innerElements.map(() => new BranchInfo())
-        let currentXOffset = -myBB.width / 2
-
-
-        cursorY.move(topMargin)
-        let startY = cursorY.value
+static displayBranches(self:AbstractBlock,cursorY: Cursor, branchInfos: HorizontalBranchInfo[], centerXCursor: Cursor, compileInfo: CompileInfo, svgResult: string[], topMargin: number) {
         let maxY = cursorY.value
         //Drawing inner elements
-        for (let i = 0; i < amount; i++) {
-            let branchInfo = branchInfos[i];
-            let innerElement = this.innerElements[i];
-            branchInfo.isEmpty = innerElement.isEmpty()
-            let bb = sizes[i];
-            let outputXOffset = currentXOffset - bb.bounds.left;
-            centerXCursor.withOffset(outputXOffset, centerXCursor => {
+        for (let i = 0; i < branchInfos.length; i++) {
+            let info = branchInfos[i];
+            let innerElement = info.element;
+            centerXCursor.withOffset(info.offset.x, centerXCursor => {
                 let yClone = cursorY.clone();
                 let compileResult = innerElement.compile(centerXCursor, yClone, compileInfo);
                 svgResult.push.apply(svgResult, compileResult.svgCode)
-                maxY = Math.max(maxY, cursorY.value + bb.bounds.height())
-                branchInfo.output = compileResult.output
+                maxY = Math.max(maxY, cursorY.value + info.bounds.height())
+                info.output = compileResult.output
             })
-            debugPoint()
-            let it = 0;
-            currentXOffset += bb.bounds.width() + margin;
         }
         cursorY.value = maxY + topMargin * 3;
 
-
-        let nextBlock = this.parentInfo !== undefined ? this.parentInfo.siblingIndex(1) : undefined;
+        HorizontalBranchBlockOfBlocks.addConnectionLines(self, compileInfo, branchInfos, maxY, topMargin, centerXCursor, cursorY, svgResult);
+    }
+    static addConnectionLines(self: AbstractBlock, compileInfo: CompileInfo, branchInfos: HorizontalBranchInfo[], maxY: number, topMargin: number, centerXCursor: Cursor, cursorY: Cursor, svgResult: string[]) {
+        let nextBlock = self.parentInfo !== undefined ? self.parentInfo.siblingIndex(1) : undefined;
 
         let hasAfter = !compileInfo.isLast;
         if (!hasAfter) {
-            let myParent = this.parentInfo;
+            let myParent = self.parentInfo;
 
             // debugPoint()
             while (myParent !== undefined) {
@@ -125,9 +116,67 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             }
             svgResult.push(makePath(lines.join(" ")))
         }
+    }
+
+    addBlock(block: Block): BlockOfBlocks {
+        this.innerElements.push(block)
+        return this;
+    }
+
+    addElement(element: PreparedGraphElement): BlockOfElements {
+        return this.next(new BlockOfElements()).addElement(element);
+    }
+
+    apply(applier: (this: HorizontalBranchBlockOfBlocks) => void): HorizontalBranchBlockOfBlocks {
+        applier.apply(this)
+        return this
+    }
+
+    calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBoxWithChildren {
+        let width = 0
+        let height = 0
+        let boxes = this.innerElements.map(it => it.calculateBoundingBox(compileInfo))
+        for (let bb of boxes) {
+            width += bb.bounds.width()
+            // debugPoint()
+            height = Math.max(height, bb.bounds.height())
+        }
+        height += compileInfo.topMargin
+        height += compileInfo.topMargin * 3
+        return BlockBoundingBoxWithChildren.makeCenter(width, height, 0, boxes);
+    }
+
+    compile(centerXCursor: Cursor, cursorY: Cursor, compileInfo: CompileInfo) {
+
+        const topMargin = compileInfo.topMargin;
+        let svgResult: string[] = [
+            "<g class='block horizontal'>",
+            bbToSvg("horiz", this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo),
+        ]
+
+        const margin = this.marginBetweenBlocks
+        let amount = this.innerElements.length;
+        let myBB = this.calculateBoundingBox(compileInfo)
+
+
+        let branchInfos: HorizontalBranchInfo[]
+        {
+            let xOffset=-myBB.bounds.width() / 2
+            branchInfos=this.innerElements.map((element,i) => {
+                let info = new HorizontalBranchInfo();
+                info.element=element
+                let innerElement = this.innerElements[i];
+                info.isEmpty = innerElement.isEmpty()
+                info.setBB(myBB.children[i])
+                info.offset=new Vector(-xOffset-info.bounds.left,0)
+                return info;
+            })
+        }
+
+        cursorY.move(topMargin)
+            HorizontalBranchBlockOfBlocks.displayBranches(this, cursorY, branchInfos, centerXCursor, compileInfo, svgResult, topMargin);
         svgResult.push("</g>")
         return new CompileResult(Vector.new(centerXCursor, cursorY), svgResult)
     }
-
 }
 
