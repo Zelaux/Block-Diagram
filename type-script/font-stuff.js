@@ -43,7 +43,10 @@ const TextUtil = {
         const charW = Math.round(size * FONT_W_H_RATIO);
         let lineW = 0;
         let w = 0, h = 0;
+        let hasAny = false;
         for (let c of text) {
+            if (!hasAny && /\s/.test(c) && c != '\n')
+                continue;
             switch (c) {
                 case '\t':
                     lineW += charW * 4;
@@ -54,9 +57,11 @@ const TextUtil = {
                     w = Math.max(w, lineW);
                     h += lineH;
                     lineW = 0;
+                    hasAny = false;
                     continue;
             }
             lineW += charW;
+            hasAny = true;
         }
         w = Math.max(w, lineW);
         h += lineH;
