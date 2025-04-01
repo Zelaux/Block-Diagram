@@ -35,32 +35,59 @@ const TextareaExtension = (function () {
         preItem.style.overflow = "scroll";
         preItem.style.margin = "0px 0px";
     }
+    class SelectionInserter {
+        constructor(target, text) {
+            this.cursorsList = [];
+            this.cursorI = 0;
+            this.cursorsList.push(target.selectionStart);
+            this.text = text;
+            /*let selection = window.getSelection();
+            if (selection != null) {
+                for (let i = 0; i < selection.rangeCount; i++) {
+                    let range = selection.getRangeAt(i);
+                    if (!range.collapsed || range.startContainer != target) continue
+                    cursorsList.push(range.startOffset)
+                }
+            }*/
+        }
+        substring(start, end, includeEnd = false) {
+            let text = this.text;
+            let currentCursor = this.skipCursors(start);
+            if (currentCursor === undefined || currentCursor >= end && !includeEnd)
+                return text.substring(start, end);
+            if (start == currentCursor)
+                return cursorElement + text.substring(start, end);
+            return text.substring(start, currentCursor) + cursorElement + text.substring(currentCursor, end);
+        }
+        skipCursors(start) {
+            let currentCursor = this.cursorsList[this.cursorI];
+            while (currentCursor != undefined && currentCursor < start) {
+                this.cursorI++;
+                currentCursor = this.cursorsList[this.cursorI];
+            }
+            return currentCursor;
+        }
+    }
     return function (target, font) {
         let preItem = document.createElement("pre");
         setStyleOptions(target, preItem, font);
         function analyse() {
-            let cursorStart = target.selectionStart;
             let text = target.value;
+            let cursorInserter = new SelectionInserter(target, text);
+            // let cursorStart = target.selectionStart;
+            target.ariaMultiSelectable;
             // text = text.substring(0, cursorStart) + "\x00" + text.substring(cursorStart, target.selectionEnd)/*+"\x01"*/ + text.substring(target.selectionEnd)
             let tokens = Lexer.lex(text, false);
             let result = "";
             let prevEnd = 0;
             for (let token of tokens) {
                 let range = token.range;
-                let s = text.substring(range.start, range.end);
-                if (range.start == cursorStart) {
-                    s = cursorElement + s;
-                }
-                else if (range.start < cursorStart && cursorStart < range.end) {
-                    s = text.substring(range.start, cursorStart) + cursorElement + text.substring(cursorStart, range.end);
-                }
-                result += text.substring(prevEnd, range.start)
-                    + "<span class='token-" + TokenKind[token.kind] + "'>" + s + "</span>";
-                if (range.end == cursorStart) {
-                    result += cursorElement;
-                }
+                result += cursorInserter.substring(prevEnd, range.start);
+                let s = cursorInserter.substring(range.start, range.end);
+                result += "<span class='token-" + TokenKind[token.kind] + "'>" + s + "</span>";
                 prevEnd = range.end;
             }
+            result += cursorInserter.substring(prevEnd, text.length, true);
             let innerHTML = result;
             preItem.innerHTML = `<div style="height: ${target.scrollHeight}px;">${innerHTML}</div>`;
         }
