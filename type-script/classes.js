@@ -18,6 +18,10 @@ class Cursor {
     }
 }
 class Vector {
+    static finalValue(x, y) {
+        let target = Vector.new(x, y);
+        return new Proxy(target, new FinalProxy());
+    }
     constructor(x, y) {
         this.x = Vector.extractNumber(x);
         this.y = Vector.extractNumber(y);
@@ -47,9 +51,9 @@ class Vector {
         return this;
     }
 }
-Vector.ZERO = Vector.new(0, 0);
-Vector.X = Vector.new(1, 0);
-Vector.Y = Vector.new(0, 1);
+Vector.ZERO = Vector.finalValue(0, 0);
+Vector.X = Vector.finalValue(1, 0);
+Vector.Y = Vector.finalValue(0, 1);
 class CompileInfo {
     constructor(width, topMargin, extraWidth) {
         this.isLast = true;

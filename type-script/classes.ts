@@ -25,12 +25,15 @@ class Cursor {
 }
 
 class Vector {
-    static ZERO: Vector = Vector.new(0, 0);
-    static X: Vector = Vector.new(1, 0);
-    static Y: Vector = Vector.new(0, 1);
+    static ZERO: Vector = Vector.finalValue(0, 0);
+    static X: Vector = Vector.finalValue(1, 0);
+    static Y: Vector = Vector.finalValue(0, 1);
     x: number
     y: number;
-
+    private static finalValue(x:number,y:number){
+        let target = Vector.new(x,y);
+        return new Proxy(target,new FinalProxy())
+    }
     constructor(x: number | Cursor, y: number | Cursor) {
         this.x = Vector.extractNumber(x);
         this.y = Vector.extractNumber(y);
