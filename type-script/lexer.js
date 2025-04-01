@@ -32,6 +32,9 @@ class TokenRange {
     static range(start, end) {
         return new TokenRange(start, end === undefined ? start + 1 : end);
     }
+    length() {
+        return this.end - this.start;
+    }
 }
 class Token {
     constructor(kind, range, payload) {

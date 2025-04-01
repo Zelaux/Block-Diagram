@@ -68,6 +68,14 @@ const TextareaExtension = (function () {
             return currentCursor;
         }
     }
+    function getTokenAtChar(tokens, charIndex) {
+        for (let i = 0; i < tokens.length; i++) {
+            if (tokens[i].range.end <= charIndex)
+                continue;
+            return i;
+        }
+        return -1;
+    }
     return function (target, font) {
         let preItem = document.createElement("pre");
         setStyleOptions(target, preItem, font);
@@ -130,7 +138,31 @@ const TextareaExtension = (function () {
                         }
                     }
                     else {
+                        let tokens = Lexer.lex(text, false);
                         ev.preventDefault();
+                        switch (selectionValue.length) {
+                            case 1:
+                                let tryToReplaceBrace = Lexer.OPEN_BRACES.indexOf(selectionValue);
+                                if (tryToReplaceBrace == -1) {
+                                    break;
+                                }
+                                let tokenI = getTokenAtChar(tokens, beforeSelection.length);
+                                if (tokenI == -1)
+                                    break;
+                                let token = tokens[tokenI];
+                                if (token.range.length() != 1)
+                                    break;
+                                let closeToken = tokens[token.payload];
+                                target.value =
+                                    beforeSelection +
+                                        Lexer.OPEN_BRACES[openedBrace] +
+                                        text.substring(token.range.end, closeToken.range.start) +
+                                        Lexer.CLOSE_BRACES[openedBrace] +
+                                        text.substring(closeToken.range.end);
+                                target.setSelectionRange(beforeSelection.length + 1, beforeSelection.length + 1, "forward");
+                                analyse();
+                                return;
+                        }
                         target.value = beforeSelection + ev.key + selectionValue + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
                         target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
                     }

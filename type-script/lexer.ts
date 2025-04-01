@@ -33,6 +33,10 @@ class TokenRange {
     static range(start: number, end?: number) {
         return new TokenRange(start, end === undefined ? start + 1 : end);
     }
+
+    length() {
+        return this.end-this.start
+    }
 }
 
 class Token {
