@@ -55,13 +55,15 @@ function defaultCenterText(x: number, y: number, width: number, height: number, 
 
 
     let info = new CompileInfo(10, 0, 0);
-    info.drawBB = true;
+    // @ts-ignore
+    info.drawBB = defaultCenterText.drawBB;
     let cx = x + width / 2;
     let cy = y + height / 2;
     let bbSvg = bbToSvg("text", new BlockBoundingBox(textBB.toBounds(anchorToValue(anchor),baselineToValue(baseline)), 0), Vector.new(cx, cy), "purple", info)
-    return `<g class="text-group" font-size="${FONT_SIZE}px" transform="translate(${cx} ${cy})" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
-<text x="0" y="0" dominant-baseline="${baseline}" text-anchor="${anchor}">${compiledText}</text>
-</g>` + bbSvg;
+    return `<g class="text-group" font-size="${FONT_SIZE}px" data-aspect="${JSON.stringify(aspect)}" data-widthAspect="${JSON.stringify(widthAspect)}">
+<text x="0" y="0" transform="translate(${cx} ${cy})"  dominant-baseline="${baseline}" text-anchor="${anchor}">${compiledText}</text>
+${bbSvg}
+</g>` ;
     // return `<text x="${x + width / 2}" y="${y + height / 2}" dominant-baseline="middle" text-anchor="middle">${compiledText}</text>`;
 }
 
