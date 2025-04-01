@@ -122,12 +122,15 @@ const TextareaExtension = (function () {
                 let selectionValueTrim = selectionValue.trim();
                 let openedBrace = Lexer.OPEN_BRACES.indexOf(ev.key);
                 if (openedBrace != -1) {
-                    ev.preventDefault();
                     if (selectionValueTrim.length == 0) {
-                        target.value = beforeSelection + ev.key + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
-                        target.setSelectionRange(beforeSelection.length + 1, beforeSelection.length + 1, "forward");
+                        if (Lexer.CLOSE_BRACES[openedBrace] != afterSelection[0]) {
+                            ev.preventDefault();
+                            target.value = beforeSelection + ev.key + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
+                            target.setSelectionRange(beforeSelection.length + 1, beforeSelection.length + 1, "forward");
+                        }
                     }
                     else {
+                        ev.preventDefault();
                         target.value = beforeSelection + ev.key + selectionValue + Lexer.CLOSE_BRACES[openedBrace] + afterSelection;
                         target.setSelectionRange(beforeSelection.length, target.value.length - afterSelection.length, "forward");
                     }
@@ -217,13 +220,17 @@ const TextareaExtension = (function () {
                         break;
                     }
                     case "{": {
-                        ev.preventDefault();
                         if (selectionValue.trim().length == 0) {
+                            if (afterSelection[0] == "}") {
+                                break;
+                            }
+                            ev.preventDefault();
                             target.value = beforeSelection + "{}" + afterSelection;
                             let index = beforeSelection.length + 1;
                             target.setSelectionRange(index, index);
                         }
                         else {
+                            ev.preventDefault();
                             let nlStart = Math.max(text.lastIndexOf("\n", target.selectionStart - 1) + 1, 0);
                             let tabSize = calculateTabSize(text, nlStart);
                             let tabSymbols = TAB_SYMBOL.repeat(tabSize + TAB_INCREASER);
