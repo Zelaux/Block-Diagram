@@ -76,7 +76,7 @@ const SVG_STYLE_PREFIX = `
         }
         tspan{
         font-family: 'myfont', monospace;
-        font-weight: bold;
+        font-weight: normal;
         }
     </style>
     `;
