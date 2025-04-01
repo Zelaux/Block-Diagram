@@ -12,7 +12,7 @@ function setup(div: HTMLDivElement) {
     })
     let areaElement = div.querySelector("textarea")!;
     let mokArea: HTMLTextAreaElement = div.querySelector(".code-textarea")!;
-    TextareaExtension(areaElement)
+    TextareaExtension(areaElement,"16px \"JetBrains Mono\", monospace")
     // div.innerHTML+=
 }
 

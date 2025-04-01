@@ -74,7 +74,8 @@ class IfBlock extends AbstractBlock {
         const topMargin = compileInfo.topMargin;
         const width = compileInfo.width;
         let svgResult: string[] = [
-            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), this.bbColor, compileInfo)
+            "<g class='block ifBlock'>",
+            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), this.bbColor, compileInfo),
         ]
 
         const margin = this.marginBetweenBlocks
@@ -218,6 +219,7 @@ class IfBlock extends AbstractBlock {
             }
             svgResult.push(makePath(lines.join(" ")))
         }
+        svgResult.push("</g>")
         return new CompileResult(Vector.new(centerXCursor, cursorY), svgResult)
     }
 }

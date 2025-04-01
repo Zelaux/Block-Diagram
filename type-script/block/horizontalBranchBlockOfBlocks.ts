@@ -59,7 +59,8 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
         const topMargin = compileInfo.topMargin;
         const width = compileInfo.width;
         let svgResult: string[] = [
-            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo)
+            "<g class='block horizontal'>",
+            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo),
         ]
 
         const margin = this.marginBetweenBlocks
@@ -186,6 +187,7 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             }
             svgResult.push(makePath(lines.join(" ")))
         }
+        svgResult.push("</g>")
         return new CompileResult(Vector.new(centerXCursor, cursorY), svgResult)
     }
 

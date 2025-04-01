@@ -35,6 +35,9 @@ function bbToSvg(name, bb, vector, color, compileInfo) {
     let height = bb.bounds.height();
     let x = vector.x + bb.bounds.x();
     let y = vector.y + bb.bounds.y();
+    if (name === undefined) {
+        console.error(new Error());
+    }
     if (compileInfo.drawBB) {
         return `<rect class="bounding-box" x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
     }

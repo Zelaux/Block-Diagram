@@ -35,6 +35,7 @@ const TextareaExtension = (function () {
     function setStyleOptions(target: HTMLTextAreaElement, preItem: HTMLPreElement, font?: string) {
         preItem.className = "text-area-selection";
         target.parentNode!.appendChild(preItem);
+        // target.style.fontSize = preItem.style.fontSize = font || "14px Arial";
         target.style.font = preItem.style.font = font || "14px Arial";
 
         target.style.width = preItem.style.width = target.offsetWidth + "px";

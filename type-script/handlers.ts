@@ -122,6 +122,7 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
         }
         if (!shouldUseIndent) {
             let simpleBlockOfBlocks = new SimpleBlockOfBlocks();
+            simpleBlockOfBlocks.rootElement=openPrepare
             simpleBlockOfBlocks.bbColor = "gray"
             let inner = simpleBlockOfBlocks.addElement(openPrepare)
 
@@ -169,14 +170,16 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
                 );
 
                 centerXCursor.value = v1;
-                compileResult.svgCode[0] = bbSvg
+                compileResult.svgCode[1] = bbSvg
 
                 cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
 
                     myStrings.push.apply(myStrings, compileResult.svgCode)
+                    myStrings.pop()
                     drawLine(myStrings, lineX1, lineX2);
                     myStrings.push.apply(myStrings,
                         compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo))
+                    myStrings.push("</g>")
                     compileResult.svgCode = myStrings
                 })
                 cursorY.value -= compileInfo.topMargin
@@ -202,6 +205,12 @@ function wrapRawCompiler(name: NullableGraphText, rawCompiler: RawCompiler): Com
         arguments[arguments.length] = name
         arguments.length += 1
         // @ts-ignore
-        return rawCompiler.apply(undefined, arguments)
+        let strings = rawCompiler.apply(undefined, arguments);
+
+        let s:string[]=[]
+        s.push("<g class='element'>")
+        s.push.apply(s,strings)
+        s.push("</g>")
+        return s
     };
 }

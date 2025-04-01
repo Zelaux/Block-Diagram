@@ -29,20 +29,33 @@ setTimeout(function () {
             let data = result.data;
             // svgRootElement.innerHTML = data.strings.map(it => defaultCenterText(0, 0, 0, 0, it))
             //     .join("\n")
-            svgRootElement.innerHTML = data.block.compile(new Cursor(0), new Cursor(0), TEST_COMPILE_INFO).svgCode.join("\n");
             let width = 1;
-            for (let child of svgRootElement.querySelectorAll(".text-group")) {
-                let bBox = child.getBBox();
-                let aspect = JSON.parse(child.dataset.aspect);
-                let widthAspect = JSON.parse(child.dataset.widthaspect);
-                let myWidth = bBox.width / widthAspect + 10;
-                if (aspect != 0 && Number.isFinite(aspect)) {
-                    let expectedHeight = bBox.width * aspect;
-                    if (bBox.height > expectedHeight) {
-                        myWidth = bBox.height / aspect / widthAspect + 10;
+            {
+                let defaultCenterText_prev = defaultCenterText;
+                let mergedBounds = Bounds.makeZero();
+                // @ts-ignore
+                defaultCenterText = function (x, y, width, height, text, baseline, anchor, widthAspect) {
+                    let bBox = defaultCenterText0(text, baseline, anchor, width);
+                    let w = bBox.width;
+                    let h = bBox.height;
+                    mergedBounds.expandBound(bBox.toBounds(1, 1));
+                    let aspect = widthAspect;
+                    if (aspect != 0 && Number.isFinite(aspect)) {
+                        let expectedHeight = w * aspect;
+                        if (h > expectedHeight) {
+                            w = bBox.height / aspect / widthAspect;
+                            h = expectedHeight;
+                        }
                     }
-                }
-                width = Math.max(myWidth, width);
+                    mergedBounds.expand(w, h);
+                    return "";
+                };
+                data.block.compile(new Cursor(0), new Cursor(0), TEST_COMPILE_INFO);
+                // @ts-ignore
+                defaultCenterText = defaultCenterText_prev;
+                // @ts-ignore
+                window.mergedBounds = mergedBounds;
+                width = mergedBounds.width() + 10;
             }
             let extraWidth = inputElement("input#extra-width").valueAsNumber;
             width += extraWidth;
@@ -54,63 +67,21 @@ setTimeout(function () {
             console.log(width, blockBoundingBox);
             let cursorX = new Cursor(0);
             let cursorY = new Cursor(5);
-            svgRootElement.innerHTML = data.block.compile(cursorX, cursorY, compileInfo).svgCode.join("\n");
-            if (compileInfo.drawBB || true) {
-                let safeSpace = topMargin;
-                let currentBox = new DOMRect(boundingBox.x(), boundingBox.y(), boundingBox.width(), boundingBox.height() + safeSpace);
-                svgRootElement.width.baseVal.value = currentBox.width;
-                svgRootElement.height.baseVal.value = currentBox.height;
-                if (inputElement("#add-back").checked) {
-                    svgRootElement.innerHTML = `<rect x="${currentBox.x}" y="${currentBox.y}" width="${currentBox.width}" height="${currentBox.height}" fill="white"></rect>\n` + svgRootElement.innerHTML;
-                }
-                svgRootElement.setAttribute("viewBox", `${currentBox.x} ${currentBox.y} ${currentBox.width} ${currentBox.height}`);
-                svgRootElement.setAttribute("width", `${currentBox.width}px`);
-                svgRootElement.setAttribute("height", `${currentBox.height}px`);
-                svgRootElement.width.baseVal.value = currentBox.width + 10;
-                svgRootElement.height.baseVal.value = currentBox.height + 10;
+            svgRootElement.innerHTML = SVG_STYLE_PREFIX + data.block.compile(cursorX, cursorY, compileInfo).svgCode.join("\n");
+            let safeSpace = topMargin;
+            let currentBox = new DOMRect(boundingBox.x(), boundingBox.y(), boundingBox.width(), boundingBox.height() + safeSpace);
+            svgRootElement.width.baseVal.value = currentBox.width;
+            svgRootElement.height.baseVal.value = currentBox.height;
+            if (inputElement("#add-back").checked) {
+                svgRootElement.innerHTML = `<rect x="${currentBox.x}" y="${currentBox.y}" width="${currentBox.width}" height="${currentBox.height}" fill="white"></rect>\n` + svgRootElement.innerHTML;
             }
-            else {
-                let currentBox = undefined;
-                let propToSize = {
-                    "x": "width",
-                    "y": "height"
-                };
-                function otherSide(rect, prop) {
-                    return rect[prop] + rect[propToSize[prop]];
-                }
-                for (let rawElement of svgRootElement.querySelectorAll("rect:not(.bounding-box), path")) {
-                    let svgElement = rawElement;
-                    let box = svgElement.getBBox();
-                    if (currentBox === undefined) {
-                        currentBox = box;
-                        let strings = ["x", "y"];
-                        for (let prop of strings) {
-                            currentBox[prop] = currentBox[prop] - 5;
-                            let size = propToSize[prop];
-                            currentBox[size] = currentBox[size] + 5;
-                        }
-                        continue;
-                    }
-                    // if (box.x < 0) debugPoint()
-                    for (let prop_ of Object.keys(propToSize)) {
-                        let prop = prop_;
-                        let other1 = otherSide(currentBox, prop) + 5;
-                        let other2 = otherSide(box, prop) + 5;
-                        let other = Math.max(other1, other2);
-                        currentBox[prop] = Math.min(currentBox[prop], box[prop] - 5);
-                        currentBox[propToSize[prop]] = other - currentBox[prop];
-                    }
-                }
-                currentBox = currentBox;
-                if (inputElement("#add-back").checked) {
-                    svgRootElement.innerHTML = `<rect x="${currentBox.x}" y="${currentBox.y}" width="${currentBox.width}" height="${currentBox.height}" fill="white"></rect>\n` + svgRootElement.innerHTML;
-                }
-                svgRootElement.setAttribute("viewBox", `${currentBox.x} ${currentBox.y} ${currentBox.width} ${currentBox.height}`);
-                svgRootElement.setAttribute("width", `${currentBox.width}px`);
-                svgRootElement.setAttribute("height", `${currentBox.height}px`);
-                svgRootElement.width.baseVal.value = currentBox.width + 10;
-                svgRootElement.height.baseVal.value = currentBox.height + 10;
-            }
+            svgRootElement.setAttribute("viewBox", `${currentBox.x} ${currentBox.y} ${currentBox.width} ${currentBox.height}`);
+            svgRootElement.setAttribute("width", `${currentBox.width}px`);
+            svgRootElement.setAttribute("height", `${currentBox.height}px`);
+            // svgRootElement.width.baseVal.value = currentBox.width-currentBox.x + 10
+            // svgRootElement.height.baseVal.value = currentBox.height-currentBox.y + 10
+            svgRootElement.width.baseVal.value = currentBox.width + 10;
+            svgRootElement.height.baseVal.value = currentBox.height + 10;
         }
     };
     downloadButton.onclick = function () {

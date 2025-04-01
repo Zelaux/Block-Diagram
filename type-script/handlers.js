@@ -108,6 +108,7 @@ function openCloseHandler(open, close, useIndent = false) {
         }
         if (!shouldUseIndent) {
             let simpleBlockOfBlocks = new SimpleBlockOfBlocks();
+            simpleBlockOfBlocks.rootElement = openPrepare;
             simpleBlockOfBlocks.bbColor = "gray";
             let inner = simpleBlockOfBlocks.addElement(openPrepare);
             let result = nodesToBlock(inner, thisNode.children[0]);
@@ -147,11 +148,13 @@ function openCloseHandler(open, close, useIndent = false) {
                 let v1 = centerXCursor.value;
                 let compileResult = centerXCursor.withOffset(fullWidth, () => originalCompile.call(blocks, centerXCursor, cursorY, compileInfo));
                 centerXCursor.value = v1;
-                compileResult.svgCode[0] = bbSvg;
+                compileResult.svgCode[1] = bbSvg;
                 cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
                     myStrings.push.apply(myStrings, compileResult.svgCode);
+                    myStrings.pop();
                     drawLine(myStrings, lineX1, lineX2);
                     myStrings.push.apply(myStrings, compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo));
+                    myStrings.push("</g>");
                     compileResult.svgCode = myStrings;
                 });
                 cursorY.value -= compileInfo.topMargin;
@@ -175,6 +178,11 @@ function wrapRawCompiler(name, rawCompiler) {
         arguments[arguments.length] = name;
         arguments.length += 1;
         // @ts-ignore
-        return rawCompiler.apply(undefined, arguments);
+        let strings = rawCompiler.apply(undefined, arguments);
+        let s = [];
+        s.push("<g class='element'>");
+        s.push.apply(s, strings);
+        s.push("</g>");
+        return s;
     };
 }

@@ -1,0 +1,66 @@
+textarea {
+    border: 3px solid black;
+
+    @media (prefers-color-scheme: dark) {
+        border-color: lightgray;
+    }
+}
+
+
+.error_label {
+    width: 100%;
+}
+
+.input_area {
+    line-height: 1;
+    width: 100%;
+    /*padding: 1px 2px 2px;*/
+    display: block;
+    resize: vertical;
+}
+
+.cursor {
+    width: 0px;
+    height: 1em;
+    display: inline-block;
+    position: relative;
+    vertical-align: bottom;
+    overflow: visible;
+}
+
+:root {
+    --cursor-blink: 1
+}
+
+.cursor > * {
+    margin: 0;
+    /*width: 1px;*/
+    border-left: 1px solid black;
+    @media (prefers-color-scheme: dark) {
+        border-color: white;
+    }
+    height: 1em;
+    display: inline-block;
+    opacity: var(--cursor-blink);
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.text-area-selection > span {
+    /*height: 1.2em;*/
+
+}
+
+.text-area-selection {
+    position: absolute;
+    padding: 4px;
+    z-index: -1;
+    display: block;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow: scroll;
+}

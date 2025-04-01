@@ -56,7 +56,8 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         const topMargin = compileInfo.topMargin;
         let width = compileInfo.width;
         let svgResult: string[] = [
-            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo)
+            "<g class='block simpleBlockOfBlocks'>",
+            bbToSvg(this.rootElement==null?"null":this.rootElement.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo),
         ]
         let prevPosition: Vector | null = null
 
@@ -84,6 +85,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
             prevPosition = true ? prevPosition : Vector.ZERO
 
         }
+        svgResult.push("</g>")
         return new CompileResult(prevPosition || Vector.new(x, y), svgResult)
     }
 
