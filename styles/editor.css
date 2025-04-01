@@ -1,5 +1,5 @@
 textarea {
-    border: 3px solid black;
+    border: 4px solid black;
 
     @media (prefers-color-scheme: dark) {
         border-color: lightgray;
