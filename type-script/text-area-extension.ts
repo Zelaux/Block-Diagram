@@ -52,20 +52,27 @@ const TextareaExtension = (function () {
 
             let cursorStart = target.selectionStart;
             let text = target.value;
-            text = text.substring(0, cursorStart) + "\x00" + text.substring(cursorStart, target.selectionEnd)/*+"\x01"*/ + text.substring(target.selectionEnd)
+            // text = text.substring(0, cursorStart) + "\x00" + text.substring(cursorStart, target.selectionEnd)/*+"\x01"*/ + text.substring(target.selectionEnd)
             let tokens = Lexer.lex(text, false);
             let result = "";
             let prevEnd = 0
             for (let token of tokens) {
-                result += text.substring(prevEnd, token.range.start)
-                    + "<span class='token-" + TokenKind[token.kind] + "'>" + text.substring(token.range.start, token.range.end) + "</span>"
-                prevEnd = token.range.end
+                let range = token.range;
+                let s = text.substring(range.start, range.end);
+                if(range.start==cursorStart){
+                    s=cursorElement+s;
+                }else if (range.start<cursorStart && cursorStart<range.end){
+                    s=text.substring(range.start,cursorStart)+cursorElement+text.substring(cursorStart,range.end)
+                }
+                result += text.substring(prevEnd, range.start)
+                    + "<span class='token-" + TokenKind[token.kind] + "'>" + s + "</span>"
+                if(range.end==cursorStart){
+                    result+=cursorElement
+                }
+                prevEnd = range.end
             }
 
-            let innerHTML = result.replace("\x00",
-                target.selectionStart == target.selectionEnd + 1 ? "" :
-                    cursorElement
-            );
+            let innerHTML = result;
             preItem.innerHTML = `<div style="height: ${target.scrollHeight}px;">${innerHTML}</div>`;
         }
 
