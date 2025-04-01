@@ -1,6 +1,8 @@
 "use strict";
 class BlockBoundingBox {
     constructor(bounds, output) {
+        if (output !== 0)
+            throw new Error();
         this.outputWire = output;
         this.bounds = bounds;
         this.width = bounds.width();
@@ -39,10 +41,15 @@ function bbToSvg(name, bb, vector, color, compileInfo) {
         console.error(new Error());
     }
     if (compileInfo.drawBB) {
-        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
+        return `<g class="bounding-box">
+<rect x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>
+<circle r="9" cx="${vector.x}" cy="${vector.y}" fill="${color}"></circle>
+<!--<line stroke-width="5" x1="${vector.x}" y1="${vector.y}" x2="${x}" y2="${y}" stroke="${color}"></line>-->
+</g>
+`;
     }
     else {
-        return `<!--<rect x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
+        return ``;
     }
 }
 class ParentInfo {
