@@ -1,5 +1,11 @@
 type HeightInfo = { totalElements: number, unscaledHeight: number }
 
+function makeCenteredBounds(width: number, height: number) {
+    let hw = width / 2 + 5;
+    let bounds1 = new Bounds(-hw, -2, hw, height + 2);
+    return bounds1;
+}
+
 class BlockBoundingBox {
     // /**@deprecated*/
     // inputWireX: number
@@ -13,6 +19,7 @@ class BlockBoundingBox {
     readonly height: number;
 
     constructor( bounds: Bounds, output: number) {
+        if(output!==0)throw new Error()
         this.outputWire = output;
         this.bounds = bounds;
         this.width = bounds.width()
@@ -24,8 +31,7 @@ class BlockBoundingBox {
 
     static makeCenter(width: number, height: number, output: number) {
 
-        let hw = width / 2 + 5;
-        return new BlockBoundingBox( new Bounds(-hw, -2, hw, height+2), output)
+        return new BlockBoundingBox(makeCenteredBounds(width, height), output)
     }
 
     static make(bounds: Bounds, output: number) {
@@ -52,10 +58,18 @@ function bbToSvg(name: string | undefined, bb: BlockBoundingBox, vector: Vector,
     let height = bb.bounds.height()
     let x = vector.x + bb.bounds.x()
     let y = vector.y + bb.bounds.y()
+    if(name===undefined){
+        console.error(new Error())
+    }
     if (compileInfo.drawBB) {
-        return `<rect class="bounding-box" x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>`;
+        return `<g class="bounding-box">
+<rect x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke-width="3" stroke="${color}"/>
+<circle r="5" cx="${vector.x}" cy="${vector.y}" fill="${color}"></circle>
+<!--<line stroke-width="5" x1="${vector.x}" y1="${vector.y}" x2="${x}" y2="${y}" stroke="${color}"></line>-->
+</g>
+`;
     } else {
-        return `<!--<rect x="${x}" y="${y}" width="${(width)}" height="${(height)}" style="fill: none" data-type="${name}" stroke="${color}"/>-->`;
+        return ``;
     }
 }
 

@@ -1,121 +1,67 @@
 "use strict";
 //depends: block
+class BranchTitle {
+    constructor(text, position) {
+        this.text = text;
+        this.position = position;
+    }
+}
+class HorizontalBranchInfo {
+    setBB(bb) {
+        this.bb = bb;
+        this.bounds = bb.bounds;
+    }
+    setElement(element) {
+        this.element = element;
+        this.isEmpty = element.isEmpty();
+    }
+}
+// @ts-ignore
+class BlockBoundingBoxWithChildren extends BlockBoundingBox {
+    constructor(bounds, output, children) {
+        super(bounds, output);
+        this.children = children;
+    }
+    static makeCenter(width, height, output, children) {
+        return new BlockBoundingBoxWithChildren(makeCenteredBounds(width, height), output, children);
+    }
+    static make(bounds, output, children) {
+        bounds = bounds.copy();
+        bounds.left -= 5;
+        let topOffset = 2;
+        bounds.top -= topOffset;
+        bounds.right += 5;
+        bounds.bottom += topOffset;
+        return new BlockBoundingBoxWithChildren(bounds, output, children);
+    }
+}
 class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
-    constructor(rootElement) {
-        super(rootElement);
+    constructor() {
+        super(null);
         this.type = HorizontalBranchBlockOfBlocks;
     }
-    addBlock(block) {
-        this.innerElements.push(block);
-        return this;
-    }
-    addElement(element) {
-        return this.next(new BlockOfElements()).addElement(element);
-    }
-    apply(applier) {
-        applier.apply(this);
-        return this;
-    }
-    calculateBoundingBox(compileInfo) {
-        let width = 0;
-        let height = 0;
-        for (let innerElement of this.innerElements) {
-            let bb = innerElement.calculateBoundingBox(compileInfo);
-            width += bb.bounds.width();
-            // debugPoint()
-            height = Math.max(height, bb.bounds.height());
-        }
-        if (this.rootElement != null) {
-            height += this.rootElement.aspect * compileInfo.width + compileInfo.topMargin;
-        }
-        height += compileInfo.topMargin;
-        height += compileInfo.topMargin * 3;
-        return BlockBoundingBox.makeCenter(width, height, 0);
-    }
-    compile(centerXCursor, cursorY, compileInfo) {
-        var _a;
-        const topMargin = compileInfo.topMargin;
-        const width = compileInfo.width;
-        let svgResult = [
-            bbToSvg((_a = this.rootElement) === null || _a === void 0 ? void 0 : _a.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo)
-        ];
-        const margin = this.marginBetweenBlocks;
-        let amount = this.innerElements.length;
-        let sizes = [];
-        for (let i = 0; i < amount; i++) {
-            sizes[i] = this.innerElements[i].calculateBoundingBox(compileInfo);
-        }
-        let myBB = this.calculateBoundingBox(compileInfo);
-        class BranchInfo {
-        }
-        let branchInfos = this.innerElements.map(() => new BranchInfo());
-        let currentXOffset = -myBB.width / 2;
-        if (this.rootElement != null) {
-            let height = this.rootElement.aspect * width;
-            let positions = HorizontalBranchBlockOfBlocks.POSITIONS[amount];
-            for (let i = 0; i < positions.length; i++) {
-                let position = positions[i];
-                branchInfos[i].rootPosition = position.copy()
-                    .mul(width, height)
-                    .add(centerXCursor.value, cursorY.value)
-                    .add(-width / 2, 0);
-            }
-            svgResult.push.apply(svgResult, this.rootElement.compile(centerXCursor.value - width / 2, cursorY.value, width, height));
-            cursorY.move(height);
-        }
-        cursorY.move(topMargin);
-        let startY = cursorY.value;
+    static displayBranches(self, cursorY, branchInfos, centerXCursor, compileInfo, svgResult, topMargin) {
         let maxY = cursorY.value;
         //Drawing inner elements
-        for (let i = 0; i < amount; i++) {
-            let branchInfo = branchInfos[i];
-            let innerElement = this.innerElements[i];
-            branchInfo.isEmpty = innerElement.isEmpty();
-            let bb = sizes[i];
-            let outputXOffset = currentXOffset - bb.bounds.left;
-            centerXCursor.withOffset(outputXOffset, centerXCursor => {
+        for (let i = 0; i < branchInfos.length; i++) {
+            let info = branchInfos[i];
+            let innerElement = info.element;
+            centerXCursor.withOffset(info.offset.x, centerXCursor => {
                 let yClone = cursorY.clone();
                 let compileResult = innerElement.compile(centerXCursor, yClone, compileInfo);
                 svgResult.push.apply(svgResult, compileResult.svgCode);
-                maxY = Math.max(maxY, cursorY.value + bb.bounds.height());
-                branchInfo.output = compileResult.output;
+                maxY = Math.max(maxY, cursorY.value + info.bounds.height());
+                info.output = compileResult.output;
             });
-            debugPoint();
-            let it = 0;
-            currentXOffset += bb.bounds.width() + margin;
         }
         cursorY.value = maxY + topMargin * 3;
-        if (this.rootElement != null) { //Drawing lines from root to inner
-            for (let i = 0; i < branchInfos.length; i++) {
-                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[branchInfos.length][i];
-                let branchInfo = branchInfos[i];
-                if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1)
-                    continue;
-                let from = branchInfo.rootPosition;
-                let to = branchInfo.output;
-                let tox = to.x;
-                if (!branchInfo.isEmpty) {
-                    svgResult.push(makePath([
-                        rawSvgLine(tox, from.y, from.x, from.y),
-                        rawSvgLine(tox, from.y, tox, startY)
-                    ]));
-                }
-                else {
-                    svgResult.push(makePath([
-                        rawSvgLine(tox, from.y, from.x, from.y),
-                        rawSvgLine(tox, from.y, tox, to.y)
-                    ]));
-                }
-                let branchTitles = this.branchTitles;
-                if (branchTitles != null) {
-                    svgResult.push(defaultCenterText(from.x + titlePosition.offset.x, from.y + titlePosition.offset.y, 0, 0, branchTitles[i], titlePosition.baseline, titlePosition.anchor));
-                }
-            }
-        }
-        let nextBlock = this.parentInfo !== undefined ? this.parentInfo.siblingIndex(1) : undefined;
+        HorizontalBranchBlockOfBlocks.addConnectionLines(self, compileInfo, branchInfos, maxY, topMargin, centerXCursor, cursorY, svgResult);
+    }
+    static addConnectionLines(self, compileInfo, branchInfos, maxY, topMargin, centerXCursor, cursorY, svgResult) {
+        let nextBlock = self.parentInfo !== undefined ? self.parentInfo.siblingIndex(1) : undefined;
         let hasAfter = !compileInfo.isLast;
         if (!hasAfter) {
-            let myParent = this.parentInfo;
+            let myParent = self.parentInfo;
             // debugPoint()
             while (myParent !== undefined) {
                 if (myParent.siblingIndex(1) !== undefined) {
@@ -141,23 +87,56 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             }
             svgResult.push(makePath(lines.join(" ")));
         }
+    }
+    addBlock(block) {
+        this.innerElements.push(block);
+        return this;
+    }
+    addElement(element) {
+        return this.next(new BlockOfElements()).addElement(element);
+    }
+    apply(applier) {
+        applier.apply(this);
+        return this;
+    }
+    calculateBoundingBox(compileInfo) {
+        let width = 0;
+        let height = 0;
+        let boxes = this.innerElements.map(it => it.calculateBoundingBox(compileInfo));
+        for (let bb of boxes) {
+            width += bb.bounds.width();
+            // debugPoint()
+            height = Math.max(height, bb.bounds.height());
+        }
+        height += compileInfo.topMargin;
+        height += compileInfo.topMargin * 3;
+        return BlockBoundingBoxWithChildren.makeCenter(width, height, 0, boxes);
+    }
+    compile(centerXCursor, cursorY, compileInfo) {
+        const topMargin = compileInfo.topMargin;
+        let svgResult = [
+            "<g class='block horizontal'>",
+            bbToSvg("horiz", this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo),
+        ];
+        const margin = this.marginBetweenBlocks;
+        let amount = this.innerElements.length;
+        let myBB = this.calculateBoundingBox(compileInfo);
+        let branchInfos;
+        {
+            let xOffset = -myBB.bounds.width() / 2;
+            branchInfos = this.innerElements.map((element, i) => {
+                let info = new HorizontalBranchInfo();
+                info.element = element;
+                let innerElement = this.innerElements[i];
+                info.isEmpty = innerElement.isEmpty();
+                info.setBB(myBB.children[i]);
+                info.offset = new Vector(-xOffset - info.bounds.left, 0);
+                return info;
+            });
+        }
+        cursorY.move(topMargin);
+        HorizontalBranchBlockOfBlocks.displayBranches(this, cursorY, branchInfos, centerXCursor, compileInfo, svgResult, topMargin);
+        svgResult.push("</g>");
         return new CompileResult(Vector.new(centerXCursor, cursorY), svgResult);
     }
 }
-HorizontalBranchBlockOfBlocks.TITLE_POSITION = (function () {
-    let center = TitlePosition.new("hanging", "start", Vector.new(5, 0));
-    let left = TitlePosition.new("auto", "end", Vector.new(0, -5));
-    let right = TitlePosition.new("auto", "start", Vector.new(0, -5));
-    return [
-        [],
-        [center],
-        [left, right],
-        [left, center, right],
-    ];
-})();
-HorizontalBranchBlockOfBlocks.POSITIONS = [
-    [],
-    [Vector.new(0.5, 1)],
-    [Vector.new(0, 0.5), Vector.new(1, 0.5)],
-    [Vector.new(0, 0.5), Vector.new(0.5, 1), Vector.new(1, 0.5)],
-];

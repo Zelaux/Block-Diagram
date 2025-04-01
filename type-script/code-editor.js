@@ -11,7 +11,7 @@ function setup(div) {
     });
     let areaElement = div.querySelector("textarea");
     let mokArea = div.querySelector(".code-textarea");
-    TextareaExtension(areaElement);
+    TextareaExtension(areaElement, "16px \"JetBrains Mono\", monospace");
     // div.innerHTML+=
 }
 setup(document.querySelector(".textarea-container"));

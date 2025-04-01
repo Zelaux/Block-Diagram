@@ -43,11 +43,11 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         return BlockBoundingBox.make(bounds, current_position.x);
     }
     compile(x, y, compileInfo) {
-        var _a;
         const topMargin = compileInfo.topMargin;
         let width = compileInfo.width;
         let svgResult = [
-            bbToSvg((_a = this.rootElement) === null || _a === void 0 ? void 0 : _a.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo)
+            "<g class='block simpleBlockOfBlocks'>",
+            bbToSvg(this.rootElement == null ? "null" : this.rootElement.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo),
         ];
         let prevPosition = null;
         let last = compileInfo.isLast;
@@ -68,6 +68,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
             // noinspection ConstantConditionalExpressionJS
             prevPosition = true ? prevPosition : Vector.ZERO;
         }
+        svgResult.push("</g>");
         return new CompileResult(prevPosition || Vector.new(x, y), svgResult);
     }
 }

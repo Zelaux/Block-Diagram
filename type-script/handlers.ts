@@ -14,9 +14,10 @@ function ifStatementHandler(compiler: RawCompiler): Handler {
         }
         if (childrenAmount > 3) return Result.error("Too much children for if (>3)")
         if (childrenAmount < 1) return Result.error("Too few children for if (<1)")
-        let blockOfBlocks = new HorizontalBranchBlockOfBlocks(
+        let blockOfBlocks = new IfHorizontalBlock(
             prepareNode(thisNode, thisNode.content, compiler)
         );
+        blockOfBlocks.justParallel=false;
         blockOfBlocks.branchTitles = []
         if (childrenAmount < 3) {
             for (let i = 0; i < childrenAmount; i++) {
@@ -59,7 +60,7 @@ function ifSideStatementHandler(compiler: RawCompiler, ifType: IfBranchType): Ha
             if (branchBlock.isError()) return branchBlock
             branches[i] = new IfBlockBranch(blocks, thisNode.titles[i] || defaultNames[i])
         }
-        let ifBlock = new IfBlock(
+        let ifBlock = new SidedIfBlock(
             prepareNode(thisNode, thisNode.content, compiler),
             branches[0], branches[1], ifType
         );
@@ -122,6 +123,7 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
         }
         if (!shouldUseIndent) {
             let simpleBlockOfBlocks = new SimpleBlockOfBlocks();
+            simpleBlockOfBlocks.rootElement=openPrepare
             simpleBlockOfBlocks.bbColor = "gray"
             let inner = simpleBlockOfBlocks.addElement(openPrepare)
 
@@ -169,17 +171,20 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
                 );
 
                 centerXCursor.value = v1;
-                compileResult.svgCode[0] = bbSvg
+                compileResult.svgCode[1] = bbSvg
 
                 cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
 
                     myStrings.push.apply(myStrings, compileResult.svgCode)
+                    myStrings.pop()
                     drawLine(myStrings, lineX1, lineX2);
                     myStrings.push.apply(myStrings,
                         compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo))
+                    myStrings.push("</g>")
                     compileResult.svgCode = myStrings
                 })
                 cursorY.value -= compileInfo.topMargin
+                compileResult.output.y = cursorY.value;
                 compileResult.output.x = v1;
                 return compileResult
             }
@@ -202,6 +207,12 @@ function wrapRawCompiler(name: NullableGraphText, rawCompiler: RawCompiler): Com
         arguments[arguments.length] = name
         arguments.length += 1
         // @ts-ignore
-        return rawCompiler.apply(undefined, arguments)
+        let strings = rawCompiler.apply(undefined, arguments);
+
+        let s:string[]=[]
+        s.push("<g class='element'>")
+        s.push.apply(s,strings)
+        s.push("</g>")
+        return s
     };
 }

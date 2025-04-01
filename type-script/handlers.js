@@ -16,7 +16,8 @@ function ifStatementHandler(compiler) {
             return Result.error("Too much children for if (>3)");
         if (childrenAmount < 1)
             return Result.error("Too few children for if (<1)");
-        let blockOfBlocks = new HorizontalBranchBlockOfBlocks(prepareNode(thisNode, thisNode.content, compiler));
+        let blockOfBlocks = new IfHorizontalBlock(prepareNode(thisNode, thisNode.content, compiler));
+        blockOfBlocks.justParallel = false;
         blockOfBlocks.branchTitles = [];
         if (childrenAmount < 3) {
             for (let i = 0; i < childrenAmount; i++) {
@@ -59,7 +60,7 @@ function ifSideStatementHandler(compiler, ifType) {
                 return branchBlock;
             branches[i] = new IfBlockBranch(blocks, thisNode.titles[i] || defaultNames[i]);
         }
-        let ifBlock = new IfBlock(prepareNode(thisNode, thisNode.content, compiler), branches[0], branches[1], ifType);
+        let ifBlock = new SidedIfBlock(prepareNode(thisNode, thisNode.content, compiler), branches[0], branches[1], ifType);
         return Result.ok(block.addBlock(ifBlock));
     });
 }
@@ -108,6 +109,7 @@ function openCloseHandler(open, close, useIndent = false) {
         }
         if (!shouldUseIndent) {
             let simpleBlockOfBlocks = new SimpleBlockOfBlocks();
+            simpleBlockOfBlocks.rootElement = openPrepare;
             simpleBlockOfBlocks.bbColor = "gray";
             let inner = simpleBlockOfBlocks.addElement(openPrepare);
             let result = nodesToBlock(inner, thisNode.children[0]);
@@ -147,14 +149,17 @@ function openCloseHandler(open, close, useIndent = false) {
                 let v1 = centerXCursor.value;
                 let compileResult = centerXCursor.withOffset(fullWidth, () => originalCompile.call(blocks, centerXCursor, cursorY, compileInfo));
                 centerXCursor.value = v1;
-                compileResult.svgCode[0] = bbSvg;
+                compileResult.svgCode[1] = bbSvg;
                 cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
                     myStrings.push.apply(myStrings, compileResult.svgCode);
+                    myStrings.pop();
                     drawLine(myStrings, lineX1, lineX2);
                     myStrings.push.apply(myStrings, compilePrepered(closePrepare, centerXCursor, cursorY, compileInfo));
+                    myStrings.push("</g>");
                     compileResult.svgCode = myStrings;
                 });
                 cursorY.value -= compileInfo.topMargin;
+                compileResult.output.y = cursorY.value;
                 compileResult.output.x = v1;
                 return compileResult;
             };
@@ -175,6 +180,11 @@ function wrapRawCompiler(name, rawCompiler) {
         arguments[arguments.length] = name;
         arguments.length += 1;
         // @ts-ignore
-        return rawCompiler.apply(undefined, arguments);
+        let strings = rawCompiler.apply(undefined, arguments);
+        let s = [];
+        s.push("<g class='element'>");
+        s.push.apply(s, strings);
+        s.push("</g>");
+        return s;
     };
 }
