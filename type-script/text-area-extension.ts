@@ -4,28 +4,20 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
         return new Date().getTime();
     }
 
-    let lastTime = time()
-    let value = true
 
-    const DELAY_MILLIS = 500;
-    let nextUpdate=0
+    const BLINK_DELAY = 500;
     function blink() {
-        let time_ = time()
-        let delta = time_ - lastTime
-        let delay = DELAY_MILLIS
-        delay = delay * 2 - delta
+        let value = Math.floor(time()/BLINK_DELAY)%2
+
+
         try {
             // @ts-ignore
-            document.body.style.setProperty('--cursor-blink', (value = !value) * 1 + "");
+            document.body.style.setProperty('--cursor-blink', value + "");
         } catch (e) {
         }
-        let expect=nextUpdate+1
         setTimeout(()=>{
-            if(expect==nextUpdate)
-                blink()
-        }, delay)
-        nextUpdate+=1;
-        lastTime = time_ + DELAY_MILLIS - delta
+            blink()
+        }, 100)
     }
 
     setTimeout(blink)
