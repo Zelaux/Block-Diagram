@@ -82,7 +82,7 @@ let blockList = [
     graphElement("sideLoop", 2 / 3, openCloseHandler(loopOpenRawCompiler, loopCloseRawCompiler, true)),
     graphElement(["parallel", "join"], 0, (currentBlock, thisNode) => {
 
-        let subBlock: Block = new HorizontalBranchBlockOfBlocks(null).apply(function () {
+        let subBlock: Block = new HorizontalBranchBlockOfBlocks().apply(function () {
             if (thisNode.content[0] !== undefined) {
                 try {
                     let marginBetweenBlocks = Number.parseInt(thisNode.content[0]);

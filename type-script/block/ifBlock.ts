@@ -110,7 +110,7 @@ class IfBlock extends AbstractBlock {
         if (this.rootElement != null) {
             let height = this.rootElement.aspect * width
 
-            let positions: Vector[] = indecies.map(it => HorizontalBranchBlockOfBlocks.POSITIONS[3][it]);
+            let positions: Vector[] = indecies.map(it => IfHorizontalBlock.POSITIONS[3][it]);
 
             for (let i = 0; i < positions.length; i++) {
                 let position = positions[i];
@@ -158,7 +158,7 @@ class IfBlock extends AbstractBlock {
 
 
             for (let i = 0; i < branchInfos.length; i++) {
-                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[3][indecies[i]];
+                let titlePosition = IfHorizontalBlock.TITLE_POSITION[3][indecies[i]];
                 let branchInfo = branchInfos[i];
                 if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1) continue
                 let from = branchInfo.rootPosition!;

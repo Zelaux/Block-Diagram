@@ -1,26 +1,10 @@
 //depends: block
 class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
-    static TITLE_POSITION: TitlePosition[][] = (function () {
-        let center = TitlePosition.new("hanging", "start", Vector.new(5, 0));
-        let left = TitlePosition.new("auto", "end", Vector.new(0, -5));
-        let right = TitlePosition.new("auto", "start", Vector.new(0, -5));
-        return [
-            [],
-            [center],
-            [left, right],
-            [left, center, right],
-        ]
-    })()
-    static POSITIONS: Vector[][] = [
-        [],
-        [Vector.new(0.5, 1)],
-        [Vector.new(0, 0.5), Vector.new(1, 0.5)],
-        [Vector.new(0, 0.5), Vector.new(0.5, 1), Vector.new(1, 0.5)],
-    ];
+
     type = HorizontalBranchBlockOfBlocks
 
-    constructor(rootElement: PreparedGraphElement | null) {
-        super(rootElement);
+    constructor() {
+        super(null);
     }
 
     addBlock(block: Block): BlockOfBlocks {
@@ -40,14 +24,12 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
     calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBox {
         let width = 0
         let height = 0
+
         for (let innerElement of this.innerElements) {
             let bb = innerElement.calculateBoundingBox(compileInfo);
             width += bb.bounds.width()
             // debugPoint()
             height = Math.max(height, bb.bounds.height())
-        }
-        if (this.rootElement != null) {
-            height += this.rootElement.aspect * compileInfo.width + compileInfo.topMargin;
         }
         height += compileInfo.topMargin
         height += compileInfo.topMargin * 3
@@ -58,9 +40,10 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
 
         const topMargin = compileInfo.topMargin;
         const width = compileInfo.width;
+        let rootElement:PreparedGraphElement|null = null;
         let svgResult: string[] = [
             "<g class='block horizontal'>",
-            bbToSvg(this.rootElement?.name, this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo),
+            bbToSvg("horiz", this.calculateBoundingBox(compileInfo), Vector.new(centerXCursor, cursorY), "red", compileInfo),
         ]
 
         const margin = this.marginBetweenBlocks
@@ -84,22 +67,7 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
         let branchInfos: BranchInfo[] = this.innerElements.map(() => new BranchInfo())
         let currentXOffset = -myBB.width / 2
 
-        if (this.rootElement != null) {
-            let height = this.rootElement.aspect * width
 
-
-            let positions = HorizontalBranchBlockOfBlocks.POSITIONS[amount];
-            for (let i = 0; i < positions.length; i++) {
-                let position = positions[i];
-                branchInfos[i].rootPosition = position.copy()
-                    .mul(width, height)
-                    .add(centerXCursor.value, cursorY.value)
-                    .add(-width / 2, 0)
-            }
-            svgResult.push.apply(svgResult, this.rootElement.compile(centerXCursor.value - width / 2, cursorY.value, width, height))
-
-            cursorY.move(height)
-        }
         cursorY.move(topMargin)
         let startY = cursorY.value
         let maxY = cursorY.value
@@ -122,37 +90,7 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             currentXOffset += bb.bounds.width() + margin;
         }
         cursorY.value = maxY + topMargin * 3;
-        if (this.rootElement != null) {//Drawing lines from root to inner
 
-
-            for (let i = 0; i < branchInfos.length; i++) {
-                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[branchInfos.length][i];
-                let branchInfo = branchInfos[i];
-                if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1) continue
-                let from = branchInfo.rootPosition!;
-                let to = branchInfo.output;
-                let tox = to.x;
-                if (!branchInfo.isEmpty) {
-                    svgResult.push(makePath([
-                        rawSvgLine(tox, from.y, from.x, from.y),
-                        rawSvgLine(tox, from.y, tox, startY)
-                    ]))
-                } else {
-                    svgResult.push(makePath([
-                        rawSvgLine(tox, from.y, from.x, from.y),
-                        rawSvgLine(tox, from.y, tox, to.y)
-                    ]))
-                }
-                let branchTitles = this.branchTitles;
-                if (branchTitles != null) {
-                    svgResult.push(defaultCenterText(
-                        from.x + titlePosition.offset.x, from.y + titlePosition.offset.y
-                        , 0, 0,
-                        branchTitles[i],
-                        titlePosition.baseline, titlePosition.anchor))
-                }
-            }
-        }
 
         let nextBlock = this.parentInfo !== undefined ? this.parentInfo.siblingIndex(1) : undefined;
 

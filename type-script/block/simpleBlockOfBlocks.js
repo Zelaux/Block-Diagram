@@ -32,7 +32,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
             let other = bb.bounds
                 .copy()
                 .shiftVector(current_position);
-            // console.log(other);
+            console.log(other);
             bounds.expandBound(other);
             current_position.x += bb.outputWire;
             current_position.y += bb.bounds.height();

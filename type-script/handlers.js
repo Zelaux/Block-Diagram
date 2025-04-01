@@ -16,7 +16,8 @@ function ifStatementHandler(compiler) {
             return Result.error("Too much children for if (>3)");
         if (childrenAmount < 1)
             return Result.error("Too few children for if (<1)");
-        let blockOfBlocks = new HorizontalBranchBlockOfBlocks(prepareNode(thisNode, thisNode.content, compiler));
+        let blockOfBlocks = new IfHorizontalBlock(prepareNode(thisNode, thisNode.content, compiler));
+        blockOfBlocks.justParallel = false;
         blockOfBlocks.branchTitles = [];
         if (childrenAmount < 3) {
             for (let i = 0; i < childrenAmount; i++) {

@@ -84,7 +84,7 @@ class IfBlock extends AbstractBlock {
         }
         if (this.rootElement != null) {
             let height = this.rootElement.aspect * width;
-            let positions = indecies.map(it => HorizontalBranchBlockOfBlocks.POSITIONS[3][it]);
+            let positions = indecies.map(it => IfHorizontalBlock.POSITIONS[3][it]);
             for (let i = 0; i < positions.length; i++) {
                 let position = positions[i];
                 branchInfos[i].rootPosition = position.copy()
@@ -125,7 +125,7 @@ class IfBlock extends AbstractBlock {
         cursorY.value = maxY + topMargin * 3;
         if (this.rootElement != null) { //Drawing lines from root to inner
             for (let i = 0; i < branchInfos.length; i++) {
-                let titlePosition = HorizontalBranchBlockOfBlocks.TITLE_POSITION[3][indecies[i]];
+                let titlePosition = IfHorizontalBlock.TITLE_POSITION[3][indecies[i]];
                 let branchInfo = branchInfos[i];
                 if (branchInfo.isEmpty && branchInfos.length == 3 && i == 1)
                     continue;
