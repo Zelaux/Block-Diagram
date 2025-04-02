@@ -50,7 +50,7 @@ setTimeout(function () {
                 let defaultCenterText_prev = defaultCenterText
                 let mergedBounds = Bounds.makeZero()
                 // @ts-ignore
-                defaultCenterText = function (x, y, width, height, text, baseline, anchor, widthAspect) {
+                defaultCenterText = function (x, y, width, height, text, baseline:SVGDominantBaseline="middle", anchor:SVGTextAnchor="middle", widthAspect=2/3) {
 
                     let bBox = defaultCenterText0(text, baseline, anchor, width);
                     let w = bBox.width;
@@ -60,8 +60,7 @@ setTimeout(function () {
                     if (aspect != 0 && Number.isFinite(aspect)) {
                         let expectedHeight = w * aspect;
                         if (h > expectedHeight) {
-                            w = bBox.height / aspect / widthAspect
-                            h = expectedHeight;
+                            w = h / aspect
                         }
                     }
                     mergedBounds.expand(w, h)

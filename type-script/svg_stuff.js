@@ -13,7 +13,7 @@ function anchorToValue(anchor) {
 function baselineToValue(baseline) {
     return baseline == "middle" ? 0 : baseline == "auto" ? -1 : 1 /*hanging*/;
 }
-function defaultCenterText(x, y, width, height, text, baseline = "middle", anchor = "middle", widthAspect = 1) {
+function defaultCenterText(x, y, width, height, text, baseline = "middle", anchor = "middle", widthAspect = 2 / 3) {
     let notNullText = textOr(text, "");
     let arrayText;
     if (typeof notNullText == "string") {

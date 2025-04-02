@@ -29,7 +29,7 @@ function baselineToValue(baseline: "auto" | "middle" | "hanging") {
     return baseline == "middle" ? 0 : baseline == "auto" ? -1 : 1/*hanging*/;
 }
 
-function defaultCenterText(x: number, y: number, width: number, height: number, text: NullableGraphText, baseline: SVGDominantBaseline = "middle", anchor: SVGTextAnchor = "middle", widthAspect: number = 1) {
+function defaultCenterText(x: number, y: number, width: number, height: number, text: NullableGraphText, baseline: SVGDominantBaseline = "middle", anchor: SVGTextAnchor = "middle", widthAspect: number = 2/3) {
     let notNullText = textOr(text, "");
     let arrayText: string[];
     if (typeof notNullText == "string") {
