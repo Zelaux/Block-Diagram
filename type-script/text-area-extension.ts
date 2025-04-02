@@ -83,14 +83,6 @@ const TextareaExtension = (function () {
         }
     }
 
-    function getTokenAtChar(tokens: Token[], charIndex: number) {
-        for (let i = 0; i < tokens.length; i++) {
-            if (tokens[i].range.end <= charIndex) continue;
-            return i;
-
-        }
-        return -1;
-    }
 
     return function (target: HTMLTextAreaElement, font?: string) {
 
@@ -177,7 +169,7 @@ const TextareaExtension = (function () {
                                 if (tryToReplaceBrace == -1) {
                                     break
                                 }
-                                let tokenI = getTokenAtChar(tokens, beforeSelection.length)
+                                let tokenI = Lexer.getTokenAtChar(tokens, beforeSelection.length)
 
                                 if (tokenI == -1) break
 

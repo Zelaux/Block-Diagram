@@ -35,7 +35,11 @@ class TokenRange {
     }
 
     length() {
-        return this.end-this.start
+        return this.end - this.start
+    }
+
+    substring(text: string) {
+        return text.substring(this.start, this.end)
     }
 }
 
@@ -90,7 +94,7 @@ namespace Lexer {
     export const CLOSE_BRACES = BRACES.map(it => it.braces.close)
     const SEARCH_COMMAND = 0;
     const SEARCH_BRACES = 1;
-    const TERMINATE_SYMBOLS = RegExp("[^\\w\\x01\\x00]")
+    const TERMINATE_SYMBOLS = RegExp("[^\\w]")
     const SPACE_SYMBOLS = RegExp("\\s")
 
     const NL_SYMBOLS = RegExp("(\n|\r|\n\r)")
@@ -98,7 +102,7 @@ namespace Lexer {
 
     export function lex(text: string, useError: boolean): Token[] {
         let tokens: Token[] = []
-        let prevIdx = 0
+        let blockNameStart = 0
 
         /**@type {0|1}*/
         let state = SEARCH_COMMAND;
@@ -127,7 +131,6 @@ namespace Lexer {
                     return i
                 }
                 let _char = text[i];
-                if (_char == '\x00' || _char == '\x01') continue
                 if (_char === "\\" && !hasSlash) {
                     hasSlash = true;
                     continue
@@ -167,27 +170,27 @@ namespace Lexer {
                         tokens[idx].payload = tokens.length
                         tokens.push(token(TokenKind.ChildrenBraceClose, range(i), idx))
                         state = SEARCH_BRACES
-                        prevIdx = i + 1;
+                        blockNameStart = i + 1;
                         continue
                     }
-                    if ((SPACE_SYMBOLS.test(char) || NL_SYMBOLS.test(char)) && (prevIdx === i - 1)) {
-                        prevIdx = i;
+                    if ((SPACE_SYMBOLS.test(char) || NL_SYMBOLS.test(char)) && (blockNameStart === i - 1 || blockNameStart === i)) {
+                        blockNameStart = i + 1;
                         continue;
                     }
                     if (!TERMINATE_SYMBOLS.test(char) && i + 1 <= text.length) continue
-                    let blockName = text.substring(prevIdx, i).replace('\x00', '').replace('\x01', '').trim();
+                    let blockName = text.substring(blockNameStart, i).trim();
                     if (blockName.length === 0) continue
                     let foundBlock = blockMap[blockName];
                     if (foundBlock == null) {
-                        tokens.push(token(TokenKind.Error, range(prevIdx, i), "Unknown graph element `" + blockName + "`"))
+                        tokens.push(token(TokenKind.Error, range(blockNameStart, i), "Unknown graph element `" + blockName + "`"))
                         state = SEARCH_BRACES
-                        prevIdx = i
+                        blockNameStart = i
                         i--;//substring stuff? and regexp stuff reason
                         continue
                     }
                     state = SEARCH_BRACES
-                    tokens.push(token(TokenKind.GraphName, range(prevIdx, i), foundBlock))
-                    prevIdx = i
+                    tokens.push(token(TokenKind.GraphName, range(blockNameStart, i), foundBlock))
+                    blockNameStart = i
                     i--;//substring stuff? and regexp stuff reason
                     continue
                 case SEARCH_BRACES:
@@ -195,7 +198,7 @@ namespace Lexer {
                     if (NL_SYMBOLS.test(char)) {
 
                         state = SEARCH_COMMAND
-                        prevIdx = i + 1
+                        blockNameStart = i + 1
                         // current = current.parent!
                         continue
                     }
@@ -213,7 +216,7 @@ namespace Lexer {
                     state = SEARCH_COMMAND
                     openedChildrenBraces.push(tokens.length)
                     tokens.push(token(TokenKind.ChildrenBraceOpen, range(i)))
-                    prevIdx = i + 1;
+                    blockNameStart = i + 1;
                     break;
 
             }
@@ -225,4 +228,16 @@ namespace Lexer {
          }))*/
         return tokens
     }
+
+
+    export function getTokenAtChar(tokens: Token[], charIndex: number, canBeInEnd: boolean = false) {
+        for (let i = 0; i < tokens.length; i++) {
+            let range = tokens[i].range;
+            if (range.end < charIndex || !canBeInEnd && range.end == charIndex) continue;
+            return i;
+
+        }
+        return -1;
+    }
+
 }

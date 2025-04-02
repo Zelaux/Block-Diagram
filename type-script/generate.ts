@@ -1,15 +1,27 @@
 setTimeout(function () {
     let svgRootElement = document.querySelector("svg")!;
 
-    let textAreaElement: HTMLAreaElement = document.querySelector("textarea.input_area")!;
+    let textAreaElement: HTMLTextAreaElement = document.querySelector("textarea.input_area")!;
     /**@type HTMLLabelElement*/
     let labelElement: HTMLLabelElement = document.querySelector("label.error_label")!;
     /**@type HTMLButtonElement*/
     let generateButton: HTMLButtonElement = document.querySelector("button.generate_button")!;
     let downloadButton: HTMLButtonElement = document.querySelector("button.download_button")!;
-    document.querySelector("body")!.addEventListener("keypress", ev => {
+    let autoformatButton: HTMLButtonElement = document.querySelector("button.auto_format")!;
+    autoformatButton.onclick = function () {
 
-        if (ev.key == "Enter" && ev.ctrlKey) {
+        let text: string = textAreaElement.value
+        Tools.autoformatInArea(textAreaElement)
+
+    }
+
+    document.querySelector("body")!.addEventListener("keydown", ev => {
+        console.log(ev)
+        if (ev.key == "l" && ev.ctrlKey && ev.altKey) {
+            ev.preventDefault()
+            // @ts-ignore
+            autoformatButton.onclick()
+        } else if (ev.key == "Enter" && ev.ctrlKey) {
             ev.preventDefault()
             // @ts-ignore
             generateButton.onclick()
@@ -70,7 +82,7 @@ setTimeout(function () {
             );
             compileInfo.drawBB = inputElement("input#draw-bb").checked;
             // @ts-ignore
-            defaultCenterText.drawBB=compileInfo.drawBB
+            defaultCenterText.drawBB = compileInfo.drawBB
             let blockBoundingBox = data.block.calculateBoundingBox(compileInfo);
             let boundingBox = blockBoundingBox.bounds
             console.log(width, blockBoundingBox)

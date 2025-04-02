@@ -7,8 +7,19 @@ setTimeout(function () {
     /**@type HTMLButtonElement*/
     let generateButton = document.querySelector("button.generate_button");
     let downloadButton = document.querySelector("button.download_button");
-    document.querySelector("body").addEventListener("keypress", ev => {
-        if (ev.key == "Enter" && ev.ctrlKey) {
+    let autoformatButton = document.querySelector("button.auto_format");
+    autoformatButton.onclick = function () {
+        let text = textAreaElement.value;
+        Tools.autoformatInArea(textAreaElement);
+    };
+    document.querySelector("body").addEventListener("keydown", ev => {
+        console.log(ev);
+        if (ev.key == "l" && ev.ctrlKey && ev.altKey) {
+            ev.preventDefault();
+            // @ts-ignore
+            autoformatButton.onclick();
+        }
+        else if (ev.key == "Enter" && ev.ctrlKey) {
             ev.preventDefault();
             // @ts-ignore
             generateButton.onclick();

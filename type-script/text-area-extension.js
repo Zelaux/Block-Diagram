@@ -68,14 +68,6 @@ const TextareaExtension = (function () {
             return currentCursor;
         }
     }
-    function getTokenAtChar(tokens, charIndex) {
-        for (let i = 0; i < tokens.length; i++) {
-            if (tokens[i].range.end <= charIndex)
-                continue;
-            return i;
-        }
-        return -1;
-    }
     return function (target, font) {
         let preItem = document.createElement("pre");
         setStyleOptions(target, preItem, font);
@@ -146,7 +138,7 @@ const TextareaExtension = (function () {
                                 if (tryToReplaceBrace == -1) {
                                     break;
                                 }
-                                let tokenI = getTokenAtChar(tokens, beforeSelection.length);
+                                let tokenI = Lexer.getTokenAtChar(tokens, beforeSelection.length);
                                 if (tokenI == -1)
                                     break;
                                 let token = tokens[tokenI];

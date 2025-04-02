@@ -29,7 +29,7 @@ class ParsedNode {
 }
 var Parser;
 (function (Parser) {
-    function parse(text) {
+    function parseAsParsedNode(text) {
         let root = ParsedNode.new(null);
         root.newChildren();
         let current = root;
@@ -106,6 +106,14 @@ var Parser;
                     break;
             }
         }
+        return Result.ok(root);
+    }
+    Parser.parseAsParsedNode = parseAsParsedNode;
+    function parse(text) {
+        let result = parseAsParsedNode(text);
+        if (result.isError())
+            return Result.error(result.error);
+        let root = result.data;
         console.log(root);
         function buildBlock(nodes) {
             let first = new SimpleBlockOfBlocks();

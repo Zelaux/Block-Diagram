@@ -95,17 +95,17 @@ body{
     }
 }
 
-.generate_button, .download_button, .base-button {
+.base-button {
     padding: 8px;
     background: var(--button-gray_e);
     border: 3px var(--button-darkgray) solid;
 }
 
-.generate_button:hover, .download_button:hover, .base-button:hover {
+.base-button:hover {
     background: var(--button-gray_d);
 }
 
-.generate_button:active, .download_button:active, .base-button:active {
+.base-button:active {
     color: var(--button-gray_d);
     background: var(--button-darkgray);
     border-color: var(--button-gray_d);

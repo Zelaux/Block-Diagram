@@ -41,8 +41,7 @@ class ParsedNode {
 
 namespace Parser {
 
-
-    export function parse(text: string): Result<{ block: Block, strings: NullableGraphText[] }> {
+    export function parseAsParsedNode(text:string):Result<ParsedNode>{
         let root = ParsedNode.new(null)
         root.newChildren()
         let current = root
@@ -120,7 +119,12 @@ namespace Parser {
                     break;
             }
         }
-
+        return Result.ok(root)
+    }
+    export function parse(text: string): Result<{ block: Block, strings: NullableGraphText[] }> {
+        let result = parseAsParsedNode(text);
+        if(result.isError())return Result.error(result.error!)
+        let root=result.data!
         console.log(root)
 
 
