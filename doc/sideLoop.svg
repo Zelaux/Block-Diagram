@@ -47,21 +47,21 @@
 
 </g>
 </g>
-<path d="M 55 218.33333333333334 L 110 218.33333333333334" style="fill: none" stroke="black"></path>
+<path d="M 55 203.33333333333334 L 110 203.33333333333334" style="fill: none" stroke="black"></path>
 <g class="element">
-<path d="M -55 181.66666666666669 l 110 0 l 0 55 l -18.333333333333332 18.333333333333332 l -73.33333333333334 0 l -18.333333333333332 -18.333333333333332 Z" style="fill: none" stroke="black"></path>
+<path d="M -55 166.66666666666669 l 110 0 l 0 55 l -18.333333333333332 18.333333333333332 l -73.33333333333334 0 l -18.333333333333332 -18.333333333333332 Z" style="fill: none" stroke="black"></path>
 <g class="text-group" font-size="16px" data-aspect="0.6666666666666666" data-widthaspect="0.6666666666666666">
-<text x="0" y="0" transform="translate(0 218.33333333333334)" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">post-text</tspan></text>
+<text x="0" y="0" transform="translate(0 203.33333333333334)" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">post-text</tspan></text>
 
 </g>
 </g>
 </g>
-<path d="M 0 255 L 0 270" style="fill: none" stroke="black"></path>
+<path d="M 0 240 L 0 255" style="fill: none" stroke="black"></path>
 
 <g class="element">
-<path d="M -55 270 l -27.5 73.33333333333333 l 137.5 0 l 27.5 -73.33333333333333 Z" style="fill: none" stroke="black"></path>
+<path d="M -55 255 l -27.5 73.33333333333333 l 137.5 0 l 27.5 -73.33333333333333 Z" style="fill: none" stroke="black"></path>
 <g class="text-group" font-size="16px" data-aspect="0.6666666666666666" data-widthaspect="0.6666666666666666">
-<text x="0" y="0" transform="translate(0 306.6666666666667)" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
+<text x="0" y="0" transform="translate(0 291.6666666666667)" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
 
 </g>
 </g>

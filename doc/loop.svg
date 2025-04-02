@@ -48,12 +48,12 @@
 </g>
 </g>
 </g>
-<path d="M 0 343.3333333333333 L 0 373.3333333333333" style="fill: none" stroke="black"></path>
+<path d="M 0 343.3333333333333 L 0 358.3333333333333" style="fill: none" stroke="black"></path>
 
 <g class="element">
-<path d="M -55 373.3333333333333 l -27.5 73.33333333333333 l 137.5 0 l 27.5 -73.33333333333333 Z" style="fill: none" stroke="black"></path>
+<path d="M -55 358.3333333333333 l -27.5 73.33333333333333 l 137.5 0 l 27.5 -73.33333333333333 Z" style="fill: none" stroke="black"></path>
 <g class="text-group" font-size="16px" data-aspect="0.6666666666666666" data-widthaspect="0.6666666666666666">
-<text x="0" y="0" transform="translate(0 410)" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
+<text x="0" y="0" transform="translate(0 395)" dominant-baseline="middle" text-anchor="middle"><tspan x="0" dy="0em">Done.</tspan></text>
 
 </g>
 </g>
