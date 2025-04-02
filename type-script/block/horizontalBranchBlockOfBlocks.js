@@ -27,11 +27,11 @@ class BlockBoundingBoxWithChildren extends BlockBoundingBox {
     }
     static make(bounds, output, children) {
         bounds = bounds.copy();
-        bounds.left -= 5;
-        let topOffset = 2;
-        bounds.top -= topOffset;
-        bounds.right += 5;
-        bounds.bottom += topOffset;
+        // bounds.left -= 5
+        // let topOffset = 2;
+        // bounds.top -= topOffset
+        // bounds.right += 5
+        // bounds.bottom += topOffset
         return new BlockBoundingBoxWithChildren(bounds, output, children);
     }
 }
@@ -110,7 +110,7 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
         }
         height += compileInfo.topMargin;
         height += compileInfo.topMargin * 3;
-        return BlockBoundingBoxWithChildren.makeCenter(width, height, 0, boxes);
+        return BlockBoundingBoxWithChildren.makeCenter(width + this.marginBetweenBlocks * (boxes.length - 1), height, 0, boxes);
     }
     compile(centerXCursor, cursorY, compileInfo) {
         const topMargin = compileInfo.topMargin;
@@ -126,11 +126,10 @@ class HorizontalBranchBlockOfBlocks extends BlockOfBlocks {
             let xOffset = -myBB.bounds.width() / 2;
             branchInfos = this.innerElements.map((element, i) => {
                 let info = new HorizontalBranchInfo();
-                info.element = element;
-                let innerElement = this.innerElements[i];
-                info.isEmpty = innerElement.isEmpty();
+                info.setElement(element);
                 info.setBB(myBB.children[i]);
-                info.offset = new Vector(-xOffset - info.bounds.left, 0);
+                info.offset = new Vector(xOffset - info.bounds.left, 0);
+                xOffset += info.bounds.width() + margin;
                 return info;
             });
         }
