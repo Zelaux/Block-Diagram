@@ -8,6 +8,7 @@ setTimeout(function () {
     let generateButton: HTMLButtonElement = document.querySelector("button.generate_button")!;
     let downloadButton: HTMLButtonElement = document.querySelector("button.download_button")!;
     let autoformatButton: HTMLButtonElement = document.querySelector("button.auto_format")!;
+    let nameInput =document.querySelector("#save-name") as HTMLInputElement;
     autoformatButton.onclick = function () {
 
         let text: string = textAreaElement.value
@@ -121,7 +122,11 @@ setTimeout(function () {
             document.body.removeChild(element);
         }
 
-        download("brace_preview.svg", svgRootElement.outerHTML)
+        let filename="brace_preview.svg"
+        if (nameInput.value.trim().length != 0) {
+            filename=nameInput.value.trim()+".svg"
+        }
+        download(filename, svgRootElement.outerHTML)
 
     }
 })

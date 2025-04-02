@@ -8,6 +8,7 @@ setTimeout(function () {
     let generateButton = document.querySelector("button.generate_button");
     let downloadButton = document.querySelector("button.download_button");
     let autoformatButton = document.querySelector("button.auto_format");
+    let nameInput = document.querySelector("#save-name");
     autoformatButton.onclick = function () {
         let text = textAreaElement.value;
         Tools.autoformatInArea(textAreaElement);
@@ -108,6 +109,10 @@ setTimeout(function () {
             element.click();
             document.body.removeChild(element);
         }
-        download("brace_preview.svg", svgRootElement.outerHTML);
+        let filename = "brace_preview.svg";
+        if (nameInput.value.trim().length != 0) {
+            filename = nameInput.value.trim() + ".svg";
+        }
+        download(filename, svgRootElement.outerHTML);
     };
 });
