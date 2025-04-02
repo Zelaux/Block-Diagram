@@ -30,7 +30,7 @@ class Vector {
     static Y: Vector = Vector.finalValue(0, 1);
     x: number
     y: number;
-    private static finalValue(x:number,y:number){
+     static finalValue(x:number,y:number){
         let target = Vector.new(x,y);
         return new Proxy(target,new FinalProxy())
     }

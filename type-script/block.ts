@@ -1,9 +1,9 @@
 type HeightInfo = { totalElements: number, unscaledHeight: number }
 
 function makeCenteredBounds(width: number, height: number) {
-    let hw = width / 2 + 5;
-    let bounds1 = new Bounds(-hw, -2, hw, height + 2);
-    return bounds1;
+    // let hw = width / 2 + 5;
+    // let bounds1 = new Bounds(-hw, -2, hw, height + 2);
+    return new Bounds(-width/2,0,width/2,height);
 }
 
 class BlockBoundingBox {
@@ -17,6 +17,8 @@ class BlockBoundingBox {
     readonly width: number;
     /**@deprecated*/
     readonly height: number;
+    static defaultExtraSize=Vector.finalValue(4,4)
+    static extraSize=BlockBoundingBox.defaultExtraSize.copy()
 
     constructor( bounds: Bounds, output: number) {
         if(output!==0)throw new Error()
@@ -24,6 +26,7 @@ class BlockBoundingBox {
         this.bounds = bounds;
         this.width = bounds.width()
         this.height = bounds.height()
+        this.addOffset()
         if(output!=0){
             debugPoint()
         }
@@ -36,11 +39,11 @@ class BlockBoundingBox {
 
     static make(bounds: Bounds, output: number) {
         bounds = bounds.copy();
-        bounds.left -= 5
-        let topOffset = 2;
-        bounds.top -= topOffset
-        bounds.right += 5
-        bounds.bottom += topOffset
+        // bounds.left -= 5
+        // let topOffset = 2;
+        // bounds.top -= topOffset
+        // bounds.right += 5
+        // bounds.bottom += topOffset
         return new BlockBoundingBox( bounds, output)
     }
 
@@ -50,6 +53,17 @@ class BlockBoundingBox {
         // @ts-ignore
         this["height"] = bounds.height()
         this.bounds = bounds;
+    }
+
+    addOffset() {
+        let bounds = this.bounds;
+        let extraSize = BlockBoundingBox.extraSize;
+        bounds.top-=extraSize.y
+        bounds.bottom+=extraSize.y
+
+        bounds.left-=extraSize.x;
+        bounds.right+=extraSize.x;
+        return this;
     }
 }
 

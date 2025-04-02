@@ -1,8 +1,8 @@
 "use strict";
 function makeCenteredBounds(width, height) {
-    let hw = width / 2 + 5;
-    let bounds1 = new Bounds(-hw, -2, hw, height + 2);
-    return bounds1;
+    // let hw = width / 2 + 5;
+    // let bounds1 = new Bounds(-hw, -2, hw, height + 2);
+    return new Bounds(-width / 2, 0, width / 2, height);
 }
 class BlockBoundingBox {
     constructor(bounds, output) {
@@ -12,6 +12,7 @@ class BlockBoundingBox {
         this.bounds = bounds;
         this.width = bounds.width();
         this.height = bounds.height();
+        this.addOffset();
         if (output != 0) {
             debugPoint();
         }
@@ -21,11 +22,11 @@ class BlockBoundingBox {
     }
     static make(bounds, output) {
         bounds = bounds.copy();
-        bounds.left -= 5;
-        let topOffset = 2;
-        bounds.top -= topOffset;
-        bounds.right += 5;
-        bounds.bottom += topOffset;
+        // bounds.left -= 5
+        // let topOffset = 2;
+        // bounds.top -= topOffset
+        // bounds.right += 5
+        // bounds.bottom += topOffset
         return new BlockBoundingBox(bounds, output);
     }
     updateBounds(bounds = this.bounds) {
@@ -35,7 +36,18 @@ class BlockBoundingBox {
         this["height"] = bounds.height();
         this.bounds = bounds;
     }
+    addOffset() {
+        let bounds = this.bounds;
+        let extraSize = BlockBoundingBox.extraSize;
+        bounds.top -= extraSize.y;
+        bounds.bottom += extraSize.y;
+        bounds.left -= extraSize.x;
+        bounds.right += extraSize.x;
+        return this;
+    }
 }
+BlockBoundingBox.defaultExtraSize = Vector.finalValue(4, 4);
+BlockBoundingBox.extraSize = BlockBoundingBox.defaultExtraSize.copy();
 function bbToSvg(name, bb, vector, color, compileInfo) {
     let width = bb.bounds.width();
     let height = bb.bounds.height();

@@ -161,7 +161,7 @@ static displayBranches(self:AbstractBlock,cursorY: Cursor, branchInfos: Horizont
 
         let branchInfos: HorizontalBranchInfo[]
         {
-            let xOffset=-myBB.bounds.width() / 2
+            let xOffset=-myBB.bounds.width() / 2+BlockBoundingBox.extraSize.x
             branchInfos=this.innerElements.map((element,i) => {
                 let info = new HorizontalBranchInfo();
                 info.setElement(element)

@@ -75,6 +75,10 @@ setTimeout(function () {
             compileInfo.drawBB = inputElement("input#draw-bb").checked;
             // @ts-ignore
             defaultCenterText.drawBB = compileInfo.drawBB;
+            if (compileInfo.drawBB)
+                BlockBoundingBox.extraSize = BlockBoundingBox.defaultExtraSize.copy();
+            else
+                BlockBoundingBox.extraSize.set(0, 0);
             let blockBoundingBox = data.block.calculateBoundingBox(compileInfo);
             let boundingBox = blockBoundingBox.bounds;
             console.log(width, blockBoundingBox);
