@@ -63,7 +63,8 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
                 return innerElement.compile(x, y, compileInfo);
             });
             svgResult.push.apply(svgResult, compileResult.svgCode);
-            y.move(topMargin);
+            if (i + 1 < this.innerElements.length)
+                y.move(topMargin);
             prevPosition = compileResult.output;
             // noinspection ConstantConditionalExpressionJS
             prevPosition = true ? prevPosition : Vector.ZERO;

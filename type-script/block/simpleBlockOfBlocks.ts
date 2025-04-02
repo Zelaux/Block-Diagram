@@ -26,7 +26,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
 
     calculateBoundingBox(compileInfo: CompileInfo): BlockBoundingBox {
 
-        let width = 1.50 * compileInfo.width*0;
+        let width = 1.50 * compileInfo.width * 0;
         let bounds = Bounds.makeZero()
         bounds.right = width / 2
         bounds.left = -width / 2
@@ -57,7 +57,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
         let width = compileInfo.width;
         let svgResult: string[] = [
             "<g class='block simpleBlockOfBlocks'>",
-            bbToSvg(this.rootElement==null?"null":this.rootElement.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo),
+            bbToSvg(this.rootElement == null ? "null" : this.rootElement.name, this.calculateBoundingBox(compileInfo), Vector.new(x, y), this.bbColor, compileInfo),
         ]
         let prevPosition: Vector | null = null
 
@@ -79,7 +79,7 @@ class SimpleBlockOfBlocks extends BlockOfBlocks {
                 return innerElement.compile(x, y, compileInfo)
             });
             svgResult.push.apply(svgResult, compileResult.svgCode)
-            y.move(topMargin)
+            if (i + 1 < this.innerElements.length) y.move(topMargin)
             prevPosition = compileResult.output
             // noinspection ConstantConditionalExpressionJS
             prevPosition = true ? prevPosition : Vector.ZERO
