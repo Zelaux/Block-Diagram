@@ -110,6 +110,10 @@ body{
     background: var(--button-darkgray);
     border-color: var(--button-gray_d);
 }
+span.hotkey{
+    font-size: 0.7em;
+    color: gray;
+}
 
 
 
