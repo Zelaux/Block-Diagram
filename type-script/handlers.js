@@ -150,7 +150,7 @@ function openCloseHandler(open, close, useIndent = false) {
                 let compileResult = centerXCursor.withOffset(fullWidth, () => originalCompile.call(blocks, centerXCursor, cursorY, compileInfo));
                 centerXCursor.value = v1;
                 compileResult.svgCode[1] = bbSvg;
-                cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
+                cursorY.withOffset(-(closePrepare.aspect * width), () => {
                     myStrings.push.apply(myStrings, compileResult.svgCode);
                     myStrings.pop();
                     drawLine(myStrings, lineX1, lineX2);
@@ -158,8 +158,8 @@ function openCloseHandler(open, close, useIndent = false) {
                     myStrings.push("</g>");
                     compileResult.svgCode = myStrings;
                 });
-                cursorY.value -= compileInfo.topMargin;
                 compileResult.output.y = cursorY.value;
+                // cursorY.value -= compileInfo.topMargin
                 compileResult.output.x = v1;
                 return compileResult;
             };

@@ -173,7 +173,7 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
                 centerXCursor.value = v1;
                 compileResult.svgCode[1] = bbSvg
 
-                cursorY.withOffset(-(compileInfo.topMargin + closePrepare.aspect * width), () => {
+                cursorY.withOffset(-(closePrepare.aspect * width), () => {
 
                     myStrings.push.apply(myStrings, compileResult.svgCode)
                     myStrings.pop()
@@ -183,8 +183,8 @@ function openCloseHandler(open: RawCompiler, close: RawCompiler, useIndent: bool
                     myStrings.push("</g>")
                     compileResult.svgCode = myStrings
                 })
-                cursorY.value -= compileInfo.topMargin
                 compileResult.output.y = cursorY.value;
+                // cursorY.value -= compileInfo.topMargin
                 compileResult.output.x = v1;
                 return compileResult
             }
