@@ -20,15 +20,13 @@ const cursorElement = `<div class="cursor"><div></div></div>`;
     setTimeout(blink);
 })();
 const TextareaExtension = (function () {
-    function setStyleOptions(target, preItem, font) {
-        preItem.className = "text-area-selection";
+    function setStyleOptions(target, preItem) {
+        preItem.className = "editor-highlight";
         target.parentNode.appendChild(preItem);
-        // target.style.fontSize = preItem.style.fontSize = font || "14px Arial";
-        target.style.font = preItem.style.font = font || "14px Arial";
-        target.style.width = preItem.style.width = target.offsetWidth + "px";
-        target.style.height = preItem.style.height = target.offsetHeight + "px";
-        preItem.style.top = target.offsetTop + "px";
-        preItem.style.left = target.offsetLeft + "px";
+        // target.style.width = preItem.style.width = target.offsetWidth + "px";
+        // target.style.height = preItem.style.height = target.offsetHeight + "px";
+        // preItem.style.top = target.offsetTop + "px";
+        // preItem.style.left = target.offsetLeft + "px";
         target.style.background = "transparent";
         target.style.color = "transparent";
         target.style.overflow = "scroll";
@@ -68,9 +66,9 @@ const TextareaExtension = (function () {
             return currentCursor;
         }
     }
-    return function (target, font) {
+    return function (target) {
         let preItem = document.createElement("pre");
-        setStyleOptions(target, preItem, font);
+        setStyleOptions(target, preItem);
         function analyse() {
             let text = target.value;
             let cursorInserter = new SelectionInserter(target, text);
@@ -93,12 +91,11 @@ const TextareaExtension = (function () {
         }
         function scrollSync() {
             preItem.scrollTop = target.scrollTop;
+            preItem.scrollLeft = target.scrollLeft;
         }
         function resize() {
             preItem.style.width = target.style.width;
             preItem.style.height = target.style.height;
-            preItem.style.top = target.offsetTop + "px";
-            preItem.style.left = target.offsetLeft + "px";
         }
         if (target.addEventListener) {
             target.addEventListener("change", analyse, false);

@@ -1,4 +1,6 @@
-textarea {
+
+.textarea-container {
+    position: relative;
     border: 4px solid black;
 
     @media (prefers-color-scheme: dark) {
@@ -6,21 +8,46 @@ textarea {
     }
 }
 
+textarea {
+    /*border: 4px solid black;*/
 
+}
+/*.textarea-container-container{
+    width: 100%;
+    overflow: scroll;
+}*/
+.textarea-container>*{
+    font: 16px "JetBrains Mono", monospace;
+    line-height: 1.2em;
+}
+.input_area{
+    width: 100%;
+
+    display: block;
+    resize: vertical;
+    white-space: nowrap;
+}
+
+.editor-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*padding: 4px;*/
+    z-index: -1;
+    display: block;
+    overflow: scroll;
+}
+.editor-highlight>div{
+    width: fit-content;
+    height: fit-content;
+}
 .error_label {
     width: 100%;
 }
-
-.input_area {
-    line-height: 1;
-    width: 100%;
-    /*padding: 1px 2px 2px;*/
-    display: block;
-    resize: vertical;
-}
-
 .cursor {
-    width: 0px;
+    width: 0;
     height: 1em;
     display: inline-block;
     position: relative;
@@ -48,19 +75,4 @@ textarea {
     50% {
         opacity: 0;
     }
-}
-
-.text-area-selection > span {
-    /*height: 1.2em;*/
-
-}
-
-.text-area-selection {
-    position: absolute;
-    padding: 4px;
-    z-index: -1;
-    display: block;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    overflow: scroll;
 }
