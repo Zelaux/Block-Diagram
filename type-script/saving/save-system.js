@@ -1,5 +1,9 @@
 "use strict";
+var download = Utils.download;
 setTimeout(function () {
+    function buttonAction(element, action) {
+        element.onclick = action;
+    }
     let input_area = document.body.querySelector(".input_area");
     let myRoot = document.body.querySelector(".saves-setting");
     let nameInput = myRoot.querySelector("#save-name");
@@ -7,6 +11,42 @@ setTimeout(function () {
     let saveContainer = myRoot.querySelector(".save-container");
     const SETTING_KEY = "block_graph_zelaux";
     const LAST_SETTING_KEY = "block_graph_zelaux.last";
+    buttonAction(myRoot.querySelector("#download-all"), () => {
+        let item = localStorage.getItem(SETTING_KEY);
+        download("block_graph_save.json", item == null ? "{}" : item);
+    });
+    buttonAction(myRoot.querySelector("#download-clear-all"), () => {
+        let item = localStorage.getItem(SETTING_KEY);
+        download("block_graph_save.json", item == null ? "{}" : item);
+        localStorage.setItem(SETTING_KEY, "{}");
+        rebuildSaved(loadSaves());
+    });
+    let loadSavesZone = myRoot.querySelector("#load-saves");
+    loadSavesZone.ondrop = ev => {
+        ev.preventDefault();
+        for (let item of ev.dataTransfer.items) {
+            let file = item.getAsFile();
+            file.text().then(text => {
+                let b = window.confirm("Override existed saves");
+                if (b) {
+                    localStorage.setItem(SETTING_KEY, text);
+                    rebuildSaved(loadSaves());
+                }
+                else {
+                    let loadSaves1 = loadSaves();
+                    localStorage.setItem(SETTING_KEY, text);
+                    let newSaves = loadSaves();
+                    if (loadSaves1 != null) {
+                        for (let key in loadSaves1) {
+                            newSaves[key] = loadSaves1[key];
+                        }
+                        storeSaves(newSaves);
+                    }
+                    rebuildSaved(newSaves);
+                }
+            });
+        }
+    };
     let nodes = Array.from(document
         .querySelector(".fields")
         .querySelectorAll(".serialize"))

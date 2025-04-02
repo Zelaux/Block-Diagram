@@ -119,6 +119,7 @@ span.hotkey{
 
 .svg_container {
     display: flex;
+    height: 100vh;
 }
 
 .svg_container > svg {
@@ -129,25 +130,3 @@ span.hotkey{
         border-color: gray;
     }
 }
-/*region save block*/
-.save-container{
-
-}
-.save-entry{
-    border-bottom: solid 4px var(--button-darkgray);
-}
-
-.save-entry:last-child{
-    border-bottom: none;
-}
-.save-entry{
-    padding: 8px 0 8px 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-.save-entry >:first-child{
-    flex: 1;
-    margin-right: 8px;
-}
-/*endregion*/

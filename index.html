@@ -8,8 +8,10 @@
     <link href="styles/lexer-dark.css" type="text/css" rel="stylesheet"/>
     <link href="styles/index.css" type="text/css" rel="stylesheet"/>
     <link href="styles/editor.css" type="text/css" rel="stylesheet"/>
+    <link href="styles/saves.css" type="text/css" rel="stylesheet"/>
 
     <script src="type-script/utils/finalProxy.js"></script>
+    <script src="type-script/utils/download.js"></script>
     <script src="type-script/font-stuff.js"></script>
     <script src="type-script/svg_stuff.js"></script>
     <script src="type-script/classes.js"></script>
@@ -71,6 +73,14 @@
                             <div style="width: 8px"></div>
                             <button class="base-button clear-button">Clear all</button>
                             <button class="base-button save-button">Save</button>
+                        </div>
+                        <div>
+                            <button class="base-button" id="download-all">Download all as JSON</button>
+                            <button class="base-button" id="download-clear-all">Download all and clear all</button>
+                            <div class="base-button" style="display: flex">
+                                <label for="load-saves">Load Saves</label>
+                                <input type="file" style="flex: 1" id="load-saves"/>
+                            </div>
                         </div>
                         <details open="">
                             <summary>Saved

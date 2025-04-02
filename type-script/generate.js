@@ -104,19 +104,10 @@ setTimeout(function () {
     downloadButton.onclick = function () {
         // @ts-ignore
         generateButton.onclick();
-        function download(filename, text) {
-            let element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-            element.setAttribute('download', filename);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-        }
         let filename = "brace_preview.svg";
         if (nameInput.value.trim().length != 0) {
             filename = nameInput.value.trim() + ".svg";
         }
-        download(filename, svgRootElement.outerHTML);
+        Utils.download(filename, svgRootElement.outerHTML);
     };
 });

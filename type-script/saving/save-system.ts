@@ -1,4 +1,10 @@
+import download = Utils.download;
+
 setTimeout(function () {
+
+    function buttonAction(element: Element | null, action: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | (() => void)) {
+        (element as HTMLButtonElement).onclick = action
+    }
 
     type Map<V> = { [key: string]: V }
 
@@ -9,9 +15,49 @@ setTimeout(function () {
 
     let saveButton = myRoot.querySelector(".save-button") as HTMLButtonElement;
 
-    let saveContainer=myRoot.querySelector(".save-container") as HTMLDivElement
+    let saveContainer = myRoot.querySelector(".save-container") as HTMLDivElement
+
     const SETTING_KEY = "block_graph_zelaux"
     const LAST_SETTING_KEY = "block_graph_zelaux.last"
+
+    buttonAction(myRoot.querySelector("#download-all"), () => {
+        let item = localStorage.getItem(SETTING_KEY);
+        download("block_graph_save.json", item == null ? "{}" : item)
+    })
+    buttonAction(myRoot.querySelector("#download-clear-all"), () => {
+        let item = localStorage.getItem(SETTING_KEY);
+        download("block_graph_save.json", item == null ? "{}" : item)
+        localStorage.setItem(SETTING_KEY, "{}")
+        rebuildSaved(loadSaves()!)
+    })
+    ;
+    let loadSavesZone: HTMLInputElement = myRoot.querySelector("#load-saves")! as HTMLInputElement;
+
+    loadSavesZone.ondrop = ev => {
+        ev.preventDefault()
+        for (let item of ev.dataTransfer!.items) {
+            let file = item.getAsFile()!;
+            file.text().then(text=>{
+                let b = window.confirm("Override existed saves");
+                if(b){
+                    localStorage.setItem(SETTING_KEY,text)
+                    rebuildSaved(loadSaves()!)
+                }else{
+                    let loadSaves1 = loadSaves();
+                    localStorage.setItem(SETTING_KEY,text)
+                    let newSaves = loadSaves()!;
+                    if(loadSaves1!=null){
+                        for (let key in loadSaves1) {
+                            newSaves[key]=loadSaves1[key]
+                        }
+                        storeSaves(newSaves)
+                    }
+                    rebuildSaved(newSaves)
+                }
+            })
+
+        }
+    }
 
 
     let nodes = Array.from(
@@ -42,10 +88,9 @@ setTimeout(function () {
         }
 
 
-
         // @ts-ignore
         input_area.dispatchEvent(new Event("change"))
-        document.body.querySelector(".svg_container>svg")!.innerHTML=""
+        document.body.querySelector(".svg_container>svg")!.innerHTML = ""
         // @ts-ignore
         document.body.querySelector(".generate_button").dispatchEvent(new Event("click"))
     }
@@ -60,27 +105,28 @@ setTimeout(function () {
 
         }
     }
+
     function rebuildSaved(saved: Map<SaveInfo>) {
-        saveContainer.innerHTML="";
+        saveContainer.innerHTML = "";
         for (let savedKey in saved) {
             let save = saved[savedKey];
             let entry = document.createElement("div");
-            entry.className="save-entry"
+            entry.className = "save-entry"
             saveContainer.appendChild(entry);
             let p = document.createElement("p");
-            p.innerText=save.name
+            p.innerText = save.name
             entry.appendChild(p)
             let button = document.createElement("button");
-            button.className="base-button delete-save-button"
-            button.onclick=()=>alert("TODO");
-            button.innerHTML="Delete"
+            button.className = "base-button delete-save-button"
+            button.onclick = () => alert("TODO");
+            button.innerHTML = "Delete"
             entry.appendChild(button)
             button = document.createElement("button");
-            button.className="base-button load-save-button"
-            button.onclick=()=> {
+            button.className = "base-button load-save-button"
+            button.onclick = () => {
                 restore(save)
             };
-            button.innerHTML="Load"
+            button.innerHTML = "Load"
             entry.appendChild(button)
 
         }
@@ -89,9 +135,9 @@ setTimeout(function () {
     }
 
     saveButton.onclick = () => {
-        let saves = loadSaves()||{};
+        let saves = loadSaves() || {};
         let newInfo = createSaveInfo();
-        saves[newInfo.name]=newInfo;
+        saves[newInfo.name] = newInfo;
         storeSaves(saves)
     }
 
