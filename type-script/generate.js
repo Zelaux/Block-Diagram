@@ -13,7 +13,6 @@ setTimeout(function () {
         Tools.autoformatInArea(textAreaElement);
     };
     document.querySelector("body").addEventListener("keydown", ev => {
-        console.log(ev);
         if (ev.key == "l" && ev.ctrlKey && ev.altKey) {
             ev.preventDefault();
             // @ts-ignore
