@@ -23,7 +23,7 @@ start(start1)
 start`start2`
 start"start3"
 ```
-![brace_preview.svg](doc%2Fbrace_preview.svg)
+![brace-preview.svg](doc%2Fbrace_preview.svg)
 
 Обратите внимание, если вы хотите использовать закрывающий элемент(`)`, ``` ` ``` или `"`) внутри текста блока, то его
 нужно экранировать
@@ -202,8 +202,7 @@ parallel(20){
 }
 ```
 
-![parallel.svg](doc%2Fparallel.svg)
-
+![parallel_join1.svg](doc%2Fparallel_join1.svg)
 ```flow-graph
 parallel(20){
     connector(1)
