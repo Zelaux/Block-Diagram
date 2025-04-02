@@ -10,16 +10,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var Utils;
 (function (Utils) {
-    function download(filename, text) {
+    function downloadByDataHref(filename, dataHref) {
         let element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('href', dataHref.startsWith("data:") ? dataHref : "data:" + dataHref);
         element.setAttribute('download', filename);
         element.style.display = 'none';
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
     }
+    function download(filename, text) {
+        downloadByDataHref(filename, 'text/plain;charset=utf-8,' + encodeURIComponent(text));
+    }
     Utils.download = download;
+    function downloadZip(filename, zip) {
+        zip.generateAsync({ type: "base64" }).then(function (base64) {
+            downloadByDataHref(filename, "data:application/zip;base64," + base64);
+        });
+    }
+    Utils.downloadZip = downloadZip;
     function emulateClick(element) {
         element.dispatchEvent(new Event("click"));
     }

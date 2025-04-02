@@ -33,26 +33,46 @@ setTimeout(function () {
     })
     buttonAction(myRoot.querySelector("#download-all-svg"), () => {
         let saves = loadSaves()!;
-        if(saves==null){
+        if (saves == null) {
             alert("No saves")
             return
         }
+        let resultFileName = prompt("File name?", "all-svg")!;
+        if (resultFileName == null) return
         let downloadButton: HTMLButtonElement = document.querySelector("button.download_button")!;
         let currentSave = createSaveInfo();
-        let savesList:SaveInfo[]=[]
+        let savesList: SaveInfo[] = []
         for (let key in saves) {
             savesList.push(saves[key])
         }
 
-        setTimeout(async function(){
-            for (let i = 0; i < savesList.length; i++) {
-                let save = savesList[i];
-                restore(save)
-                await Utils.sleep(1)
-                // @ts-ignore
-                downloadButton.onclick()
+        setTimeout(async function () {
+            try {
+                let realDownload = Utils.download;
+                let zip = new JSZip()
+                let fakeDownload: (filename: string, text: string) => void;
+                fakeDownload = (filename, text)=>{
+                    zip.file(filename,text)
+                };
+
+                // zip.file("Hello.txt", "Hello world\n");
+                for (let i = 0; i < savesList.length; i++) {
+                    let save = savesList[i];
+                    restore(save)
+                    await Utils.sleep(1)
+                    Utils.download = fakeDownload
+                    try { // @ts-ignore
+                        downloadButton.onclick()
+                    } finally {
+                        Utils.download = realDownload
+                    }
+                }
+                Utils.downloadZip(resultFileName, zip)
+            } finally {
+
+                restore(currentSave)
             }
-            restore(currentSave)
+
         })
     })
     ;
@@ -62,18 +82,18 @@ setTimeout(function () {
         ev.preventDefault()
         for (let item of ev.dataTransfer!.items) {
             let file = item.getAsFile()!;
-            file.text().then(text=>{
+            file.text().then(text => {
                 let b = window.confirm("Override existed saves");
-                if(b){
-                    localStorage.setItem(SETTING_KEY,text)
+                if (b) {
+                    localStorage.setItem(SETTING_KEY, text)
                     rebuildSaved(loadSaves()!)
-                }else{
+                } else {
                     let loadSaves1 = loadSaves();
-                    localStorage.setItem(SETTING_KEY,text)
+                    localStorage.setItem(SETTING_KEY, text)
                     let newSaves = loadSaves()!;
-                    if(loadSaves1!=null){
+                    if (loadSaves1 != null) {
                         for (let key in loadSaves1) {
-                            newSaves[key]=loadSaves1[key]
+                            newSaves[key] = loadSaves1[key]
                         }
                         storeSaves(newSaves)
                     }

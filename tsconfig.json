@@ -108,7 +108,7 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
 
-  "include": ["type-script/**/*"],
+  "include": ["type-script/**/*","libs/**/*.d.ts"],
   "watchOptions": {
     "watchDirectory": "useFsEvents",
     "watchFile": "useFsEvents",

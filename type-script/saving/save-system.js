@@ -37,6 +37,9 @@ setTimeout(function () {
             alert("No saves");
             return;
         }
+        let resultFileName = prompt("File name?", "all-svg");
+        if (resultFileName == null)
+            return;
         let downloadButton = document.querySelector("button.download_button");
         let currentSave = createSaveInfo();
         let savesList = [];
@@ -45,14 +48,31 @@ setTimeout(function () {
         }
         setTimeout(function () {
             return __awaiter(this, void 0, void 0, function* () {
-                for (let i = 0; i < savesList.length; i++) {
-                    let save = savesList[i];
-                    restore(save);
-                    yield Utils.sleep(1);
-                    // @ts-ignore
-                    downloadButton.onclick();
+                try {
+                    let realDownload = Utils.download;
+                    let zip = new JSZip();
+                    let fakeDownload;
+                    fakeDownload = (filename, text) => {
+                        zip.file(filename, text);
+                    };
+                    // zip.file("Hello.txt", "Hello world\n");
+                    for (let i = 0; i < savesList.length; i++) {
+                        let save = savesList[i];
+                        restore(save);
+                        yield Utils.sleep(1);
+                        Utils.download = fakeDownload;
+                        try { // @ts-ignore
+                            downloadButton.onclick();
+                        }
+                        finally {
+                            Utils.download = realDownload;
+                        }
+                    }
+                    Utils.downloadZip(resultFileName, zip);
                 }
-                restore(currentSave);
+                finally {
+                    restore(currentSave);
+                }
             });
         });
     });
