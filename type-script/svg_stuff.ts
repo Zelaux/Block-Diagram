@@ -51,7 +51,7 @@ function defaultCenterText(x: number, y: number, width: number, height: number, 
 
     }
     let aspect = height / width;
-    let compiledText = arrayText.join("\n")
+    let compiledText = arrayText.join("")
 
 
     let info = new CompileInfo(10, 0, 0);
