@@ -1,5 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var download = Utils.download;
+var emulateClick = Utils.emulateClick;
 setTimeout(function () {
     function buttonAction(element, action) {
         element.onclick = action;
@@ -20,6 +30,31 @@ setTimeout(function () {
         download("block_graph_save.json", item == null ? "{}" : item);
         localStorage.setItem(SETTING_KEY, "{}");
         rebuildSaved(loadSaves());
+    });
+    buttonAction(myRoot.querySelector("#download-all-svg"), () => {
+        let saves = loadSaves();
+        if (saves == null) {
+            alert("No saves");
+            return;
+        }
+        let downloadButton = document.querySelector("button.download_button");
+        let currentSave = createSaveInfo();
+        let savesList = [];
+        for (let key in saves) {
+            savesList.push(saves[key]);
+        }
+        setTimeout(function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                for (let i = 0; i < savesList.length; i++) {
+                    let save = savesList[i];
+                    restore(save);
+                    yield Utils.sleep(1);
+                    // @ts-ignore
+                    downloadButton.onclick();
+                }
+                restore(currentSave);
+            });
+        });
     });
     let loadSavesZone = myRoot.querySelector("#load-saves");
     loadSavesZone.ondrop = ev => {
@@ -69,7 +104,7 @@ setTimeout(function () {
         input_area.dispatchEvent(new Event("change"));
         document.body.querySelector(".svg_container>svg").innerHTML = "";
         // @ts-ignore
-        document.body.querySelector(".generate_button").dispatchEvent(new Event("click"));
+        Utils.emulateClick(document.body.querySelector(".generate_button"));
     }
     function createSaveInfo() {
         let settings = {};

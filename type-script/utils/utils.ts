@@ -1,5 +1,4 @@
-
-namespace Utils{
+namespace Utils {
     export function download(filename: string, text: string) {
         let element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -8,5 +7,12 @@ namespace Utils{
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
+    }
+
+    export function emulateClick(element: HTMLElement) {
+        element.dispatchEvent(new Event("click"))
+    }
+    export async function sleep(ms:number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }

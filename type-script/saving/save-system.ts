@@ -1,4 +1,5 @@
 import download = Utils.download;
+import emulateClick = Utils.emulateClick;
 
 setTimeout(function () {
 
@@ -29,6 +30,30 @@ setTimeout(function () {
         download("block_graph_save.json", item == null ? "{}" : item)
         localStorage.setItem(SETTING_KEY, "{}")
         rebuildSaved(loadSaves()!)
+    })
+    buttonAction(myRoot.querySelector("#download-all-svg"), () => {
+        let saves = loadSaves()!;
+        if(saves==null){
+            alert("No saves")
+            return
+        }
+        let downloadButton: HTMLButtonElement = document.querySelector("button.download_button")!;
+        let currentSave = createSaveInfo();
+        let savesList:SaveInfo[]=[]
+        for (let key in saves) {
+            savesList.push(saves[key])
+        }
+
+        setTimeout(async function(){
+            for (let i = 0; i < savesList.length; i++) {
+                let save = savesList[i];
+                restore(save)
+                await Utils.sleep(1)
+                // @ts-ignore
+                downloadButton.onclick()
+            }
+            restore(currentSave)
+        })
     })
     ;
     let loadSavesZone: HTMLInputElement = myRoot.querySelector("#load-saves")! as HTMLInputElement;
@@ -92,7 +117,7 @@ setTimeout(function () {
         input_area.dispatchEvent(new Event("change"))
         document.body.querySelector(".svg_container>svg")!.innerHTML = ""
         // @ts-ignore
-        document.body.querySelector(".generate_button").dispatchEvent(new Event("click"))
+        Utils.emulateClick(document.body.querySelector(".generate_button"))
     }
 
     function createSaveInfo(): SaveInfo {

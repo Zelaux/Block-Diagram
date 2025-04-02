@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Блок-Схемы</title>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip-utils/0.1.0/jszip-utils.min.js"></script>-->
+
     <link href="styles/zero.css" type="text/css" rel="stylesheet"/>
     <link href="styles/lexer.css" type="text/css" rel="stylesheet"/>
     <link href="styles/lexer-dark.css" type="text/css" rel="stylesheet"/>
@@ -11,7 +13,7 @@
     <link href="styles/saves.css" type="text/css" rel="stylesheet"/>
 
     <script src="type-script/utils/finalProxy.js"></script>
-    <script src="type-script/utils/download.js"></script>
+    <script src="type-script/utils/utils.js"></script>
     <script src="type-script/font-stuff.js"></script>
     <script src="type-script/svg_stuff.js"></script>
     <script src="type-script/classes.js"></script>
@@ -78,6 +80,7 @@
                         <div>
                             <button class="base-button" id="download-all">Download all as JSON</button>
                             <button class="base-button" id="download-clear-all">Download all and clear all</button>
+                            <button class="base-button" id="download-all-svg">Download all as svg</button>
                             <div class="base-button" style="display: flex">
                                 <label for="load-saves">Load Saves</label>
                                 <input type="file" style="flex: 1" id="load-saves"/>
