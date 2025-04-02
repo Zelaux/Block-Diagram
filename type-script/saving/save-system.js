@@ -25,6 +25,16 @@ setTimeout(function () {
         let item = localStorage.getItem(SETTING_KEY);
         download("block_graph_save.json", item == null ? "{}" : item);
     });
+    buttonAction(myRoot.querySelector(".clear-button"), () => {
+        if (!window.confirm("Are you sure to delete all saves?"))
+            return;
+        let shouldDownload = window.confirm("Maybe you want to download saves before deleting?");
+        let item = localStorage.getItem(SETTING_KEY);
+        if (shouldDownload)
+            download("block_graph_save.json", item == null ? "{}" : item);
+        localStorage.setItem(SETTING_KEY, "{}");
+        rebuildSaved(loadSaves());
+    });
     buttonAction(myRoot.querySelector("#download-clear-all"), () => {
         let item = localStorage.getItem(SETTING_KEY);
         download("block_graph_save.json", item == null ? "{}" : item);
